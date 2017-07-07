@@ -226,8 +226,6 @@ public class DBConnect extends javax.swing.JFrame {
         //======================================================================
         // Connect to Database
         //======================================================================
-        //String DB_URL = "jdbc:mysql://" + serverIP + ":" + port + "/" + databaseName;
-
         try { // endeavour to create connection to server and database
             MysqlDataSource db = new MysqlDataSource();
             db.setUrl("jdbc:mysql://" + serverIP + ":" + port + "/" + databaseName);
@@ -236,9 +234,9 @@ public class DBConnect extends javax.swing.JFrame {
 
             Object[] options = {"OK"};
             Component frame;
-            int n = JOptionPane.showOptionDialog(null, 
-                    "Server and Database Connection Successful", 
-                    "Success",
+            int n = JOptionPane.showOptionDialog(null,
+                    "Server and Database Connection Successful",
+                    "Connection Success",
                     JOptionPane.PLAIN_MESSAGE,
                     JOptionPane.INFORMATION_MESSAGE,
                     null,
@@ -246,11 +244,11 @@ public class DBConnect extends javax.swing.JFrame {
                     options[0]);
             setVisible(false);
             //TESTING WAP//
-            
 
         } catch (SQLException e) { // if server and database connection fail run this
             JOptionPane.showMessageDialog(null,
-                    "The connection to the server and database was not Successful \n" + "Connection Error: " + e);
+                    "The connection to the server and database was not Successful \n"
+                    + "Connection Error: " + e);
         }
     }//GEN-LAST:event_testDBConnectJButtonActionPerformed
 
