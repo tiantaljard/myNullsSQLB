@@ -237,7 +237,7 @@ public class DBConnect extends javax.swing.JFrame {
             Object[] options = {"OK"};
             Component frame;
             int n = JOptionPane.showOptionDialog(null, 
-                    "Server and Database Connection", 
+                    "Server and Database Connection Successful", 
                     "Success",
                     JOptionPane.PLAIN_MESSAGE,
                     JOptionPane.INFORMATION_MESSAGE,
@@ -245,11 +245,12 @@ public class DBConnect extends javax.swing.JFrame {
                     options,
                     options[0]);
             setVisible(false);
+            //TESTING WAP//
             
 
         } catch (SQLException e) { // if server and database connection fail run this
             JOptionPane.showMessageDialog(null,
-                    "The connection to the server and database was not successfull \n" + "Connection Error: " + e);
+                    "The connection to the server and database was not Successful \n" + "Connection Error: " + e);
         }
     }//GEN-LAST:event_testDBConnectJButtonActionPerformed
 
