@@ -8,6 +8,7 @@ package mynullssqlB;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import java.awt.Component;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
@@ -15,12 +16,12 @@ import javax.swing.JOptionPane;
  *
  * @author TianTaljard
  */
-public class DBConnect extends javax.swing.JFrame {
+public class DBConnectDialog extends javax.swing.JFrame {
 
     /**
      * Creates new form myNullsSQLJFrame
      */
-    public DBConnect() {
+    public DBConnectDialog() {
         initComponents();
     }
 
@@ -227,9 +228,9 @@ public class DBConnect extends javax.swing.JFrame {
         // Connect to Database
         //======================================================================
         try { // endeavour to create connection to server and database
-            MySQLDBConnect db = new MySQLDBConnect();
-            db.getConnection(serverIP, databaseName, username, password, port);
-            
+            MySQLDBConnect db = new MySQLDBConnect(serverIP, databaseName, username, password, port);
+            db.getConnection();
+
             Object[] options = {"OK"};
             Component frame;
             int n = JOptionPane.showOptionDialog(null,
@@ -243,6 +244,21 @@ public class DBConnect extends javax.swing.JFrame {
             setVisible(false);
             //TESTING WAP//
             
+            ResultSet tbl_results = db.showTables();
+            while (tbl_results.next()) {
+                System.out.println(tbl_results.getString(1));
+            }
+            
+            
+            ResultSet iat_results = db.initialAnalyseTables();
+            while (iat_results.next()) {
+                System.out.print(iat_results.getString(1));
+                
+                System.out.println(" - "+iat_results.getString(2));
+                
+                
+                System.out.println(" - "+iat_results.getString(3));
+            }
 
         } catch (SQLException e) { // if server and database connection fail run this
             JOptionPane.showMessageDialog(null,
@@ -284,21 +300,23 @@ public class DBConnect extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(DBConnect.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DBConnectDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(DBConnect.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DBConnectDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(DBConnect.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DBConnectDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(DBConnect.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DBConnectDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new DBConnect().setVisible(true);
+                new DBConnectDialog().setVisible(true);
             }
         });
     }

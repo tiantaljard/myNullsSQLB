@@ -32,22 +32,18 @@ public class MySQLDBConnect {
      * for caching table names column count and row count
      */
     Map<String, Integer> tblCache = Collections.synchronizedMap(new HashMap<>());
-    private static final String COLCOUNT ="_colcount";
-    private static final String ROWCOUNT ="_rowcount";
-    public MySQLDBConnect() {
 
-    }
+    private static final String COLCOUNT = "_colcount";
+    private static final String ROWCOUNT = "_rowcount";
 
-    public MySQLDBConnect(String serverIP, String databaseName,
-            String username, String password, String port) {
-        this.serverIP = serverIP;
-        this.databaseName = databaseName;
-        this.username = username;
-        this.password = password;
-        this.port = port;
-    }
-
+    /**
+     *  MAIN METHOD - ONLY USED FOR TESTING IN THIS CLASS
+     * @param args 
+     */
     public static void main(String[] args) {
+    //======================================================================
+    // MAIN FOR TESTING
+    //======================================================================
 
         MySQLDBConnect db = new MySQLDBConnect("127.0.0.1", "reqlocaldb", "root", "Zppsit0!", "3306");
         try {
@@ -65,11 +61,11 @@ public class MySQLDBConnect {
                 System.out.println("\n");
 
             }
-            
+
             db.initialAnalyseTables();
 
-                System.out.println(" Row count "+db.getRowCount("requests"));            
-                System.out.println("Col Count "+db.getColCount("requests"));            
+            System.out.println(" Row count " + db.getRowCount("requests"));
+            System.out.println("Col Count " + db.getColCount("requests"));
 //            ResultSet coldetail = db.secondAnalyseTablesNulls("requests");
 //            while (coldetail.next()) {
 //                System.out.println(coldetail.getString(1));
@@ -79,12 +75,47 @@ public class MySQLDBConnect {
             ex.printStackTrace();
         }
     }
+    //======================================================================
+    // AFTER MAIN 
+    //======================================================================
+    
+    /**
+     *  Default Constructor
+     */
+    public MySQLDBConnect() {
+    }
 
+    /**
+     * 
+     * @param serverIP
+     * @param databaseName
+     * @param username
+     * @param password
+     * @param port 
+     */
+    public MySQLDBConnect(String serverIP, String databaseName,
+            String username, String password, String port) {
+        this.serverIP = serverIP;
+        this.databaseName = databaseName;
+        this.username = username;
+        this.password = password;
+        this.port = port;
+    }
+
+    /**
+     * Establish Connection to the database
+     *
+     * @throws SQLException
+     */
     public void getConnection() throws SQLException {
         conn = DriverManager.getConnection("jdbc:mysql://" + serverIP + ":"
                 + port + "/" + databaseName, username, password);
     }
-
+    /**
+     * creates a list of table that exist in the database
+     * @return a list of tables in the database schema
+     * @throws SQLException 
+     */
     public ResultSet showTables() throws SQLException {
         Statement statement = conn.createStatement();
         ResultSet tbl_results = statement.executeQuery("show tables");
@@ -92,8 +123,11 @@ public class MySQLDBConnect {
     }
 
     /**
-     * scans the database and for each table
+     * scans the database and return a result set for show each
+     * table shows the table name, column count and row count
      *
+     * creates a hash table to store the column count and row count for each table
+     * 
      * @return table name,column count, row count
      * @throws SQLException
      */
@@ -111,11 +145,11 @@ public class MySQLDBConnect {
             tblCache.put(iat_results.getString(1) + COLCOUNT, Integer.parseInt(iat_results.getString("column_cnt")));
             tblCache.put(iat_results.getString(1) + ROWCOUNT, Integer.parseInt(iat_results.getString("rowcount")));
         }
-
         iat_results.first();
-
+        
         return iat_results;
     }
+    
 
     /**
      * Retrieving columns names from a given table.
@@ -178,30 +212,34 @@ public class MySQLDBConnect {
 
     }
 
- 
     /**
-     * get the number of column for a table from a hash map table
+     * get the number of columns for a table from a hash map table
+     *
      * @param table_name
      * @return count of columns in table
-     * @throws SQLException 
+     * @throws SQLException
      */
     public int getColCount(String table_name) throws SQLException {
-
         return tblCache.get(table_name + COLCOUNT);
-
     }
+
     /**
      * get the number of rows for a table from a hash map table
+     *
      * @param table_name
      * @return count of rows in table
-     * @throws SQLException 
+     * @throws SQLException
      */
     public int getRowCount(String table_name) throws SQLException {
-
         return tblCache.get(table_name + ROWCOUNT);
-
     }
-
+    
+    /**
+     * 
+     * @param table_name
+     * @return
+     * @throws SQLException 
+     */
     public ArrayList<String[]> transPoseNb(String table_name) throws SQLException {
 
         ArrayList<String[]> nbc = new ArrayList<>();
@@ -231,13 +269,8 @@ public class MySQLDBConnect {
                 System.out.println("print col " + col[0]);
 
                 nbc.add(col);
-
             }
-
         }
-
         return nbc;
-
     }
-
 }
