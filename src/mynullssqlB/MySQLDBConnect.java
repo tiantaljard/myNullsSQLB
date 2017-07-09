@@ -12,6 +12,9 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -40,25 +43,27 @@ public class MySQLDBConnect {
     }
 
     public static void main(String[] args) {
-        
+
         MySQLDBConnect db = new MySQLDBConnect("127.0.0.1", "reqlocaldb", "root", "Zppsit0!", "3306");
         try {
             db.getConnection();
-            ArrayList<String[]>  transposed = db.transPoseNb("requests");
-            System.out.println("");
-            for ( int i=0 ; i<transposed.size(); i++) {
+            ArrayList<String[]> transposed = db.transPoseNb("requests");
+//            System.out.println("Before  transposed");
+//            System.out.print(transposed.toString());
+            //           System.out.println("\n After  transposed");
+            for (int i = 0; i < transposed.size(); i++) {
                 String[] col = transposed.get(i);
-                
-                System.out.print(col);
+
+                System.out.print(col[0]);
                 System.out.print(col[1]);
                 System.out.println(col[2]);
-                
+                System.out.println("\n");
+
             }
 //            ResultSet coldetail = db.secondAnalyseTablesNulls("requests");
 //            while (coldetail.next()) {
 //                System.out.println(coldetail.getString(1));
 //            }
-
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -76,6 +81,12 @@ public class MySQLDBConnect {
         return tbl_results;
     }
 
+    /**
+     * scans the database and for each table
+     *
+     * @return table name,column count, row count
+     * @throws SQLException
+     */
     public ResultSet initialAnalyseTables() throws SQLException {
         Statement statement = conn.createStatement();
         ResultSet iat_results = statement.executeQuery("select c.table_name,COUNT(c.COLUMN_NAME) column_cnt,\n"
@@ -137,6 +148,8 @@ public class MySQLDBConnect {
             col_results.next();
 
         }
+        statement.close();
+        col_results.close();
         query += "from " + table_name + ";";
 
         //======================================================================
@@ -152,38 +165,57 @@ public class MySQLDBConnect {
      * @param table_name
      * @return
      */
-    public int getRowcount(String table_name) {
-        return 343;
+    public int getRowcount(String table_name) throws SQLException {
+
+        Map<String, Integer> tblRwCnt = Collections.synchronizedMap(new HashMap<>());
+
+        ResultSet iat_results = initialAnalyseTables();
+        while (iat_results.next()) {
+            tblRwCnt.put(iat_results.getString(1), Integer.parseInt(iat_results.getString(3)));
+
+        }
+        
+        tblRwCnt.get(table_name);
+
         /* 
         * For implementation we could call the initialAnalyzeTable 
         * in the constructor of this method
         
         * and createa HashMap that stores pairs of table nae and row count
          */
+        return 343;
     }
 
     public ArrayList<String[]> transPoseNb(String table_name) throws SQLException {
+
         ArrayList<String[]> nbc = new ArrayList<>();
 
         ResultSet nBCnt = secondAnalyseTablesNulls(table_name);
 
+        ResultSetMetaData col_meta = nBCnt.getMetaData();
+
+        int col_numColumns = col_meta.getColumnCount();
+
+        String coll0 = null;
+        String coll1 = null;
+        String coll2 = null;
+
         while (nBCnt.next()) {
-            String[] col = new String[3];
-            ResultSetMetaData col_meta = nBCnt.getMetaData();
-            int col_numColumns = col_meta.getColumnCount();
+
             System.out.print(col_numColumns);
+
             for (int ci = 1; ci <= col_numColumns; ci += 2) {
                 String colname = col_meta.getColumnName(ci);
                 
-                col[0]=colname.replace("nulls_", "");
-                col[1]=nBCnt.getString(ci);
-                col[2]=nBCnt.getString(ci+1);
-                
-                System.out.print("THIS PLANCE "+col[0]);
-                
-               nbc.add(col);
-                
-                // System.out.print("Column Header\t - " + col_results.getObject(i));
+                coll0 = colname.replace("nulls_", "");
+                coll1 = nBCnt.getString(ci);
+                coll2 = nBCnt.getString(ci + 1);
+
+                String[] col = new String[]{coll0, coll1, coll2};
+                System.out.println("print col " + col[0]);
+
+                nbc.add(col);
+
             }
 
         }
