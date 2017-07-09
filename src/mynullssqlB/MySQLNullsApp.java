@@ -8,6 +8,8 @@ package mynullssqlB;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.tree.DefaultTreeModel;
+
 
 /**
  *
@@ -25,6 +27,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
          */
         MySQLDBConnect db = new MySQLDBConnect("127.0.0.1", "reqlocaldb", "root", "Zppsit0!", "3306");
         
+        
         try {
             db.getConnection();
             ArrayList<String[]> l = db.transPoseNb("requests");
@@ -32,6 +35,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             initComponents();
             jTable2.setModel(new DefaultTableModel(l.toArray(new String [][]{}),new String []{"Table Name","nulls","blanks"} ) {
             });
+            
+            jTree1.setModel(db.populateTreeModel());
 
         } catch (SQLException e) {
             e.printStackTrace();
