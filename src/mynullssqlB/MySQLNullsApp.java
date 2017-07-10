@@ -5,12 +5,10 @@
  */
 package mynullssqlB;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
 
 /**
  *
@@ -29,14 +27,27 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         try {
             db.getConnection();
+            ResultSet tbls = db.showTables();
+
             ArrayList<String[]> l = db.transPoseNb("requests");
+/*
+            ResultTableModel tableModel = new ResultTableModel();
+            System.out.println(db.getNumberOfTable());
+            
+            tableModel.setResultset(tbls);
+            
+            tableModel.setsqlRowCount(db.getNumberOfTable());
+  */          
 
             initComponents();
-            jTable2.setModel(new DefaultTableModel(l.toArray(new String[][]{}), new String[]{"Table Name", "nulls", "blanks"}) {
-            });
+            tableNamesTable.setModel(db.resultSetToTableModel(tbls));
 
-            jTree1.setModel(db.populateTreeModel());
-
+//            jTable2.setModel(new DefaultTableModel(l.toArray(new String[][]{}),
+//                    new String[]{
+//                        "Column Name", "Count of nulls", "Count of blanks"}) {});
+            //please conver to array db.showTables();
+            //ArrayList<String[]> t = db.showTables();
+            //jTree1.setModel(db.populateTreeModel());
         } catch (SQLException e) {
             e.printStackTrace();
         };
@@ -56,10 +67,16 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         jMenu3 = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
         jSplitPane1 = new javax.swing.JSplitPane();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTree1 = new javax.swing.JTree();
+        jSplitPane2 = new javax.swing.JSplitPane();
+        jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable3 = new javax.swing.JTable();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        tableNamesTable = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -72,20 +89,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTree1.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
-        jTree1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTree1MouseClicked(evt);
-            }
-        });
-        jTree1.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
-            public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
-                jTree1ValueChanged(evt);
-            }
-        });
-        jScrollPane1.setViewportView(jTree1);
-
-        jSplitPane1.setLeftComponent(jScrollPane1);
+        jPanel1.setLayout(new java.awt.CardLayout());
+        jSplitPane2.setRightComponent(jPanel1);
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -100,7 +105,58 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         ));
         jScrollPane3.setViewportView(jTable2);
 
-        jSplitPane1.setRightComponent(jScrollPane3);
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1740, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 432, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 432, Short.MAX_VALUE))
+        );
+
+        jSplitPane2.setRightComponent(jPanel2);
+
+        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(jTable3);
+
+        jSplitPane2.setLeftComponent(jScrollPane2);
+
+        jSplitPane1.setRightComponent(jSplitPane2);
+        jSplitPane1.setLeftComponent(jScrollPane1);
+
+        tableNamesTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane6.setViewportView(tableNamesTable);
+
+        jSplitPane1.setLeftComponent(jScrollPane6);
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -117,57 +173,18 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(15, 15, 15)
+                .addGap(47, 47, 47)
                 .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(271, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jTree1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jTree1ValueChanged
-        
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
-
-        if (node == null) //Nothing is selected.     
-        {
-            return;
-        }
-
-        if (node.isRoot()) //Nothing is selected.     
-        {
-        }
-        if (node.getDepth() == 1) {
-            System.out.println("getDepth1");
-            System.out.println(node.toString());
-            System.out.println(node.getUserObject().getClass());
-        }
-        if (node.getDepth() == 2) {
-            System.out.println("getDepth2");
-            System.out.println(node.toString());
-            System.out.println(node.getUserObject().getClass());
-
-        }
-                if (node.getDepth() == 0) {
-            System.out.println("getDepth0");
-            System.out.println(node.toString());
-            System.out.println(node.getUserObject().getClass());
-
-        }
-    }//GEN-LAST:event_jTree1ValueChanged
-
-    private void jTree1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTree1MouseClicked
-        TreePath[] paths = jTree1.getSelectionPaths();
-        
-        for (TreePath path :paths) {
-            System.out.println("node selected  "+path.getParentPath());
-        }
-    }//GEN-LAST:event_jTree1MouseClicked
 
     /**
      * @param args the command line arguments
@@ -204,6 +221,58 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         });
     }
 
+ /*   public class ResultTableModel extends DefaultTableModel {
+
+        private ResultSet resultset;
+        private int sqlRowCount;
+
+        @Override
+        public int getColumnCount() {
+            try {
+                return resultset.getMetaData().getColumnCount();
+                //return super.getColumnCount(); //To change body of generated methods, choose Tools | Templates.
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return -1;
+        }
+
+        @Override
+        public int getRowCount() {
+            return sqlRowCount;
+        }
+
+        @Override
+        public String getColumnName(int column) {
+            return super.getColumnName(column); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public Object getValueAt(int row, int column) {
+            try {
+                resultset.absolute(row); //To change body of generated methods, choose Tools | Templates.
+                return resultset.getString(column);
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return "";
+        }
+
+        public ResultSet getResultset() {
+            return resultset;
+        }
+
+        public void setResultset(ResultSet resultset) {
+            this.resultset = resultset;
+        }
+
+        public void setsqlRowCount(int rows) {
+            sqlRowCount = rows;
+        }
+
+    }
+*/
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -211,10 +280,16 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuBar jMenuBar2;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JTable jTable2;
-    private javax.swing.JTree jTree1;
+    private javax.swing.JTable jTable3;
+    private javax.swing.JTable tableNamesTable;
     // End of variables declaration//GEN-END:variables
 }
