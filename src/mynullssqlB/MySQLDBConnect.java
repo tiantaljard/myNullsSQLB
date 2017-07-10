@@ -15,6 +15,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 /**
  *
@@ -28,6 +33,7 @@ public class MySQLDBConnect {
     String databaseName;
     String port;
     String serverIP;
+    private int numberOfTable;
     /**
      * for caching table names column count and row count
      */
@@ -37,13 +43,14 @@ public class MySQLDBConnect {
     private static final String ROWCOUNT = "_rowcount";
 
     /**
-     *  MAIN METHOD - ONLY USED FOR TESTING IN THIS CLASS
-     * @param args 
+     * MAIN METHOD - ONLY USED FOR TESTING IN THIS CLASS
+     *
+     * @param args
      */
     public static void main(String[] args) {
-    //======================================================================
-    // MAIN FOR TESTING
-    //======================================================================
+        //======================================================================
+        // MAIN FOR TESTING
+        //======================================================================
 
         MySQLDBConnect db = new MySQLDBConnect("127.0.0.1", "reqlocaldb", "root", "Zppsit0!", "3306");
         try {
@@ -78,20 +85,20 @@ public class MySQLDBConnect {
     //======================================================================
     // AFTER MAIN 
     //======================================================================
-    
+
     /**
-     *  Default Constructor
+     * Default Constructor
      */
     public MySQLDBConnect() {
     }
 
     /**
-     * 
+     *
      * @param serverIP
      * @param databaseName
      * @param username
      * @param password
-     * @param port 
+     * @param port
      */
     public MySQLDBConnect(String serverIP, String databaseName,
             String username, String password, String port) {
@@ -100,6 +107,7 @@ public class MySQLDBConnect {
         this.username = username;
         this.password = password;
         this.port = port;
+
     }
 
     /**
@@ -111,23 +119,32 @@ public class MySQLDBConnect {
         conn = DriverManager.getConnection("jdbc:mysql://" + serverIP + ":"
                 + port + "/" + databaseName, username, password);
     }
+
     /**
      * creates a list of table that exist in the database
+     *
      * @return a list of tables in the database schema
-     * @throws SQLException 
+     * @throws SQLException
      */
     public ResultSet showTables() throws SQLException {
         Statement statement = conn.createStatement();
-        ResultSet tbl_results = statement.executeQuery("show tables");
+
+        ResultSet tbl_results = statement.executeQuery("select  count(*) from information_schema.tables where table_schema='" + databaseName + "'");
+        tbl_results.first();
+        numberOfTable = tbl_results.getInt(1);
+
+        tbl_results = statement.executeQuery("select  table_name as \"Tables\" from information_schema.tables where table_schema='" + databaseName + "'");
+
         return tbl_results;
     }
 
     /**
-     * scans the database and return a result set for show each
-     * table shows the table name, column count and row count
+     * scans the database and return a result set for show each table shows the
+     * table name, column count and row count
      *
-     * creates a hash table to store the column count and row count for each table
-     * 
+     * creates a hash table to store the column count and row count for each
+     * table
+     *
      * @return table name,column count, row count
      * @throws SQLException
      */
@@ -146,10 +163,9 @@ public class MySQLDBConnect {
             tblCache.put(iat_results.getString(1) + ROWCOUNT, Integer.parseInt(iat_results.getString("rowcount")));
         }
         iat_results.first();
-        
+
         return iat_results;
     }
-    
 
     /**
      * Retrieving columns names from a given table.
@@ -233,12 +249,14 @@ public class MySQLDBConnect {
     public int getRowCount(String table_name) throws SQLException {
         return tblCache.get(table_name + ROWCOUNT);
     }
-    
+
     /**
-     * 
+     * method to transpose count of null and blank values in each column of a
+     * table.
+     *
      * @param table_name
      * @return
-     * @throws SQLException 
+     * @throws SQLException
      */
     public ArrayList<String[]> transPoseNb(String table_name) throws SQLException {
 
@@ -273,4 +291,128 @@ public class MySQLDBConnect {
         }
         return nbc;
     }
+
+    @SuppressWarnings("CallToThreadDumpStack")
+    public DefaultTreeModel populateTreeModel() throws SQLException {
+        Statement statement = null;
+
+        try {
+            statement = conn.createStatement();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        ArrayList list = new ArrayList();
+        list.add(databaseName);
+        String sql = "select table_name  from information_schema.tables where table_schema='" + databaseName + "'";
+
+        ResultSet rs = statement.executeQuery(sql);
+
+        while (rs.next()) {
+            Object value[] = {rs.getString(1)};
+            list.add(value);
+        }
+        Object hierarchy[] = list.toArray();
+        DefaultMutableTreeNode root = processHierarchy(hierarchy);
+
+        DefaultTreeModel treeModel = new DefaultTreeModel(root);
+
+        return treeModel;
+    }
+
+    @SuppressWarnings("CallToThreadDumpStack")
+    public DefaultMutableTreeNode processHierarchy(Object[] hierarchy) {
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode(hierarchy[0]);
+        Statement statement = null;
+        String dbTable_name = null;
+
+        try {
+            int ctrow = 0;
+            int i = 0;
+            try {
+
+                try {
+
+                    statement = conn.createStatement();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                String sql = "select table_name  from information_schema.tables where table_schema='" + databaseName + "'";
+                ResultSet rs = statement.executeQuery(sql);
+
+                while (rs.next()) {
+                    ctrow = rs.getRow();
+                }
+                String[] L1TableName = new String[ctrow];
+
+                ResultSet rs1 = statement.executeQuery(sql);
+                while (rs1.next()) {
+                    L1TableName[i] = rs1.getString("table_name");
+                    dbTable_name = (rs1.getString("table_name"));
+                    i++;
+                }
+                DefaultMutableTreeNode child, grandchild;
+                for (int childIndex = 0; childIndex < L1TableName.length; childIndex++) {
+                    child = new DefaultMutableTreeNode(L1TableName[childIndex]);
+                    node.add(child);//add each created child to root
+                    //System.out.println("tablenamePrintedHere");
+                    System.out.println(dbTable_name);
+                    String sql2 = "select column_name  from information_schema.columns where table_name='" + dbTable_name + "' and table_schema='" + databaseName + "'";
+
+                    ResultSet rs3 = statement.executeQuery(sql2);
+                    while (rs3.next()) {
+                        System.out.println("something");
+
+                        System.out.println(rs3.getString(1));
+                        grandchild = new DefaultMutableTreeNode(rs3.getString("column_name"));
+                        child.add(grandchild);//add each grandchild to each child
+                    }
+                }
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+        } catch (Exception e) {
+        }
+
+        return (node);
+    }
+
+    public int getNumberOfTable() {
+        return numberOfTable;
+    }
+    
+        public  TableModel resultSetToTableModel(ResultSet rs) {
+        try {
+            ResultSetMetaData metaData = rs.getMetaData();
+            int numberOfColumns = metaData.getColumnCount();
+            Vector columnNames = new Vector();
+
+            // Get the column names
+            for (int column = 0; column < numberOfColumns; column++) {
+                columnNames.addElement(metaData.getColumnLabel(column + 1));
+            }
+
+            // Get all rows.
+            Vector rows = new Vector();
+
+            while (rs.next()) {
+                Vector newRow = new Vector();
+
+                for (int i = 1; i <= numberOfColumns; i++) {
+                    newRow.addElement(rs.getObject(i));
+                }
+
+                rows.addElement(newRow);
+            }
+
+            return new DefaultTableModel(rows, columnNames);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
+        }
+    }
+    
+
 }
