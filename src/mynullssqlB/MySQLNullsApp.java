@@ -10,8 +10,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultListSelectionModel;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -52,6 +54,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
             initComponents();
             tableNameTable.setModel(db.resultSetToTableModel(tbls));
+            setTableRowSorter(tableNameTable);
+
+
 
 //            colNamesTable.setModel(new DefaultTableModel(l.toArray(new String[][]{}),
 //                    new String[]{
@@ -306,8 +311,14 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
         columnNameTable.setModel(db.resultSetToTableModel(columns));
+        setTableRowSorter(columnNameTable);
     }
-
+    
+    public  void setTableRowSorter( JTable table) {
+        TableRowSorter<TableModel> sorter
+                    = new TableRowSorter<TableModel>(table.getModel());
+            table.setRowSorter(sorter);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable columnNameTable;
