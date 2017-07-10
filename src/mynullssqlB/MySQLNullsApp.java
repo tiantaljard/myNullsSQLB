@@ -8,6 +8,8 @@ package mynullssqlB;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
@@ -17,6 +19,14 @@ import javax.swing.table.DefaultTableModel;
  */
 public class MySQLNullsApp extends javax.swing.JFrame {
 
+    static String username = "root";
+    static String password = "Zppsit0!";
+    static String databaseName = "reqlocaldb";
+    static String port = "3306";
+    static String serverIP = "127.0.0.1";
+
+    static MySQLDBConnect db = new MySQLDBConnect(serverIP, databaseName, username, password, port);
+
     /**
      * Creates new form MySQLNullsApp
      */
@@ -24,26 +34,24 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         /**
          * @Todo Fix parameters Hard coded parameters to be replaced.
          */
-        MySQLDBConnect db = new MySQLDBConnect("127.0.0.1", "reqlocaldb", "root", "Zppsit0!", "3306");
+        //MySQLDBConnect db = new MySQLDBConnect("127.0.0.1", "reqlocaldb", "root", "Zppsit0!", "3306");
 
         try {
             db.getConnection();
             ResultSet tbls = db.showTables();
 
             ArrayList<String[]> l = db.transPoseNb("requests");
-/*
+            /*
             ResultTableModel tableModel = new ResultTableModel();
             System.out.println(db.getNumberOfTable());
             
             tableModel.setResultset(tbls);
             
             tableModel.setsqlRowCount(db.getNumberOfTable());
-  */          
+             */
 
             initComponents();
             tableNameTable.setModel(db.resultSetToTableModel(tbls));
-            
-            
 
 //            colNamesTable.setModel(new DefaultTableModel(l.toArray(new String[][]{}),
 //                    new String[]{
@@ -70,13 +78,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         jMenu3 = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
         jSplitPane1 = new javax.swing.JSplitPane();
-        jSplitPane2 = new javax.swing.JSplitPane();
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
         jScrollPane3 = new javax.swing.JScrollPane();
         tableNameTable = new javax.swing.JTable();
+        jSplitPane3 = new javax.swing.JSplitPane();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        columnNameTable = new javax.swing.JTable();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTable3 = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -88,38 +96,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         jMenuBar2.add(jMenu4);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jPanel1.setLayout(new java.awt.CardLayout());
-        jSplitPane2.setRightComponent(jPanel1);
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 3519, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 518, Short.MAX_VALUE)
-        );
-
-        jSplitPane2.setRightComponent(jPanel2);
-
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jList1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jList1MouseClicked(evt);
-            }
-        });
-        jScrollPane4.setViewportView(jList1);
-
-        jSplitPane2.setLeftComponent(jScrollPane4);
-
-        jSplitPane1.setRightComponent(jSplitPane2);
 
         jScrollPane3.setPreferredSize(new java.awt.Dimension(100, 404));
 
@@ -139,9 +115,45 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 tableNameTableMouseClicked(evt);
             }
         });
+        tableNameTable.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tableNameTableKeyReleased(evt);
+            }
+        });
         jScrollPane3.setViewportView(tableNameTable);
 
         jSplitPane1.setLeftComponent(jScrollPane3);
+
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(100, 404));
+
+        columnNameTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null}
+            },
+            new String [] {
+                "Columns"
+            }
+        ));
+        jScrollPane2.setViewportView(columnNameTable);
+
+        jSplitPane3.setLeftComponent(jScrollPane2);
+
+        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane4.setViewportView(jTable3);
+
+        jSplitPane3.setRightComponent(jScrollPane4);
+
+        jSplitPane1.setRightComponent(jSplitPane3);
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -155,34 +167,29 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 3707, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(47, 47, 47)
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(37, Short.MAX_VALUE)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 536, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void tableNameTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableNameTableMouseClicked
-         
-        int[] rows = tableNameTable.getSelectedRows();
-        for ( int i =0 ; i < rows.length ; i ++ )
-        {
-             System.out.println(tableNameTable.getValueAt(rows[i], 0));
-        }
+        setcolumnNameTable();
     }//GEN-LAST:event_tableNameTableMouseClicked
 
-    private void jList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jList1MouseClicked
+    private void tableNameTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameTableKeyReleased
+        setcolumnNameTable();
+    }//GEN-LAST:event_tableNameTableKeyReleased
 
     /**
      * @param args the command line arguments
@@ -219,7 +226,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         });
     }
 
-   public class ResultTableModel extends DefaultTableModel {
+    public class ResultTableModel extends DefaultTableModel {
 
         private ResultSet resultset;
         private int sqlRowCount;
@@ -270,25 +277,52 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
 
     }
-   
-    public class ListSelectionModel extends DefaultListSelectionModel { 
-        
+
+    public ArrayList<String> rowsColOneSelected() {
+        ArrayList<String> rowsColOneSelected = new ArrayList<String>();
+        int[] rows = tableNameTable.getSelectedRows();
+
+        for (int i = 0; i < rows.length; i++) {
+            rowsColOneSelected.add(tableNameTable.getValueAt(rows[i], 0).toString());
+        }
+        return rowsColOneSelected;
     }
 
+    public String rowColOneSelected() {
+        int[] rows = tableNameTable.getSelectedRows();
+        String rowColOneSelected = null;
+
+        int row = tableNameTable.getSelectedRow();
+        rowColOneSelected = (tableNameTable.getValueAt(rows[0], 0).toString());
+
+        return rowColOneSelected;
+    }
+
+    public void setcolumnNameTable() {
+        ResultSet columns = null;
+        try {
+            columns = db.getColumnNames(rowColOneSelected());
+        } catch (SQLException ex) {
+            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        columnNameTable.setModel(db.resultSetToTableModel(columns));
+    }
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JList<String> jList1;
+    private javax.swing.JTable columnNameTable;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuBar jMenuBar2;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JSplitPane jSplitPane2;
+    private javax.swing.JSplitPane jSplitPane3;
+    private javax.swing.JTable jTable3;
     private javax.swing.JTable tableNameTable;
     // End of variables declaration//GEN-END:variables
 }
