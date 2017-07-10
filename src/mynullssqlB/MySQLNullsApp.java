@@ -8,6 +8,7 @@ package mynullssqlB;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -40,9 +41,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
   */          
 
             initComponents();
-            tableNamesTable.setModel(db.resultSetToTableModel(tbls));
+            tableNameTable.setModel(db.resultSetToTableModel(tbls));
+            
+            
 
-//            jTable2.setModel(new DefaultTableModel(l.toArray(new String[][]{}),
+//            colNamesTable.setModel(new DefaultTableModel(l.toArray(new String[][]{}),
 //                    new String[]{
 //                        "Column Name", "Count of nulls", "Count of blanks"}) {});
             //please conver to array db.showTables();
@@ -70,13 +73,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         jSplitPane2 = new javax.swing.JSplitPane();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList<>();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        tableNamesTable = new javax.swing.JTable();
+        tableNameTable = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -92,71 +92,56 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         jPanel1.setLayout(new java.awt.CardLayout());
         jSplitPane2.setRightComponent(jPanel1);
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane3.setViewportView(jTable2);
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1740, Short.MAX_VALUE)
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+            .addGap(0, 3519, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 432, Short.MAX_VALUE)
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 432, Short.MAX_VALUE))
+            .addGap(0, 518, Short.MAX_VALUE)
         );
 
         jSplitPane2.setRightComponent(jPanel2);
 
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jList1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jList1MouseClicked(evt);
             }
-        ));
-        jScrollPane2.setViewportView(jTable3);
+        });
+        jScrollPane4.setViewportView(jList1);
 
-        jSplitPane2.setLeftComponent(jScrollPane2);
+        jSplitPane2.setLeftComponent(jScrollPane4);
 
         jSplitPane1.setRightComponent(jSplitPane2);
-        jSplitPane1.setLeftComponent(jScrollPane1);
 
-        tableNamesTable.setModel(new javax.swing.table.DefaultTableModel(
+        jScrollPane3.setPreferredSize(new java.awt.Dimension(100, 404));
+
+        tableNameTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null},
+                {null},
+                {null},
+                {null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Title 1"
             }
         ));
-        jScrollPane6.setViewportView(tableNamesTable);
+        tableNameTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableNameTableMouseClicked(evt);
+            }
+        });
+        jScrollPane3.setViewportView(tableNameTable);
 
-        jSplitPane1.setLeftComponent(jScrollPane6);
+        jSplitPane1.setLeftComponent(jScrollPane3);
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -185,6 +170,19 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void tableNameTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableNameTableMouseClicked
+         
+        int[] rows = tableNameTable.getSelectedRows();
+        for ( int i =0 ; i < rows.length ; i ++ )
+        {
+             System.out.println(tableNameTable.getValueAt(rows[i], 0));
+        }
+    }//GEN-LAST:event_tableNameTableMouseClicked
+
+    private void jList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jList1MouseClicked
 
     /**
      * @param args the command line arguments
@@ -221,7 +219,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         });
     }
 
- /*   public class ResultTableModel extends DefaultTableModel {
+   public class ResultTableModel extends DefaultTableModel {
 
         private ResultSet resultset;
         private int sqlRowCount;
@@ -272,8 +270,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
 
     }
-*/
+   
+    public class ListSelectionModel extends DefaultListSelectionModel { 
+        
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JList<String> jList1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -282,14 +285,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTable jTable3;
-    private javax.swing.JTable tableNamesTable;
+    private javax.swing.JTable tableNameTable;
     // End of variables declaration//GEN-END:variables
 }
