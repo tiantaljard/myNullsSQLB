@@ -8,8 +8,9 @@ package mynullssqlB;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.tree.DefaultTreeModel;
-
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 
 /**
  *
@@ -22,20 +23,18 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      */
     public MySQLNullsApp() {
         /**
-         * @Todo Fix parameters
-         * Hard coded parameters to be replaced.
+         * @Todo Fix parameters Hard coded parameters to be replaced.
          */
         MySQLDBConnect db = new MySQLDBConnect("127.0.0.1", "reqlocaldb", "root", "Zppsit0!", "3306");
-        
-        
+
         try {
             db.getConnection();
             ArrayList<String[]> l = db.transPoseNb("requests");
 
             initComponents();
-            jTable2.setModel(new DefaultTableModel(l.toArray(new String [][]{}),new String []{"Table Name","nulls","blanks"} ) {
+            jTable2.setModel(new DefaultTableModel(l.toArray(new String[][]{}), new String[]{"Table Name", "nulls", "blanks"}) {
             });
-            
+
             jTree1.setModel(db.populateTreeModel());
 
         } catch (SQLException e) {
@@ -73,6 +72,17 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jTree1.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
+        jTree1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTree1MouseClicked(evt);
+            }
+        });
+        jTree1.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
+            public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
+                jTree1ValueChanged(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTree1);
 
         jSplitPane1.setLeftComponent(jScrollPane1);
@@ -119,6 +129,45 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jTree1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jTree1ValueChanged
+        
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
+
+        if (node == null) //Nothing is selected.     
+        {
+            return;
+        }
+
+        if (node.isRoot()) //Nothing is selected.     
+        {
+        }
+        if (node.getDepth() == 1) {
+            System.out.println("getDepth1");
+            System.out.println(node.toString());
+            System.out.println(node.getUserObject().getClass());
+        }
+        if (node.getDepth() == 2) {
+            System.out.println("getDepth2");
+            System.out.println(node.toString());
+            System.out.println(node.getUserObject().getClass());
+
+        }
+                if (node.getDepth() == 0) {
+            System.out.println("getDepth0");
+            System.out.println(node.toString());
+            System.out.println(node.getUserObject().getClass());
+
+        }
+    }//GEN-LAST:event_jTree1ValueChanged
+
+    private void jTree1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTree1MouseClicked
+        TreePath[] paths = jTree1.getSelectionPaths();
+        
+        for (TreePath path :paths) {
+            System.out.println("node selected  "+path.getParentPath());
+        }
+    }//GEN-LAST:event_jTree1MouseClicked
 
     /**
      * @param args the command line arguments
