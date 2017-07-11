@@ -28,8 +28,8 @@ import javax.swing.event.ListSelectionListener;
  */
 public class MySQLNullsApp extends javax.swing.JFrame {
 
-    private JTextField jtfSearch;
     private MySQLDBConnect db;
+    private String tableNameFilterOld;
 
     /**
      * Creates new form MySQLNullsApp
@@ -46,7 +46,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
          */
         initComponents();
         showConnectionDialog();
-        
 
     }
 
@@ -115,7 +114,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         colNmFilterPanel.setLayout(new java.awt.BorderLayout());
 
         columnNameFilter.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        colNmFilterPanel.add(columnNameFilter, java.awt.BorderLayout.NORTH);
+        colNmFilterPanel.add(columnNameFilter, java.awt.BorderLayout.CENTER);
 
         colNmParentPanel.add(colNmFilterPanel, java.awt.BorderLayout.NORTH);
 
@@ -160,7 +159,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 tableNameFilterActionPerformed(evt);
             }
         });
-        tblNmFilterPanel.add(tableNameFilter, java.awt.BorderLayout.NORTH);
+        tableNameFilter.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tableNameFilterKeyReleased(evt);
+            }
+        });
+        tblNmFilterPanel.add(tableNameFilter, java.awt.BorderLayout.CENTER);
 
         tblNmParentPanel.add(tblNmFilterPanel, java.awt.BorderLayout.NORTH);
 
@@ -231,7 +235,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }//GEN-LAST:event_tableNameTableKeyReleased
 
     private void tableNameFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tableNameFilterActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_tableNameFilterActionPerformed
 
     private void columnNameTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_columnNameTableMouseClicked
@@ -241,6 +245,20 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private void columnNameTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_columnNameTableKeyReleased
         // TODO add your handling code here:
     }//GEN-LAST:event_columnNameTableKeyReleased
+
+    private void tableNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameFilterKeyReleased
+        String  textEntered = tableNameFilter.getText();
+        if (textEntered equals tableNameFilterOld || textEntered.length()==0) {
+            
+        }
+        else {
+        System.out.println("text entered "+textEntered);
+        System.out.println("old text "+tableNameFilterOld);
+        tableNameFilterOld=textEntered;
+        System.out.println("ofter old = new "+tableNameFilterOld);
+        }
+        
+    }//GEN-LAST:event_tableNameFilterKeyReleased
 
     /**
      * @param args the command line arguments
@@ -328,17 +346,21 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
 
     }
+
     /**
      * Method the get the currently selected rows from a JTable
-     * 
-     * @return 
+     *
+     * @return
      */
     public ArrayList<String> rowsColOneSelected(JTable jTable) {
         ArrayList<String> rowsColOneSelected = new ArrayList<String>();
-        int[] rows = jTable.getSelectedRows();
-
-        for (int i = 0; i < rows.length; i++) {
-            rowsColOneSelected.add(jTable.getValueAt(rows[i], 0).toString());
+        try {
+            int[] rows = jTable.getSelectedRows();
+            for (int i = 0; i < rows.length; i++) {
+                rowsColOneSelected.add(jTable.getValueAt(rows[i], 0).toString());
+            }
+        } catch (Exception e) {
+            rowsColOneSelected = null;
         }
         return rowsColOneSelected;
     }
@@ -347,13 +369,18 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         int[] rows = jTable.getSelectedRows();
         String rowColOneSelected = null;
 
-        int row = jTable.getSelectedRow();
-        rowColOneSelected = (jTable.getValueAt(rows[0], 0).toString());
+        try {
+            int row = jTable.getSelectedRow();
+            rowColOneSelected = (jTable.getValueAt(rows[0], 0).toString());
+        } catch (Exception e) {
+            rowColOneSelected = null;
+        }
 
         return rowColOneSelected;
+
     }
 
-    public void setColumnNameTable(JTable jTable ) {
+    public void setColumnNameTable(JTable jTable) {
         ResultSet columns = null;
         try {
             columns = db.getColumnNames(rowColOneSelected(jTable));
@@ -368,7 +395,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         TableRowSorter<TableModel> sorter
                 = new TableRowSorter<TableModel>(table.getModel());
         table.setRowSorter(sorter);
-
     }
 
     public void showConnectionDialog() {
@@ -386,8 +412,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             ArrayList<String[]> l = db.transPoseNb("requests");
 
             tableNameTable.setModel(db.resultSetToTableModel(tbls));
+
             setTableRowSorter(tableNameTable);
-            
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -395,25 +421,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }
 
-    /*
-    private void newFilter(JTable table) {
-        
-        TableModel tablemodel = table.getModel();
-        
-        RowFilter< MyTableModel  , Object> rf = null; 
-    //declare a row filter for your table model
-    Try
-    {
-        rf = RowFilter.regexFilter("^" + jtfSearch.getText(), 0);  
-        //initialize with a regular expression
-    }
-    catch (java.util.regex.PatternSyntaxException e)
-    {
-        return;
-    }
-    sorter.setRowFilter(rf);
-    }
-     */
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel colNmFilterPanel;
     private javax.swing.JPanel colNmParentPanel;
