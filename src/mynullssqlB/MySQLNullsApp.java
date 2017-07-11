@@ -31,7 +31,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     private MySQLDBConnect db;
     private String tableNameFilterOld;
-    TableRowSorter<TableModel> tableNameTableSorter =null;
 
     /**
      * Creates new form MySQLNullsApp
@@ -75,7 +74,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         tblNmParentPanel = new javax.swing.JPanel();
         tblNmFilterPanel = new javax.swing.JPanel();
         tableNameFilter = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
         tblNmScrollPanel = new javax.swing.JScrollPane();
         tableNameTable = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -117,6 +115,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         colNmFilterPanel.setLayout(new java.awt.BorderLayout());
 
         columnNameFilter.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        columnNameFilter.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                columnNameFilterKeyReleased(evt);
+            }
+        });
         colNmFilterPanel.add(columnNameFilter, java.awt.BorderLayout.CENTER);
 
         colNmParentPanel.add(colNmFilterPanel, java.awt.BorderLayout.NORTH);
@@ -139,6 +142,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 columnNameTableMouseClicked(evt);
             }
         });
+        columnNameTable.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                columnNameTablePropertyChange(evt);
+            }
+        });
         columnNameTable.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 columnNameTableKeyReleased(evt);
@@ -157,25 +165,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         tblNmFilterPanel.setLayout(new java.awt.BorderLayout());
 
         tableNameFilter.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        tableNameFilter.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tableNameFilterActionPerformed(evt);
-            }
-        });
         tableNameFilter.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 tableNameFilterKeyReleased(evt);
             }
         });
         tblNmFilterPanel.add(tableNameFilter, java.awt.BorderLayout.CENTER);
-
-        jButton1.setText("Filter");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        tblNmFilterPanel.add(jButton1, java.awt.BorderLayout.PAGE_START);
 
         tblNmParentPanel.add(tblNmFilterPanel, java.awt.BorderLayout.NORTH);
 
@@ -239,15 +234,27 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     private void tableNameTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableNameTableMouseClicked
         setColumnNameTable(tableNameTable);
+        TableRowSorter<TableModel> tableNameTableSorter = setTableRowSorter(columnNameTable);
+
+        String textEntered = columnNameFilter.getText();
+        if (textEntered.length() == 0) {
+            tableNameTableSorter.setRowFilter(null);
+        } else {
+            tableNameTableSorter.setRowFilter(RowFilter.regexFilter(textEntered));
+        }
     }//GEN-LAST:event_tableNameTableMouseClicked
 
     private void tableNameTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameTableKeyReleased
         setColumnNameTable(tableNameTable);
+        TableRowSorter<TableModel> tableNameTableSorter = setTableRowSorter(columnNameTable);
+
+        String textEntered = columnNameFilter.getText();
+        if (textEntered.length() == 0) {
+            tableNameTableSorter.setRowFilter(null);
+        } else {
+            tableNameTableSorter.setRowFilter(RowFilter.regexFilter(textEntered));
+        }
     }//GEN-LAST:event_tableNameTableKeyReleased
-
-    private void tableNameFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tableNameFilterActionPerformed
-
-    }//GEN-LAST:event_tableNameFilterActionPerformed
 
     private void columnNameTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_columnNameTableMouseClicked
         // TODO add your handling code here:
@@ -258,30 +265,30 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }//GEN-LAST:event_columnNameTableKeyReleased
 
     private void tableNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameFilterKeyReleased
-        
-        
+        TableRowSorter<TableModel> tableNameTableSorter = setTableRowSorter(tableNameTable);
+
+        String textEntered = tableNameFilter.getText();
+        if (textEntered.length() == 0) {
+            tableNameTableSorter.setRowFilter(null);
+        } else {
+            tableNameTableSorter.setRowFilter(RowFilter.regexFilter(textEntered));
+        }
     }//GEN-LAST:event_tableNameFilterKeyReleased
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        System.out.println(tableNameTable.getModel().getValueAt(0, 0));
-        
-        
-        
-        String  textEntered = tableNameFilter.getText();
-        if (textEntered.equals(tableNameFilterOld)  || textEntered.length()==0) {
-            // Do Nothing
-            
-        }
-        else {
-              TableRowSorter<TableModel> sorter
-                = new TableRowSorter<TableModel>(tableNameTable.getModel());
-                tableNameTable.setRowSorter(sorter);
-            
-            
-             sorter.setRowFilter(RowFilter.regexFilter(textEntered));
+    private void columnNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_columnNameFilterKeyReleased
+        TableRowSorter<TableModel> tableNameTableSorter = setTableRowSorter(columnNameTable);
 
+        String textEntered = columnNameFilter.getText();
+        if (textEntered.length() == 0) {
+            tableNameTableSorter.setRowFilter(null);
+        } else {
+            tableNameTableSorter.setRowFilter(RowFilter.regexFilter(textEntered));
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_columnNameFilterKeyReleased
+
+    private void columnNameTablePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_columnNameTablePropertyChange
+
+    }//GEN-LAST:event_columnNameTablePropertyChange
 
     /**
      * @param args the command line arguments
@@ -414,12 +421,24 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         setTableRowSorter(columnNameTable);
     }
 
-    public TableRowSorter<TableModel>  setTableRowSorter(JTable table) {
+    public TableRowSorter<TableModel> setTableRowSorter(JTable table) {
         TableRowSorter<TableModel> sorter
                 = new TableRowSorter<TableModel>(table.getModel());
         table.setRowSorter(sorter);
         return sorter;
-        
+
+    }
+
+    public void setJTableColOneFilter(JTable table_name, JTextField textFilter) {
+        TableRowSorter<TableModel> sorter = setTableRowSorter(table_name);
+
+        String textEntered = textFilter.getText();
+        if (textEntered.length() == 0) {
+            sorter.setRowFilter(null);
+        } else {
+            sorter.setRowFilter(RowFilter.regexFilter(textEntered));
+        }
+
     }
 
     public void showConnectionDialog() {
@@ -435,13 +454,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
              */
             ResultSet tbls = db.showTables();
             ArrayList<String[]> l = db.transPoseNb("requests");
-            
 
             tableNameTable.setModel(db.resultSetToTableModel(tbls));
-            TableRowSorter<TableModel> tableNameTableSorter =setTableRowSorter(tableNameTable);
-            
-            
-            
+            TableRowSorter<TableModel> tableNameTableSorter = setTableRowSorter(tableNameTable);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -456,14 +471,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JScrollPane colNmScrollPanel;
     private javax.swing.JTextField columnNameFilter;
     private javax.swing.JTable columnNameTable;
-    private javax.swing.JButton jButton1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuBar jMenuBar2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane3;
