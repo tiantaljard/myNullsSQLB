@@ -5,6 +5,7 @@
  */
 package mynullssqlB;
 
+import static java.awt.SystemColor.text;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     private MySQLDBConnect db;
     private String tableNameFilterOld;
+    TableRowSorter<TableModel> tableNameTableSorter =null;
 
     /**
      * Creates new form MySQLNullsApp
@@ -73,6 +75,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         tblNmParentPanel = new javax.swing.JPanel();
         tblNmFilterPanel = new javax.swing.JPanel();
         tableNameFilter = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
         tblNmScrollPanel = new javax.swing.JScrollPane();
         tableNameTable = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -166,6 +169,14 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         });
         tblNmFilterPanel.add(tableNameFilter, java.awt.BorderLayout.CENTER);
 
+        jButton1.setText("Filter");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        tblNmFilterPanel.add(jButton1, java.awt.BorderLayout.PAGE_START);
+
         tblNmParentPanel.add(tblNmFilterPanel, java.awt.BorderLayout.NORTH);
 
         tblNmScrollPanel.setPreferredSize(new java.awt.Dimension(100, 500));
@@ -210,7 +221,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 3707, Short.MAX_VALUE)
                 .addContainerGap())
@@ -218,7 +229,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(37, Short.MAX_VALUE)
+                .addContainerGap(41, Short.MAX_VALUE)
                 .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 536, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -247,18 +258,30 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }//GEN-LAST:event_columnNameTableKeyReleased
 
     private void tableNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameFilterKeyReleased
+        
+        
+    }//GEN-LAST:event_tableNameFilterKeyReleased
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        System.out.println(tableNameTable.getModel().getValueAt(0, 0));
+        
+        
+        
         String  textEntered = tableNameFilter.getText();
         if (textEntered.equals(tableNameFilterOld)  || textEntered.length()==0) {
+            // Do Nothing
             
         }
         else {
-        System.out.println("text entered "+textEntered);
-        System.out.println("old text "+tableNameFilterOld);
-        tableNameFilterOld=textEntered;
-        System.out.println("ofter old = new "+tableNameFilterOld);
+              TableRowSorter<TableModel> sorter
+                = new TableRowSorter<TableModel>(tableNameTable.getModel());
+                tableNameTable.setRowSorter(sorter);
+            
+            
+             sorter.setRowFilter(RowFilter.regexFilter(textEntered));
+
         }
-        
-    }//GEN-LAST:event_tableNameFilterKeyReleased
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -391,10 +414,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         setTableRowSorter(columnNameTable);
     }
 
-    public void setTableRowSorter(JTable table) {
+    public TableRowSorter<TableModel>  setTableRowSorter(JTable table) {
         TableRowSorter<TableModel> sorter
                 = new TableRowSorter<TableModel>(table.getModel());
         table.setRowSorter(sorter);
+        return sorter;
+        
     }
 
     public void showConnectionDialog() {
@@ -410,10 +435,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
              */
             ResultSet tbls = db.showTables();
             ArrayList<String[]> l = db.transPoseNb("requests");
+            
 
             tableNameTable.setModel(db.resultSetToTableModel(tbls));
-
-            setTableRowSorter(tableNameTable);
+            TableRowSorter<TableModel> tableNameTableSorter =setTableRowSorter(tableNameTable);
+            
+            
+            
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -428,6 +456,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JScrollPane colNmScrollPanel;
     private javax.swing.JTextField columnNameFilter;
     private javax.swing.JTable columnNameTable;
+    private javax.swing.JButton jButton1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
