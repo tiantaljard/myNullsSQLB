@@ -234,26 +234,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     private void tableNameTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableNameTableMouseClicked
         setColumnNameTable(tableNameTable);
-        TableRowSorter<TableModel> tableNameTableSorter = setTableRowSorter(columnNameTable);
-
-        String textEntered = columnNameFilter.getText();
-        if (textEntered.length() == 0) {
-            tableNameTableSorter.setRowFilter(null);
-        } else {
-            tableNameTableSorter.setRowFilter(RowFilter.regexFilter(textEntered));
-        }
+        setJTableColOneFilter(columnNameTable, columnNameFilter);
     }//GEN-LAST:event_tableNameTableMouseClicked
 
     private void tableNameTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameTableKeyReleased
         setColumnNameTable(tableNameTable);
-        TableRowSorter<TableModel> tableNameTableSorter = setTableRowSorter(columnNameTable);
-
-        String textEntered = columnNameFilter.getText();
-        if (textEntered.length() == 0) {
-            tableNameTableSorter.setRowFilter(null);
-        } else {
-            tableNameTableSorter.setRowFilter(RowFilter.regexFilter(textEntered));
-        }
+        setJTableColOneFilter(columnNameTable, columnNameFilter);
     }//GEN-LAST:event_tableNameTableKeyReleased
 
     private void columnNameTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_columnNameTableMouseClicked
@@ -265,25 +251,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }//GEN-LAST:event_columnNameTableKeyReleased
 
     private void tableNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameFilterKeyReleased
-        TableRowSorter<TableModel> tableNameTableSorter = setTableRowSorter(tableNameTable);
-
-        String textEntered = tableNameFilter.getText();
-        if (textEntered.length() == 0) {
-            tableNameTableSorter.setRowFilter(null);
-        } else {
-            tableNameTableSorter.setRowFilter(RowFilter.regexFilter(textEntered));
-        }
+        setJTableColOneFilter(tableNameTable, tableNameFilter);
     }//GEN-LAST:event_tableNameFilterKeyReleased
 
     private void columnNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_columnNameFilterKeyReleased
-        TableRowSorter<TableModel> tableNameTableSorter = setTableRowSorter(columnNameTable);
-
-        String textEntered = columnNameFilter.getText();
-        if (textEntered.length() == 0) {
-            tableNameTableSorter.setRowFilter(null);
-        } else {
-            tableNameTableSorter.setRowFilter(RowFilter.regexFilter(textEntered));
-        }
+        setJTableColOneFilter(columnNameTable, columnNameFilter);
     }//GEN-LAST:event_columnNameFilterKeyReleased
 
     private void columnNameTablePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_columnNameTablePropertyChange
