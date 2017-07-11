@@ -66,15 +66,15 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         jSplitPane3 = new javax.swing.JSplitPane();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
-        jPanel4 = new javax.swing.JPanel();
-        jPanel5 = new javax.swing.JPanel();
-        jTextField2 = new javax.swing.JTextField();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        colNmParentPanel = new javax.swing.JPanel();
+        colNmFilterPanel = new javax.swing.JPanel();
+        columnNameFilter = new javax.swing.JTextField();
+        colNmScrollPanel = new javax.swing.JScrollPane();
         columnNameTable = new javax.swing.JTable();
-        tblNmParent = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
+        tblNmParentPanel = new javax.swing.JPanel();
+        tblNmFilterPanel = new javax.swing.JPanel();
         tableNameFilter = new javax.swing.JTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        tblNmScrollPanel = new javax.swing.JScrollPane();
         tableNameTable = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -110,16 +110,16 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         jSplitPane3.setRightComponent(jScrollPane4);
 
-        jPanel4.setLayout(new java.awt.BorderLayout());
+        colNmParentPanel.setLayout(new java.awt.BorderLayout());
 
-        jPanel5.setLayout(new java.awt.BorderLayout());
+        colNmFilterPanel.setLayout(new java.awt.BorderLayout());
 
-        jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jPanel5.add(jTextField2, java.awt.BorderLayout.NORTH);
+        columnNameFilter.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        colNmFilterPanel.add(columnNameFilter, java.awt.BorderLayout.NORTH);
 
-        jPanel4.add(jPanel5, java.awt.BorderLayout.NORTH);
+        colNmParentPanel.add(colNmFilterPanel, java.awt.BorderLayout.NORTH);
 
-        jScrollPane2.setPreferredSize(new java.awt.Dimension(100, 500));
+        colNmScrollPanel.setPreferredSize(new java.awt.Dimension(100, 500));
 
         columnNameTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -142,17 +142,17 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 columnNameTableKeyReleased(evt);
             }
         });
-        jScrollPane2.setViewportView(columnNameTable);
+        colNmScrollPanel.setViewportView(columnNameTable);
 
-        jPanel4.add(jScrollPane2, java.awt.BorderLayout.CENTER);
+        colNmParentPanel.add(colNmScrollPanel, java.awt.BorderLayout.CENTER);
 
-        jSplitPane3.setLeftComponent(jPanel4);
+        jSplitPane3.setLeftComponent(colNmParentPanel);
 
         jSplitPane1.setRightComponent(jSplitPane3);
 
-        tblNmParent.setLayout(new java.awt.BorderLayout());
+        tblNmParentPanel.setLayout(new java.awt.BorderLayout());
 
-        jPanel3.setLayout(new java.awt.BorderLayout());
+        tblNmFilterPanel.setLayout(new java.awt.BorderLayout());
 
         tableNameFilter.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tableNameFilter.addActionListener(new java.awt.event.ActionListener() {
@@ -160,11 +160,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 tableNameFilterActionPerformed(evt);
             }
         });
-        jPanel3.add(tableNameFilter, java.awt.BorderLayout.NORTH);
+        tblNmFilterPanel.add(tableNameFilter, java.awt.BorderLayout.NORTH);
 
-        tblNmParent.add(jPanel3, java.awt.BorderLayout.NORTH);
+        tblNmParentPanel.add(tblNmFilterPanel, java.awt.BorderLayout.NORTH);
 
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(100, 500));
+        tblNmScrollPanel.setPreferredSize(new java.awt.Dimension(100, 500));
 
         tableNameTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -187,12 +187,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 tableNameTableKeyReleased(evt);
             }
         });
-        jScrollPane1.setViewportView(tableNameTable);
+        tblNmScrollPanel.setViewportView(tableNameTable);
 
-        tblNmParent.add(jScrollPane1, java.awt.BorderLayout.CENTER);
-        jScrollPane1.getAccessibleContext().setAccessibleParent(jPanel4);
+        tblNmParentPanel.add(tblNmScrollPanel, java.awt.BorderLayout.CENTER);
+        tblNmScrollPanel.getAccessibleContext().setAccessibleParent(colNmParentPanel);
 
-        jSplitPane1.setLeftComponent(tblNmParent);
+        jSplitPane1.setLeftComponent(tblNmParentPanel);
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -223,11 +223,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tableNameTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableNameTableMouseClicked
-        setcolumnNameTable(tableNameTable);
+        setColumnNameTable(tableNameTable);
     }//GEN-LAST:event_tableNameTableMouseClicked
 
     private void tableNameTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameTableKeyReleased
-        setcolumnNameTable(tableNameTable);
+        setColumnNameTable(tableNameTable);
     }//GEN-LAST:event_tableNameTableKeyReleased
 
     private void tableNameFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tableNameFilterActionPerformed
@@ -353,7 +353,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         return rowColOneSelected;
     }
 
-    public void setcolumnNameTable(JTable jTable ) {
+    public void setColumnNameTable(JTable jTable ) {
         ResultSet columns = null;
         try {
             columns = db.getColumnNames(rowColOneSelected(jTable));
@@ -415,6 +415,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel colNmFilterPanel;
+    private javax.swing.JPanel colNmParentPanel;
+    private javax.swing.JScrollPane colNmScrollPanel;
+    private javax.swing.JTextField columnNameFilter;
     private javax.swing.JTable columnNameTable;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -422,19 +426,15 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuBar jMenuBar2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane3;
     private javax.swing.JTable jTable3;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField tableNameFilter;
     private javax.swing.JTable tableNameTable;
-    private javax.swing.JPanel tblNmParent;
+    private javax.swing.JPanel tblNmFilterPanel;
+    private javax.swing.JPanel tblNmParentPanel;
+    private javax.swing.JScrollPane tblNmScrollPanel;
     // End of variables declaration//GEN-END:variables
 }
