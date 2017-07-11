@@ -248,7 +248,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     private void tableNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameFilterKeyReleased
         String  textEntered = tableNameFilter.getText();
-        if (textEntered equals tableNameFilterOld || textEntered.length()==0) {
+        if (textEntered.equals(tableNameFilterOld)  || textEntered.length()==0) {
             
         }
         else {
