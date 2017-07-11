@@ -11,9 +11,16 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+
+import javax.swing.RowFilter;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -21,52 +28,25 @@ import javax.swing.table.TableRowSorter;
  */
 public class MySQLNullsApp extends javax.swing.JFrame {
 
-    static String username = "root";
-    static String password = "Zppsit0!";
-    static String databaseName = "reqlocaldb";
-    static String port = "3306";
-    static String serverIP = "127.0.0.1";
-
-    static MySQLDBConnect db = new MySQLDBConnect(serverIP, databaseName, username, password, port);
+    private JTextField jtfSearch;
+    private MySQLDBConnect db;
 
     /**
      * Creates new form MySQLNullsApp
      */
     public MySQLNullsApp() {
-        /**
-         * @Todo Fix parameters Hard coded parameters to be replaced.
-         */
-        //MySQLDBConnect db = new MySQLDBConnect("127.0.0.1", "reqlocaldb", "root", "Zppsit0!", "3306");
 
-        try {
-            db.getConnection();
-            ResultSet tbls = db.showTables();
-
-            ArrayList<String[]> l = db.transPoseNb("requests");
-            /*
+        /*
             ResultTableModel tableModel = new ResultTableModel();
             System.out.println(db.getNumberOfTable());
             
             tableModel.setResultset(tbls);
             
             tableModel.setsqlRowCount(db.getNumberOfTable());
-             */
-
-            initComponents();
-            tableNameTable.setModel(db.resultSetToTableModel(tbls));
-            setTableRowSorter(tableNameTable);
-
-
-
-//            colNamesTable.setModel(new DefaultTableModel(l.toArray(new String[][]{}),
-//                    new String[]{
-//                        "Column Name", "Count of nulls", "Count of blanks"}) {});
-            //please conver to array db.showTables();
-            //ArrayList<String[]> t = db.showTables();
-            //jTree1.setModel(db.populateTreeModel());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        };
+         */
+        initComponents();
+        showConnectionDialog();
+        
 
     }
 
@@ -78,18 +58,21 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         jMenuBar2 = new javax.swing.JMenuBar();
         jMenu3 = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
         jSplitPane1 = new javax.swing.JSplitPane();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        tableNameTable = new javax.swing.JTable();
         jSplitPane3 = new javax.swing.JSplitPane();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        columnNameTable = new javax.swing.JTable();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tableNameTable = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        columnNameTable = new javax.swing.JTable();
+        jTextField1 = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -101,6 +84,21 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         jMenuBar2.add(jMenu4);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane4.setViewportView(jTable3);
+
+        jSplitPane3.setRightComponent(jScrollPane4);
 
         jScrollPane3.setPreferredSize(new java.awt.Dimension(100, 404));
 
@@ -127,7 +125,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(tableNameTable);
 
-        jSplitPane1.setLeftComponent(jScrollPane3);
+        jSplitPane3.setLeftComponent(jScrollPane3);
+
+        jSplitPane1.setRightComponent(jSplitPane3);
+
+        jPanel1.setLayout(new java.awt.GridBagLayout());
 
         jScrollPane2.setPreferredSize(new java.awt.Dimension(100, 404));
 
@@ -141,24 +143,30 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(columnNameTable);
 
-        jSplitPane3.setLeftComponent(jScrollPane2);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 77;
+        gridBagConstraints.ipady = 501;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
+        jPanel1.add(jScrollPane2, gridBagConstraints);
 
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane4.setViewportView(jTable3);
+        jTextField1.setText("jTextField1");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.ipadx = 70;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(500, 14, 0, 0);
+        jPanel1.add(jTextField1, gridBagConstraints);
 
-        jSplitPane3.setRightComponent(jScrollPane4);
-
-        jSplitPane1.setRightComponent(jSplitPane3);
+        jSplitPane1.setLeftComponent(jPanel1);
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -313,13 +321,57 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         columnNameTable.setModel(db.resultSetToTableModel(columns));
         setTableRowSorter(columnNameTable);
     }
-    
-    public  void setTableRowSorter( JTable table) {
+
+    public void setTableRowSorter(JTable table) {
         TableRowSorter<TableModel> sorter
-                    = new TableRowSorter<TableModel>(table.getModel());
-            table.setRowSorter(sorter);
+                = new TableRowSorter<TableModel>(table.getModel());
+        table.setRowSorter(sorter);
+
     }
 
+    public void showConnectionDialog() {
+
+        try {
+            DBConnectDialog dbconnectdialog = new DBConnectDialog();
+            dbconnectdialog.setModal(true);
+            dbconnectdialog.setVisible(true);
+            db = dbconnectdialog.getDb();
+
+            /*
+            @todo makes this threadsafe
+             */
+            ResultSet tbls = db.showTables();
+            ArrayList<String[]> l = db.transPoseNb("requests");
+
+            tableNameTable.setModel(db.resultSetToTableModel(tbls));
+            setTableRowSorter(tableNameTable);
+            
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        };
+
+    }
+
+    /*
+    private void newFilter(JTable table) {
+        
+        TableModel tablemodel = table.getModel();
+        
+        RowFilter< MyTableModel  , Object> rf = null; 
+    //declare a row filter for your table model
+    Try
+    {
+        rf = RowFilter.regexFilter("^" + jtfSearch.getText(), 0);  
+        //initialize with a regular expression
+    }
+    catch (java.util.regex.PatternSyntaxException e)
+    {
+        return;
+    }
+    sorter.setRowFilter(rf);
+    }
+     */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable columnNameTable;
     private javax.swing.JMenu jMenu1;
@@ -328,12 +380,14 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuBar jMenuBar2;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane3;
     private javax.swing.JTable jTable3;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JTable tableNameTable;
     // End of variables declaration//GEN-END:variables
 }
