@@ -223,11 +223,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tableNameTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableNameTableMouseClicked
-        setcolumnNameTable();
+        setcolumnNameTable(tableNameTable);
     }//GEN-LAST:event_tableNameTableMouseClicked
 
     private void tableNameTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameTableKeyReleased
-        setcolumnNameTable();
+        setcolumnNameTable(tableNameTable);
     }//GEN-LAST:event_tableNameTableKeyReleased
 
     private void tableNameFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tableNameFilterActionPerformed
@@ -328,31 +328,35 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
 
     }
-
-    public ArrayList<String> rowsColOneSelected() {
+    /**
+     * Method the get the currently selected rows from a JTable
+     * 
+     * @return 
+     */
+    public ArrayList<String> rowsColOneSelected(JTable jTable) {
         ArrayList<String> rowsColOneSelected = new ArrayList<String>();
-        int[] rows = tableNameTable.getSelectedRows();
+        int[] rows = jTable.getSelectedRows();
 
         for (int i = 0; i < rows.length; i++) {
-            rowsColOneSelected.add(tableNameTable.getValueAt(rows[i], 0).toString());
+            rowsColOneSelected.add(jTable.getValueAt(rows[i], 0).toString());
         }
         return rowsColOneSelected;
     }
 
-    public String rowColOneSelected() {
-        int[] rows = tableNameTable.getSelectedRows();
+    public String rowColOneSelected(JTable jTable) {
+        int[] rows = jTable.getSelectedRows();
         String rowColOneSelected = null;
 
-        int row = tableNameTable.getSelectedRow();
-        rowColOneSelected = (tableNameTable.getValueAt(rows[0], 0).toString());
+        int row = jTable.getSelectedRow();
+        rowColOneSelected = (jTable.getValueAt(rows[0], 0).toString());
 
         return rowColOneSelected;
     }
 
-    public void setcolumnNameTable() {
+    public void setcolumnNameTable(JTable jTable ) {
         ResultSet columns = null;
         try {
-            columns = db.getColumnNames(rowColOneSelected());
+            columns = db.getColumnNames(rowColOneSelected(jTable));
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
