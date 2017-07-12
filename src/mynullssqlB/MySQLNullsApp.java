@@ -5,9 +5,9 @@
  */
 package mynullssqlB;
 
-import static java.awt.SystemColor.text;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,10 +18,6 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import javax.swing.RowFilter;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -65,7 +61,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         jSplitPane1 = new javax.swing.JSplitPane();
         jSplitPane3 = new javax.swing.JSplitPane();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
+        dataTable = new javax.swing.JTable();
         colNmParentPanel = new javax.swing.JPanel();
         colNmFilterPanel = new javax.swing.JPanel();
         columnNameFilter = new javax.swing.JTextField();
@@ -94,7 +90,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         jScrollPane4.setPreferredSize(new java.awt.Dimension(500, 404));
 
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+        dataTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -105,8 +101,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jTable3.setPreferredSize(new java.awt.Dimension(500, 64));
-        jScrollPane4.setViewportView(jTable3);
+        dataTable.setPreferredSize(new java.awt.Dimension(500, 64));
+        jScrollPane4.setViewportView(dataTable);
 
         jSplitPane3.setRightComponent(jScrollPane4);
 
@@ -233,12 +229,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tableNameTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableNameTableMouseClicked
-        setColumnNameTable(tableNameTable);
+        setColumnNameTable();
         setJTableColOneFilter(columnNameTable, columnNameFilter);
     }//GEN-LAST:event_tableNameTableMouseClicked
 
     private void tableNameTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameTableKeyReleased
-        setColumnNameTable(tableNameTable);
+        setColumnNameTable();
         setJTableColOneFilter(columnNameTable, columnNameFilter);
     }//GEN-LAST:event_tableNameTableKeyReleased
 
@@ -247,7 +243,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }//GEN-LAST:event_columnNameTableMouseClicked
 
     private void columnNameTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_columnNameTableKeyReleased
-        // TODO add your handling code here:
+        System.out.println("P");
+        try {
+            setDataTable(getColumnData());
+        } catch (SQLException ex) {
+            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_columnNameTableKeyReleased
 
     private void tableNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameFilterKeyReleased
@@ -382,15 +383,65 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }
 
-    public void setColumnNameTable(JTable jTable) {
+    public String setColumnDataQuery() {
+        ArrayList<String> columns_selected;
+
+        ResultSet columns = null;
+
+        String table_name = (rowColOneSelected(tableNameTable));
+        columns_selected = rowsColOneSelected(columnNameTable);
+
+        String query = "select ";
+
+        for (int i = 0; i < columns_selected.size(); i++) {
+            query += columns_selected.get(i).toString();
+            if (i == columns_selected.size() - 1) {
+                query += "";
+            } else {
+                query += ",";
+            }
+        }
+
+        query += " from " + table_name + ";";
+
+        return query;
+    }
+
+    public ResultSet getColumnData() throws SQLException {
+        String query = setColumnDataQuery();
+
+        Statement statement = db.conn.createStatement();
+
+        ResultSet getColData = statement.executeQuery(query);
+
+        return getColData;
+
+    }
+
+    public void setColumnNameTable() {
         ResultSet columns = null;
         try {
-            columns = db.getColumnNames(rowColOneSelected(jTable));
+            columns = db.getColumnNames(rowColOneSelected(tableNameTable));
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
         columnNameTable.setModel(db.resultSetToTableModel(columns));
         setTableRowSorter(columnNameTable);
+    }
+
+    public void setDataTable(ResultSet data) {
+        
+
+        try {
+            
+            System.out.println(data.getMetaData().getColumnCount());
+        } catch (SQLException ex) {
+            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        dataTable.setModel(db.resultSetToTableModel(data));
+        setTableRowSorter(dataTable);
+
     }
 
     public TableRowSorter<TableModel> setTableRowSorter(JTable table) {
@@ -413,6 +464,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }
 
+    /**
+     * Shows the dialog box to enter database server parameters
+     *
+     */
     public void showConnectionDialog() {
 
         try {
@@ -443,6 +498,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JScrollPane colNmScrollPanel;
     private javax.swing.JTextField columnNameFilter;
     private javax.swing.JTable columnNameTable;
+    private javax.swing.JTable dataTable;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -452,7 +508,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane3;
-    private javax.swing.JTable jTable3;
     private javax.swing.JTextField tableNameFilter;
     private javax.swing.JTable tableNameTable;
     private javax.swing.JPanel tblNmFilterPanel;
