@@ -33,6 +33,9 @@ public class MySQLDBConnect {
     String databaseName;
     String port;
     String serverIP;
+
+    private MySQLNullsApp mySQLNullsApp;
+
     private int numberOfTable;
     /**
      * for caching table names column count and row count
@@ -56,27 +59,16 @@ public class MySQLDBConnect {
         try {
             db.getConnection();
             ArrayList<String[]> transposed = db.transPoseNb("requests");
-//            System.out.println("Before  transposed");
-//            System.out.print(transposed.toString());
-            //           System.out.println("\n After  transposed");
+
             for (int i = 0; i < transposed.size(); i++) {
                 String[] col = transposed.get(i);
 
                 System.out.print(col[0]);
-                System.out.print(col[1]);
-                System.out.println(col[2]);
-                System.out.println("\n");
 
             }
 
             db.initialAnalyseTables();
 
-            System.out.println(" Row count " + db.getRowCount("requests"));
-            System.out.println("Col Count " + db.getColCount("requests"));
-//            ResultSet coldetail = db.secondAnalyseTablesNulls("requests");
-//            while (coldetail.next()) {
-//                System.out.println(coldetail.getString(1));
-//            }
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -175,12 +167,30 @@ public class MySQLDBConnect {
      * @throws SQLException
      */
     public ResultSet getColumnNames(String table_name) throws SQLException {
+
         Statement statement = conn.createStatement();
-        ResultSet getColNames = statement.executeQuery("show columns from " + table_name);
+        ResultSet getColNames = statement.executeQuery("select  column_name as \"Columns\" from information_schema.columns where table_name='" + table_name + "'  and table_schema='" + databaseName + "'");
 
         return getColNames;
     }
 
+
+
+    /*
+    query = "select * FROM MYTABLE WHERE true "
+        
+       addFilter(String[] filter)
+       {
+           query += String[0]  // AND OR
+                   query += " " + String[1]
+                           query += " " String[2]
+                                   query += " " String[2]
+                                   
+       }        
+    if("query has where claus") {}
+  /*
+    
+     */
     /**
      *
      * @param table_name
@@ -274,7 +284,7 @@ public class MySQLDBConnect {
 
         while (nBCnt.next()) {
 
-            System.out.print(col_numColumns);
+            
 
             for (int ci = 1; ci <= col_numColumns; ci += 2) {
                 String colname = col_meta.getColumnName(ci);
@@ -284,7 +294,7 @@ public class MySQLDBConnect {
                 coll2 = nBCnt.getString(ci + 1);
 
                 String[] col = new String[]{coll0, coll1, coll2};
-                System.out.println("print col " + col[0]);
+                
 
                 nbc.add(col);
             }
@@ -354,15 +364,14 @@ public class MySQLDBConnect {
                 for (int childIndex = 0; childIndex < L1TableName.length; childIndex++) {
                     child = new DefaultMutableTreeNode(L1TableName[childIndex]);
                     node.add(child);//add each created child to root
-                    //System.out.println("tablenamePrintedHere");
-                    System.out.println(dbTable_name);
+                    
                     String sql2 = "select column_name  from information_schema.columns where table_name='" + dbTable_name + "' and table_schema='" + databaseName + "'";
 
                     ResultSet rs3 = statement.executeQuery(sql2);
                     while (rs3.next()) {
-                        System.out.println("something");
+                        
 
-                        System.out.println(rs3.getString(1));
+                        
                         grandchild = new DefaultMutableTreeNode(rs3.getString("column_name"));
                         child.add(grandchild);//add each grandchild to each child
                     }
@@ -381,8 +390,8 @@ public class MySQLDBConnect {
     public int getNumberOfTable() {
         return numberOfTable;
     }
-    
-        public  TableModel resultSetToTableModel(ResultSet rs) {
+
+    public TableModel resultSetToTableModel(ResultSet rs) {
         try {
             ResultSetMetaData metaData = rs.getMetaData();
             int numberOfColumns = metaData.getColumnCount();
@@ -413,6 +422,5 @@ public class MySQLDBConnect {
             return null;
         }
     }
-    
 
 }
