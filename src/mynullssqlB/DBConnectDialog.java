@@ -16,8 +16,13 @@ import javax.swing.JOptionPane;
  *
  * @author TianTaljard
  */
-public class DBConnectDialog extends javax.swing.JFrame {
+public class DBConnectDialog extends javax.swing.JDialog {
 
+    private MySQLDBConnect db ;
+
+    public MySQLDBConnect getDb() {
+        return db;
+    }
     /**
      * Creates new form myNullsSQLJFrame
      */
@@ -48,7 +53,7 @@ public class DBConnectDialog extends javax.swing.JFrame {
         testDBConnectJButton = new javax.swing.JButton();
         AnalyseJButton = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setName("JFrame4"); // NOI18N
 
         dbConnectJPanel.setPreferredSize(new java.awt.Dimension(1214, 311));
@@ -206,6 +211,7 @@ public class DBConnectDialog extends javax.swing.JFrame {
         String port = portJTextField.getText();
         String username = usernameJTextField.getText();
         String password = passwordJTextField.getText();
+        
         //======================================================================
         // Validate text for null and blank values
         //======================================================================
@@ -228,11 +234,12 @@ public class DBConnectDialog extends javax.swing.JFrame {
         // Connect to Database
         //======================================================================
         try { // endeavour to create connection to server and database
-            MySQLDBConnect db = new MySQLDBConnect(serverIP, databaseName, username, password, port);
+            db = new MySQLDBConnect(serverIP, databaseName, username, password, port);
             db.getConnection();
 
             Object[] options = {"OK"};
             Component frame;
+            /*
             int n = JOptionPane.showOptionDialog(null,
                     "Server and Database Connection Successful",
                     "Connection Success",
@@ -241,25 +248,14 @@ public class DBConnectDialog extends javax.swing.JFrame {
                     null,
                     options,
                     options[0]);
+            */
             setVisible(false);
-            //TESTING WAP//
+
             
             ResultSet tbl_results = db.showTables();
             while (tbl_results.next()) {
-                System.out.println(tbl_results.getString(1));
+                
             }
-            
-            
-            ResultSet iat_results = db.initialAnalyseTables();
-            while (iat_results.next()) {
-                System.out.print(iat_results.getString(1));
-                
-                System.out.println(" - "+iat_results.getString(2));
-                
-                
-                System.out.println(" - "+iat_results.getString(3));
-            }
-
         } catch (SQLException e) { // if server and database connection fail run this
             JOptionPane.showMessageDialog(null,
                     "The connection to the server and database was not Successful \n"
