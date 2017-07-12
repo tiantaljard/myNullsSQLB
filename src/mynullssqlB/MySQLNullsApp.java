@@ -33,16 +33,22 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      */
     public MySQLNullsApp() {
 
-        /*
+        try {
+            /*
             ResultTableModel tableModel = new ResultTableModel();
             System.out.println(db.getNumberOfTable());
             
             tableModel.setResultset(tbls);
             
             tableModel.setsqlRowCount(db.getNumberOfTable());
-         */
-        initComponents();
-        showConnectionDialog();
+            */
+            initComponents();
+            showConnectionDialog();
+            initializeModel();
+        } catch (SQLException ex) {
+            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
 
     }
 
@@ -83,12 +89,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         jMenuBar2.add(jMenu4);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(600, 605));
 
-        jSplitPane1.setPreferredSize(new java.awt.Dimension(600, 536));
+        jSplitPane1.setPreferredSize(new java.awt.Dimension(800, 536));
 
-        jSplitPane3.setPreferredSize(new java.awt.Dimension(600, 532));
+        jSplitPane3.setPreferredSize(new java.awt.Dimension(450, 532));
 
-        jScrollPane4.setPreferredSize(new java.awt.Dimension(500, 404));
+        jScrollPane4.setPreferredSize(new java.awt.Dimension(300, 404));
 
         dataTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -101,7 +108,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        dataTable.setPreferredSize(new java.awt.Dimension(500, 64));
         jScrollPane4.setViewportView(dataTable);
 
         jSplitPane3.setRightComponent(jScrollPane4);
@@ -121,6 +127,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         colNmParentPanel.add(colNmFilterPanel, java.awt.BorderLayout.NORTH);
 
         colNmScrollPanel.setPreferredSize(new java.awt.Dimension(100, 500));
+        colNmScrollPanel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                colNmScrollPanelMouseReleased(evt);
+            }
+        });
 
         columnNameTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -134,6 +145,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
         ));
         columnNameTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                columnNameTableMouseReleased(evt);
+            }
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 columnNameTableMouseClicked(evt);
             }
@@ -214,14 +228,14 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 3707, Short.MAX_VALUE)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(41, Short.MAX_VALUE)
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 536, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -243,7 +257,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }//GEN-LAST:event_columnNameTableMouseClicked
 
     private void columnNameTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_columnNameTableKeyReleased
-        System.out.println("P");
         try {
             setDataTable(getColumnData());
         } catch (SQLException ex) {
@@ -262,6 +275,18 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private void columnNameTablePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_columnNameTablePropertyChange
 
     }//GEN-LAST:event_columnNameTablePropertyChange
+
+    private void colNmScrollPanelMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_colNmScrollPanelMouseReleased
+
+    }//GEN-LAST:event_colNmScrollPanelMouseReleased
+
+    private void columnNameTableMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_columnNameTableMouseReleased
+        try {
+            setDataTable(getColumnData());
+        } catch (SQLException ex) {
+            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_columnNameTableMouseReleased
 
     /**
      * @param args the command line arguments
@@ -430,18 +455,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }
 
     public void setDataTable(ResultSet data) {
-        
 
-        try {
-            
-            System.out.println(data.getMetaData().getColumnCount());
-        } catch (SQLException ex) {
-            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
         dataTable.setModel(db.resultSetToTableModel(data));
         setTableRowSorter(dataTable);
-
     }
 
     public TableRowSorter<TableModel> setTableRowSorter(JTable table) {
@@ -470,24 +486,32 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      */
     public void showConnectionDialog() {
 
-        try {
-            DBConnectDialog dbconnectdialog = new DBConnectDialog();
-            dbconnectdialog.setModal(true);
-            dbconnectdialog.setVisible(true);
-            db = dbconnectdialog.getDb();
+        DBConnectDialog dbconnectdialog = new DBConnectDialog();
+        dbconnectdialog.setModal(true);
+        dbconnectdialog.setVisible(true);
+        db = dbconnectdialog.getDb();
+        
 
-            /*
+    }
+
+    public void initializeModel() throws SQLException {
+        /*
             @todo makes this threadsafe
-             */
-            ResultSet tbls = db.showTables();
-            ArrayList<String[]> l = db.transPoseNb("requests");
+         */
 
-            tableNameTable.setModel(db.resultSetToTableModel(tbls));
-            TableRowSorter<TableModel> tableNameTableSorter = setTableRowSorter(tableNameTable);
+        ResultSet tbls = db.showTables();
+        tableNameTable.setModel(db.resultSetToTableModel(tbls));
+        TableRowSorter<TableModel> tableNameTableSorter = setTableRowSorter(tableNameTable);
+    }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        };
+    /**
+     * @todo complete the funtion: still to make the model.
+     * @param table_name
+     * @throws SQLException
+     */
+    public void buildTransposeTable(String table_name) throws SQLException {
+
+        ArrayList<String[]> l = db.transPoseNb(table_name);
 
     }
 
