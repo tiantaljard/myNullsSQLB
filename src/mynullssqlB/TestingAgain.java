@@ -23,15 +23,15 @@ import javax.swing.RowFilter;
  *
  * @author TianTaljard
  */
-public class MySQLNullsApp extends javax.swing.JFrame {
+public class TestingAgain extends javax.swing.JFrame {
 
     private MySQLDBConnect db;
-    private String tableNameFilterOld;
+    private String dynamic_query;
 
     /**
      * Creates new form MySQLNullsApp
      */
-    public MySQLNullsApp() {
+    public TestingAgain() {
 
         try {
             /*
@@ -41,14 +41,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             tableModel.setResultset(tbls);
             
             tableModel.setsqlRowCount(db.getNumberOfTable());
-            */
+             */
             initComponents();
             showConnectionDialog();
             initializeModel();
         } catch (SQLException ex) {
-            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TestingAgain.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
 
     }
 
@@ -89,7 +88,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         jMenuBar2.add(jMenu4);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(600, 605));
 
         jSplitPane1.setPreferredSize(new java.awt.Dimension(800, 536));
 
@@ -259,9 +257,19 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private void columnNameTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_columnNameTableKeyReleased
         try {
             setDataTable(getColumnData());
+
+            System.out.println(dynamic_query);
+            buildColumnDataSQLWhereNulls(rowsColOneSelected(columnNameTable));
+            System.out.println(dynamic_query);
+            buildColumnDataSQLWhereBlanks(rowsColOneSelected(columnNameTable));
+            System.out.println(dynamic_query);
+            buildColumnDataSQLEnd();
+            System.out.println(dynamic_query);
+
         } catch (SQLException ex) {
-            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TestingAgain.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }//GEN-LAST:event_columnNameTableKeyReleased
 
     private void tableNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameFilterKeyReleased
@@ -285,7 +293,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         try {
             setDataTable(getColumnData());
         } catch (SQLException ex) {
-            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TestingAgain.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_columnNameTableMouseReleased
 
@@ -306,20 +314,21 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MySQLNullsApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TestingAgain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MySQLNullsApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TestingAgain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MySQLNullsApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TestingAgain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MySQLNullsApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TestingAgain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MySQLNullsApp().setVisible(true);
+                new TestingAgain().setVisible(true);
             }
         });
     }
@@ -428,10 +437,54 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
         }
 
+        dynamic_query = query;
+
         query += " from " + table_name + ";";
+
+        dynamic_query += " from " + table_name + " where 1=1 ";
 
         return query;
     }
+
+    public void buildColumnDataSQLEnd() {
+        dynamic_query += ";";
+
+    }
+
+    public void buildColumnDataSQLWhereNulls(ArrayList<String> columns_selected) {
+
+        String sqlWhere = " and ";
+
+        for (int i = 0; i < columns_selected.size(); i++) {
+
+            sqlWhere += columns_selected.get(i).toString() + " is null ";
+            if (i == columns_selected.size() - 1) {
+                sqlWhere += "";
+            } else {
+                sqlWhere += " and ";
+            }
+        };
+        dynamic_query += sqlWhere;
+
+    }
+    
+        public void buildColumnDataSQLWhereBlanks(ArrayList<String> columns_selected) {
+
+        String sqlWhere = " and ";
+
+        for (int i = 0; i < columns_selected.size(); i++) {
+
+            sqlWhere += columns_selected.get(i).toString() + " ='' ";
+            if (i == columns_selected.size() - 1) {
+                sqlWhere += "";
+            } else {
+                sqlWhere += " and ";
+            }
+        };
+        dynamic_query += sqlWhere;
+
+    }
+    
 
     public ResultSet getColumnData() throws SQLException {
         String query = setColumnDataQuery();
@@ -449,7 +502,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         try {
             columns = db.getColumnNames(rowColOneSelected(tableNameTable));
         } catch (SQLException ex) {
-            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TestingAgain.class.getName()).log(Level.SEVERE, null, ex);
         }
         columnNameTable.setModel(db.resultSetToTableModel(columns));
         setTableRowSorter(columnNameTable);
@@ -491,7 +544,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         dbconnectdialog.setModal(true);
         dbconnectdialog.setVisible(true);
         db = dbconnectdialog.getDb();
-        
 
     }
 
