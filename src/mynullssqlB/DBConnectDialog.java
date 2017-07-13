@@ -28,6 +28,7 @@ public class DBConnectDialog extends javax.swing.JDialog {
      */
     public DBConnectDialog() {
         initComponents();
+        AnalyseJButton.setEnabled(false);
     }
 
     /**
@@ -119,6 +120,11 @@ public class DBConnectDialog extends javax.swing.JDialog {
         });
 
         AnalyseJButton.setText("Analyse");
+        AnalyseJButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AnalyseJButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout dbConnectJPanelLayout = new javax.swing.GroupLayout(dbConnectJPanel);
         dbConnectJPanel.setLayout(dbConnectJPanelLayout);
@@ -239,7 +245,7 @@ public class DBConnectDialog extends javax.swing.JDialog {
 
             Object[] options = {"OK"};
             Component frame;
-            /*
+            
             int n = JOptionPane.showOptionDialog(null,
                     "Server and Database Connection Successful",
                     "Connection Success",
@@ -248,14 +254,9 @@ public class DBConnectDialog extends javax.swing.JDialog {
                     null,
                     options,
                     options[0]);
-            */
-            setVisible(false);
-
             
-            ResultSet tbl_results = db.showTables();
-            while (tbl_results.next()) {
-                
-            }
+            AnalyseJButton.setEnabled(true);
+
         } catch (SQLException e) { // if server and database connection fail run this
             JOptionPane.showMessageDialog(null,
                     "The connection to the server and database was not Successful \n"
@@ -278,6 +279,58 @@ public class DBConnectDialog extends javax.swing.JDialog {
     private void serverIPJTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverIPJTextFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_serverIPJTextFieldActionPerformed
+
+    private void AnalyseJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AnalyseJButtonActionPerformed
+        //======================================================================
+        // Obtain text from input fields
+        //======================================================================
+        String serverIP = serverIPJTextField.getText();
+        String databaseName = databaseNameJTextField.getText();
+        String port = portJTextField.getText();
+        String username = usernameJTextField.getText();
+        String password = passwordJTextField.getText();
+        
+        //======================================================================
+        // Validate text for null and blank values
+        //======================================================================
+        if (serverIP == null || serverIP.trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Server IP Address can not be null");
+        }
+        if (databaseName == null || databaseName.trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Database Name can not be null");
+        }
+        if (port == null || port.trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Port can not be null");
+        }
+        if (username == null || username.trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Username can not be null");
+        }
+        if (password == null || password.trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Password can not be null");
+        }
+        //======================================================================
+        // Connect to Database
+        //======================================================================
+        try { // endeavour to create connection to server and database
+            db = new MySQLDBConnect(serverIP, databaseName, username, password, port);
+            db.getConnection();
+
+            Object[] options = {"OK"};
+            Component frame;
+            
+            setVisible(false);
+
+            
+            ResultSet tbl_results = db.showTables();
+            while (tbl_results.next()) {
+                
+            }
+        } catch (SQLException e) { // if server and database connection fail run this
+            JOptionPane.showMessageDialog(null,
+                    "The connection to the server and database was not Successful \n"
+                    + "Connection Error: " + e);
+        }
+    }//GEN-LAST:event_AnalyseJButtonActionPerformed
 
     /**
      * @param args the command line arguments
