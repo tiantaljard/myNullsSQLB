@@ -372,7 +372,11 @@ public class MySQLDBConnect {
                 rows.addElement(newRow);
             }
 
-            return new DefaultTableModel(rows, columnNames);
+            DefaultTableModel model = new DefaultTableModel(rows, columnNames);
+            
+            
+            return model;
+            
         } catch (Exception e) {
             e.printStackTrace();
 

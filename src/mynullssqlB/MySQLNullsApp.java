@@ -142,6 +142,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 "Columns"
             }
         ));
+        columnNameTable.setSelectionMode(1);
         columnNameTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 columnNameTableMouseReleased(evt);
@@ -414,7 +415,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }
 
     public ResultSet getColumnData() throws SQLException {
-        String query = setColumnDataQuery();
+        String query = buildColumnDataQuery();
 
         Statement statement = db.conn.createStatement();
 
@@ -428,16 +429,27 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         ResultSet columns = null;
         try {
             columns = db.getColumnNames(rowColOneSelected(tableNameTable));
+            
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
-        columnNameTable.setModel(db.resultSetToTableModel(columns));
+        
+        columnNameTable.setModel(db.resultSetToColumnNameTableModel(columns));
+        
+        
+        
+        
+        
+        
         setTableRowSorter(columnNameTable);
     }
+    
+    
 
     public void setDataTable(ResultSet data) {
-
+        
         dataTable.setModel(db.resultSetToTableModel(data));
+      //  dataTable.getColumn(0);
         setTableRowSorter(dataTable);
     }
 
@@ -534,7 +546,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }
     
-        public String setColumnDataQuery() {
+        public String buildColumnDataQuery() {
         ArrayList<String> columns_selected;
 
         ResultSet columns = null;
