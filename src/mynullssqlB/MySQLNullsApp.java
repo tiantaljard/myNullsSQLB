@@ -250,8 +250,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private void tableNameTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameTableKeyReleased
         setColumnNameTable();
         setJTableColOneFilter(columnNameTable, columnNameFilter);
-
-
     }//GEN-LAST:event_tableNameTableKeyReleased
 
     private void columnNameTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_columnNameTableMouseClicked
