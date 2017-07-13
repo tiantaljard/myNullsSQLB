@@ -26,7 +26,7 @@ import javax.swing.RowFilter;
 public class MySQLNullsApp extends javax.swing.JFrame {
 
     private MySQLDBConnect db;
-    private String tableNameFilterOld;
+    private String dynamic_query;
 
     /**
      * Creates new form MySQLNullsApp
@@ -41,14 +41,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             tableModel.setResultset(tbls);
             
             tableModel.setsqlRowCount(db.getNumberOfTable());
-            */
+             */
             initComponents();
             showConnectionDialog();
             initializeModel();
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
 
     }
 
@@ -64,7 +63,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         jMenuBar2 = new javax.swing.JMenuBar();
         jMenu3 = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
-        jDialog1 = new javax.swing.JDialog();
         jSplitPane1 = new javax.swing.JSplitPane();
         jSplitPane3 = new javax.swing.JSplitPane();
         jScrollPane4 = new javax.swing.JScrollPane();
@@ -88,17 +86,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         jMenu4.setText("Edit");
         jMenuBar2.add(jMenu4);
-
-        javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
-        jDialog1.getContentPane().setLayout(jDialog1Layout);
-        jDialog1Layout.setHorizontalGroup(
-            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        jDialog1Layout.setVerticalGroup(
-            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -254,13 +241,16 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tableNameTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableNameTableMouseClicked
-        setJTableColOneFilter(columnNameTable, columnNameFilter);
         setColumnNameTable();
+        setJTableColOneFilter(columnNameTable, columnNameFilter);
+
     }//GEN-LAST:event_tableNameTableMouseClicked
 
     private void tableNameTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameTableKeyReleased
-        setJTableColOneFilter(columnNameTable, columnNameFilter);
         setColumnNameTable();
+        setJTableColOneFilter(columnNameTable, columnNameFilter);
+
+
     }//GEN-LAST:event_tableNameTableKeyReleased
 
     private void columnNameTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_columnNameTableMouseClicked
@@ -273,11 +263,14 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
+        //setColumnDataQuery();
     }//GEN-LAST:event_columnNameTableKeyReleased
 
     private void tableNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameFilterKeyReleased
         setJTableColOneFilter(tableNameTable, tableNameFilter);
         setColumnNameTable();
+        setJTableColOneFilter(columnNameTable, columnNameFilter);
+        
     }//GEN-LAST:event_tableNameFilterKeyReleased
 
     private void columnNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_columnNameFilterKeyReleased
@@ -420,30 +413,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }
 
-    public String setColumnDataQuery() {
-        ArrayList<String> columns_selected;
-
-        ResultSet columns = null;
-
-        String table_name = (rowColOneSelected(tableNameTable));
-        columns_selected = rowsColOneSelected(columnNameTable);
-
-        String query = "select ";
-
-        for (int i = 0; i < columns_selected.size(); i++) {
-            query += columns_selected.get(i).toString();
-            if (i == columns_selected.size() - 1) {
-                query += "";
-            } else {
-                query += ",";
-            }
-        }
-
-        query += " from " + table_name + ";";
-
-        return query;
-    }
-
     public ResultSet getColumnData() throws SQLException {
         String query = setColumnDataQuery();
 
@@ -502,7 +471,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         dbconnectdialog.setModal(true);
         dbconnectdialog.setVisible(true);
         db = dbconnectdialog.getDb();
-        
 
     }
 
@@ -527,6 +495,73 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }
 
+    public void buildColumnDataSQLWhereBlanks(ArrayList<String> columns_selected) {
+
+        String sqlWhere = " and ";
+
+        for (int i = 0; i < columns_selected.size(); i++) {
+
+            sqlWhere += columns_selected.get(i).toString() + " ='' ";
+            if (i == columns_selected.size() - 1) {
+                sqlWhere += "";
+            } else {
+                sqlWhere += " and ";
+            }
+        };
+        dynamic_query += sqlWhere;
+
+    }
+
+    public void buildColumnDataSQLWhereNulls(ArrayList<String> columns_selected) {
+
+        String sqlWhere = " and ";
+
+        for (int i = 0; i < columns_selected.size(); i++) {
+
+            sqlWhere += columns_selected.get(i).toString() + " is null ";
+            if (i == columns_selected.size() - 1) {
+                sqlWhere += "";
+            } else {
+                sqlWhere += " and ";
+            }
+        };
+        dynamic_query += sqlWhere;
+
+    }
+
+    public void buildColumnDataSQLEnd() {
+        dynamic_query += ";";
+
+    }
+    
+        public String setColumnDataQuery() {
+        ArrayList<String> columns_selected;
+
+        ResultSet columns = null;
+
+        String table_name = (rowColOneSelected(tableNameTable));
+        columns_selected = rowsColOneSelected(columnNameTable);
+
+        String query = "select ";
+
+        for (int i = 0; i < columns_selected.size(); i++) {
+            query += columns_selected.get(i).toString();
+            if (i == columns_selected.size() - 1) {
+                query += "";
+            } else {
+                query += ",";
+            }
+        }
+
+        dynamic_query = query;
+
+        query += " from " + table_name + ";";
+
+        dynamic_query += " from " + table_name + " where 1=1 ";
+
+        return query;
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel colNmFilterPanel;
@@ -535,7 +570,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JTextField columnNameFilter;
     private javax.swing.JTable columnNameTable;
     private javax.swing.JTable dataTable;
-    private javax.swing.JDialog jDialog1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
