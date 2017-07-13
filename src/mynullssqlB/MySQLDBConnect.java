@@ -69,7 +69,6 @@ public class MySQLDBConnect {
 
             db.initialAnalyseTables();
 
-
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -174,7 +173,13 @@ public class MySQLDBConnect {
         return getColNames;
     }
 
+    public ResultSet getColumnTableColumnNames(String table_name) throws SQLException {
 
+        Statement statement = conn.createStatement();
+        ResultSet getColNames = statement.executeQuery("select  column_name as \"Columns\", 0 as \"Nulls\" ,0 as \"Blanks\", null as \"Text Filter\"   from information_schema.columns where table_name='" + table_name + "'  and table_schema='" + databaseName + "'");
+
+        return getColNames;
+    }
 
     /*
     query = "select * FROM MYTABLE WHERE true "
@@ -284,8 +289,6 @@ public class MySQLDBConnect {
 
         while (nBCnt.next()) {
 
-            
-
             for (int ci = 1; ci <= col_numColumns; ci += 2) {
                 String colname = col_meta.getColumnName(ci);
 
@@ -294,15 +297,12 @@ public class MySQLDBConnect {
                 coll2 = nBCnt.getString(ci + 1);
 
                 String[] col = new String[]{coll0, coll1, coll2};
-                
 
                 nbc.add(col);
             }
         }
         return nbc;
     }
-
-    
 
     public int getNumberOfTable() {
         return numberOfTable;
@@ -327,6 +327,46 @@ public class MySQLDBConnect {
 
                 for (int i = 1; i <= numberOfColumns; i++) {
                     newRow.addElement(rs.getObject(i));
+                }
+
+                rows.addElement(newRow);
+            }
+
+            return new DefaultTableModel(rows, columnNames);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
+        }
+    }
+
+    public TableModel resultSetToColumnNameTableModel(ResultSet rs) {
+        try {
+            ResultSetMetaData metaData = rs.getMetaData();
+            int numberOfColumns = metaData.getColumnCount();
+            Vector columnNames = new Vector();
+
+            // Get the column names
+            for (int column = 0; column < numberOfColumns; column++) {
+
+                columnNames.addElement(metaData.getColumnLabel(column + 1));
+                columnNames.addElement("Null");
+                columnNames.addElement("Blank");
+                columnNames.addElement("Text Fiter");
+            }
+
+            // Get all rows.
+            Vector rows = new Vector();
+
+            while (rs.next()) {
+                Vector newRow = new Vector();
+
+                for (int i = 1; i <= numberOfColumns; i++) {
+                    newRow.addElement(rs.getObject(i));
+                    newRow.addElement(false);
+                    newRow.addElement(false);
+                    newRow.addElement(null);
+
                 }
 
                 rows.addElement(newRow);
