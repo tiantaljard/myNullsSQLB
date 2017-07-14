@@ -290,7 +290,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
-        buildColumnDataSQLWhereNulls();
+        buildColumnDataSQLWhere();
+        System.out.println(dynamic_query);
     }//GEN-LAST:event_columnNameTableKeyReleased
 
     private void tableNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameFilterKeyReleased
@@ -441,11 +442,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }
 
     public ResultSet getColumnData() throws SQLException {
-        String query = buildColumnDataQuery();
+         buildColumnDataQuery();
 
         Statement statement = db.conn.createStatement();
 
-        ResultSet getColData = statement.executeQuery(query);
+        ResultSet getColData = statement.executeQuery(dynamic_query);
 
         return getColData;
 
@@ -472,6 +473,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         // columnNameTable.getColumnModel().getColumn(3).setMinWidth(10);
         columnNameTable.getColumnModel().getColumn(3).setPreferredWidth(1);
         columnNameTable.getColumnModel().getColumn(3).setMaxWidth(Integer.MAX_VALUE);
+        
+        columnNameTable.getTableHeader().setReorderingAllowed(false);
 
         setTableRowSorter(columnNameTable);
     }
@@ -537,70 +540,26 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }
 
-    public void buildColumnDataSQLWhereBlanks(ArrayList<String> columns_selected) {
-
-        String sqlWhere = " and ";
-
-        for (int i = 0; i < columns_selected.size(); i++) {
-
-            sqlWhere += columns_selected.get(i).toString() + " ='' ";
-            if (i == columns_selected.size() - 1) {
-                sqlWhere += "";
-            } else {
-                sqlWhere += " and ";
-            }
-        };
-        dynamic_query += sqlWhere;
-
-    }
-
-    public void buildColumnDataSQLWhereNulls() {
+    public void buildColumnDataSQLWhere() {
 
         TableModel columnNames = columnNameTable.getModel();
         String sqlWhere = "";
         for (int i = 0; i < columnNames.getRowCount(); i++) {
-            //for (int j =0; j<columnNames.getColumnCount(); j++) {
             if (columnNames.getValueAt(i, 1).equals(true)) {
                 sqlWhere += " and " + columnNames.getValueAt(i, 0) + " is null";
             }
-            if (columnNames.getValueAt(i, 1).equals(true)) {
-                sqlWhere += " and " + columnNames.getValueAt(i, 1) + " =''";
+            if (columnNames.getValueAt(i, 2).equals(true)) {
+                sqlWhere += " and " + columnNames.getValueAt(i, 0) + " =''";
             }
-
-//                System.out.print("\n\n\n\n"+columnNames.getValueAt(i, 0));
-//                System.out.print(" "+ columnNames.getValueAt(i, 1));
-//                System.out.print(" "+columnNames.getValueAt(i, 2));
-//                System.out.println(" "+columnNames.getValueAt(i, 3));
-//                
-            //    }
+            if (columnNames.getValueAt(i, 3) != null) {
+                sqlWhere += " and " + columnNames.getValueAt(i, 0) + " like '%" + columnNames.getValueAt(i, 3) + "%'";
+            }
         }
-        System.out.println(sqlWhere);
-        /*        System.out.println(sqlWhere);    
-        String sqlWhere = " and ";
-
-        for (int i = 0; i < columns_selected.size(); i++) {
-
-            sqlWhere += columns_selected.get(i).toString() + " is null ";
-            if (i == columns_selected.size() - 1) {
-                sqlWhere += "";
-            } else {
-                sqlWhere += " and ";
-            }
-        };
-        dynamic_query += sqlWhere;
-         */
+        dynamic_query =dynamic_query+sqlWhere+";";
+        
     }
 
-    public void buildColumnDataSQLEnd() {
-        dynamic_query += ";";
-
-    }
-
-    public void buildColumnDataSQLWhere(String Query) {
-
-    }
-
-    public String buildColumnDataQuery() {
+    public void buildColumnDataQuery() {
         ArrayList<String> columns_selected;
 
         ResultSet columns = null;
@@ -619,13 +578,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
         }
 
-        dynamic_query = query;
+        dynamic_query = query+ " from " + table_name + " where 1=1 ";
+        
+        buildColumnDataSQLWhere();
 
-        query += " from " + table_name + ";";
 
-        dynamic_query += " from " + table_name + " where 1=1 ";
-
-        return query;
     }
 
 
