@@ -290,7 +290,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //setColumnDataQuery();
+        buildColumnDataSQLWhereNulls();
     }//GEN-LAST:event_columnNameTableKeyReleased
 
     private void tableNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameFilterKeyReleased
@@ -463,14 +463,14 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         columnNameTable.setModel(db.resultSetToColumnNameTableModel(columns));
         columnNameTable.getColumnModel().getColumn(0).setMinWidth(90);
         columnNameTable.getColumnModel().getColumn(0).setMaxWidth(260);
-       // columnNameTable.getColumnModel().getColumn(1).setMinWidth(15);
+        // columnNameTable.getColumnModel().getColumn(1).setMinWidth(15);
         columnNameTable.getColumnModel().getColumn(1).setPreferredWidth(35);
         columnNameTable.getColumnModel().getColumn(1).setMaxWidth(35);
-       // columnNameTable.getColumnModel().getColumn(2).setMinWidth(15);
+        // columnNameTable.getColumnModel().getColumn(2).setMinWidth(15);
         columnNameTable.getColumnModel().getColumn(2).setPreferredWidth(45);
         columnNameTable.getColumnModel().getColumn(2).setMaxWidth(45);
-       // columnNameTable.getColumnModel().getColumn(3).setMinWidth(10);
-       columnNameTable.getColumnModel().getColumn(3).setPreferredWidth(1);
+        // columnNameTable.getColumnModel().getColumn(3).setMinWidth(10);
+        columnNameTable.getColumnModel().getColumn(3).setPreferredWidth(1);
         columnNameTable.getColumnModel().getColumn(3).setMaxWidth(Integer.MAX_VALUE);
 
         setTableRowSorter(columnNameTable);
@@ -554,8 +554,28 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }
 
-    public void buildColumnDataSQLWhereNulls(ArrayList<String> columns_selected) {
+    public void buildColumnDataSQLWhereNulls() {
 
+        TableModel columnNames = columnNameTable.getModel();
+        String sqlWhere = "";
+        for (int i = 0; i < columnNames.getRowCount(); i++) {
+            //for (int j =0; j<columnNames.getColumnCount(); j++) {
+            if (columnNames.getValueAt(i, 1).equals(true)) {
+                sqlWhere += " and " + columnNames.getValueAt(i, 0) + " is null";
+            }
+            if (columnNames.getValueAt(i, 1).equals(true)) {
+                sqlWhere += " and " + columnNames.getValueAt(i, 1) + " =''";
+            }
+
+//                System.out.print("\n\n\n\n"+columnNames.getValueAt(i, 0));
+//                System.out.print(" "+ columnNames.getValueAt(i, 1));
+//                System.out.print(" "+columnNames.getValueAt(i, 2));
+//                System.out.println(" "+columnNames.getValueAt(i, 3));
+//                
+            //    }
+        }
+        System.out.println(sqlWhere);
+        /*        System.out.println(sqlWhere);    
         String sqlWhere = " and ";
 
         for (int i = 0; i < columns_selected.size(); i++) {
@@ -568,11 +588,15 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
         };
         dynamic_query += sqlWhere;
-
+         */
     }
 
     public void buildColumnDataSQLEnd() {
         dynamic_query += ";";
+
+    }
+
+    public void buildColumnDataSQLWhere(String Query) {
 
     }
 
