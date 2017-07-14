@@ -71,7 +71,23 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         colNmFilterPanel = new javax.swing.JPanel();
         columnNameFilter = new javax.swing.JTextField();
         colNmScrollPanel = new javax.swing.JScrollPane();
-        columnNameTable = new javax.swing.JTable();
+        columnNameTable = new javax.swing.JTable(){
+            @Override
+            public Class getColumnClass(int column) {
+                switch (column) {
+                    case 0:
+                    return String.class;
+                    case 1:
+                    return Boolean.class;
+                    case 2:
+                    return Boolean.class;
+                    case 3:
+                    return String.class;
+                    default:
+                    return String.class;
+                }
+            }
+        };
         tblNmParentPanel = new javax.swing.JPanel();
         tblNmFilterPanel = new javax.swing.JPanel();
         tableNameFilter = new javax.swing.JTextField();
@@ -124,7 +140,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         colNmParentPanel.add(colNmFilterPanel, java.awt.BorderLayout.NORTH);
 
-        colNmScrollPanel.setPreferredSize(new java.awt.Dimension(100, 500));
+        colNmScrollPanel.setPreferredSize(new java.awt.Dimension(150, 500));
         colNmScrollPanel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 colNmScrollPanelMouseReleased(evt);
@@ -133,15 +149,27 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         columnNameTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null},
-                {null},
-                {null},
-                {null}
+
             },
             new String [] {
-                "Columns"
+                "Colums", "Nulls", "Blanks", "null"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, true, true, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         columnNameTable.setSelectionMode(1);
         columnNameTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
@@ -269,7 +297,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         setJTableColOneFilter(tableNameTable, tableNameFilter);
         setColumnNameTable();
         setJTableColOneFilter(columnNameTable, columnNameFilter);
-        
+
     }//GEN-LAST:event_tableNameFilterKeyReleased
 
     private void columnNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_columnNameFilterKeyReleased
@@ -427,27 +455,31 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         ResultSet columns = null;
         try {
             columns = db.getColumnNames(rowColOneSelected(tableNameTable));
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         columnNameTable.setModel(db.resultSetToColumnNameTableModel(columns));
-        
-        
-        
-        
-        
-        
+        columnNameTable.getColumnModel().getColumn(0).setMinWidth(90);
+        columnNameTable.getColumnModel().getColumn(0).setMaxWidth(260);
+       // columnNameTable.getColumnModel().getColumn(1).setMinWidth(15);
+        columnNameTable.getColumnModel().getColumn(1).setPreferredWidth(35);
+        columnNameTable.getColumnModel().getColumn(1).setMaxWidth(35);
+       // columnNameTable.getColumnModel().getColumn(2).setMinWidth(15);
+        columnNameTable.getColumnModel().getColumn(2).setPreferredWidth(45);
+        columnNameTable.getColumnModel().getColumn(2).setMaxWidth(45);
+       // columnNameTable.getColumnModel().getColumn(3).setMinWidth(10);
+       columnNameTable.getColumnModel().getColumn(3).setPreferredWidth(1);
+        columnNameTable.getColumnModel().getColumn(3).setMaxWidth(Integer.MAX_VALUE);
+
         setTableRowSorter(columnNameTable);
     }
-    
-    
 
     public void setDataTable(ResultSet data) {
-        
+
         dataTable.setModel(db.resultSetToTableModel(data));
-      //  dataTable.getColumn(0);
+        //  dataTable.getColumn(0);
         setTableRowSorter(dataTable);
     }
 
@@ -543,8 +575,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         dynamic_query += ";";
 
     }
-    
-        public String buildColumnDataQuery() {
+
+    public String buildColumnDataQuery() {
         ArrayList<String> columns_selected;
 
         ResultSet columns = null;
