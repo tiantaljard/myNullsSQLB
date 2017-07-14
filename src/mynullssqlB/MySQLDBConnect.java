@@ -18,8 +18,6 @@ import java.util.Map;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 
 /**
  *
@@ -173,14 +171,7 @@ public class MySQLDBConnect {
         return getColNames;
     }
 
-    public ResultSet getColumnTableColumnNames(String table_name) throws SQLException {
-
-        Statement statement = conn.createStatement();
-        ResultSet getColNames = statement.executeQuery("select  column_name as \"Columns\", 0 as \"Nulls\" ,0 as \"Blanks\", null as \"Text Filter\"   from information_schema.columns where table_name='" + table_name + "'  and table_schema='" + databaseName + "'");
-
-        return getColNames;
-    }
-
+    
     /*
     query = "select * FROM MYTABLE WHERE true "
         
@@ -354,6 +345,8 @@ public class MySQLDBConnect {
                 columnNames.addElement("Blank");
                 columnNames.addElement("Text Fiter");
             }
+            
+            
 
             // Get all rows.
             Vector rows = new Vector();
@@ -373,10 +366,11 @@ public class MySQLDBConnect {
             }
 
             DefaultTableModel model = new DefaultTableModel(rows, columnNames);
-            
-            
+
+           
+
             return model;
-            
+
         } catch (Exception e) {
             e.printStackTrace();
 
