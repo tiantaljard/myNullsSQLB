@@ -458,6 +458,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             columns = db.getColumnNames(rowColOneSelected(tableNameTable));
 
         } catch (SQLException ex) {
+            
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
 
