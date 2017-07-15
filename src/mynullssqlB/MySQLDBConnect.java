@@ -61,8 +61,7 @@ public class MySQLDBConnect {
             for (int i = 0; i < transposed.size(); i++) {
                 String[] col = transposed.get(i);
 
-                System.out.print(col[0]);
-
+                //   System.out.print(col[0]);
             }
 
             db.initialAnalyseTables();
@@ -138,13 +137,37 @@ public class MySQLDBConnect {
      * @throws SQLException
      */
     public ResultSet initialAnalyseTables() throws SQLException {
+
+        String masterquery = "Select table_name, column_cnt, rowcount from ( ";
+        String unionquery = "";
+
+        ResultSet tableNames = showTables();
+        int tablecount = getNumberOfTable();
+        System.out.println("TABLE COUNT  " + tablecount);
+        tableNames.first();
+
+        for (int i = 0; i < tablecount; i++) {
+
+            unionquery += "select c.table_name,COUNT(c.COLUMN_NAME) column_cnt,\n"
+                    + "(select count(*) from " + databaseName + "." + tableNames.getString(1) + " )  rowcount\n"
+                    + "  from information_schema.columns c \n"
+                    + "  where   c.table_schema='" + databaseName + "' \n"
+                    + "  and   c.table_name='" + tableNames.getString(1) + "' \n"
+                    + "  group by c.table_schema,c.table_name";
+
+            if (i == tablecount - 1) {
+                unionquery += "\n ";
+
+            } else {
+                unionquery += "\n union all \n";
+            }
+            tableNames.next();
+        }
+
+        masterquery = masterquery + unionquery + " ) as data1;";
+
         Statement statement = conn.createStatement();
-        ResultSet iat_results = statement.executeQuery("select c.table_name,COUNT(c.COLUMN_NAME) column_cnt,\n"
-                + "(select table_rows from  information_schema.tables \n"
-                + "where c.table_schema=table_schema and c.table_name= table_name)  rowcount\n"
-                + "  from information_schema.columns c \n"
-                + "  where   c.table_schema='" + databaseName + "' \n"
-                + "  group by c.table_schema,c.table_name;");
+        ResultSet iat_results = statement.executeQuery(masterquery);
 
         while (iat_results.next()) {
 
@@ -171,7 +194,6 @@ public class MySQLDBConnect {
         return getColNames;
     }
 
-    
     /*
     query = "select * FROM MYTABLE WHERE true "
         
@@ -345,8 +367,6 @@ public class MySQLDBConnect {
                 columnNames.addElement("Blank");
                 columnNames.addElement("Text Fiter");
             }
-            
-            
 
             // Get all rows.
             Vector rows = new Vector();
@@ -366,8 +386,6 @@ public class MySQLDBConnect {
             }
 
             DefaultTableModel model = new DefaultTableModel(rows, columnNames);
-
-           
 
             return model;
 
