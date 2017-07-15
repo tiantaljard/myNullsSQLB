@@ -218,24 +218,20 @@ public class MySQLDBConnectTest {
         TableModel table_model =instance.resultSetToTableModel(rs);
         String result =table_model.getColumnName(1);
         String expResult ="column_cnt";
-        
         assertEquals(expResult, result);
-        
     }
 
     /**
      * Test of resultSetToColumnNameTableModel method, of class MySQLDBConnect.
      */
     @Test
-    public void testResultSetToColumnNameTableModel() {
-        System.out.println("resultSetToColumnNameTableModel");
-        ResultSet rs = null;
-        MySQLDBConnect instance = new MySQLDBConnect();
-        TableModel expResult = null;
-        TableModel result = instance.resultSetToColumnNameTableModel(rs);
+    public void testResultSetToColumnNameTableModel() throws SQLException{
+               System.out.println("resultSetToTableModel");
+        ResultSet rs = instance.getColumnNames(TABLENAME);
+        TableModel table_model =instance.resultSetToColumnNameTableModel(rs);
+        String result =table_model.getColumnName(2);
+        String expResult ="Blank";
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
 }
