@@ -58,13 +58,30 @@ public class MySQLDBConnect {
             db.getConnection();
             ArrayList<String[]> transposed = db.transPoseNb("requests");
 
-            for (int i = 0; i < transposed.size(); i++) {
-                String[] col = transposed.get(i);
+            String result = transposed.get(5)[0];
+            System.out.println("transposed " + result);
+//            for (int i = 0; i < transposed.size(); i++) {
+//                String[] col = transposed.get(i);
+//                    System.out.print("  \n    cnt "+i);
+//                   System.out.print(" "+col[0]);
+//                   System.out.print(" "+col[1]);
+//                   System.out.print(" "+col[2]);
+//            }
+            db.getColumnNames("requests");
 
-                //   System.out.print(col[0]);
-            }
+            ResultSet resultRS = db.initialAnalyseTables();
+            resultRS.first();
+            
+            ResultSet rs = db.initialAnalyseTables();
+            TableModel table_model = db.resultSetToTableModel(rs);
+            System.out.println("TABLE MODEL COLUMN NAME "+table_model.getColumnName(1));
+            
+            
+            System.out.println("GET COLUMN NAMES " + resultRS.getString(1) +"\n");
 
-            db.initialAnalyseTables();
+            ResultSet nullcount = db.secondAnalyseTablesNulls("requests");
+            nullcount.first();
+            System.out.println("Null Count " + nullcount.getString(1) + nullcount.getString(2) + nullcount.getString(3) + "string 11 " + nullcount.getString(11));
 
         } catch (SQLException ex) {
             ex.printStackTrace();

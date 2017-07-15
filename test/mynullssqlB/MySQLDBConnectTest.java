@@ -112,22 +112,16 @@ public class MySQLDBConnectTest {
 
     /**
      * Test of getColumnNames method, of class MySQLDBConnect.
+     * check that the correct column names for the table are passed back
      */
     @Test
     public void testGetColumnNames() throws Exception {
         System.out.println("getColumnNames");
-        String table_name = TABLENAME;
-
-        ResultSet expResult = statement.executeQuery("select  column_name as \"Columns\" from information_schema.columns where table_name='" + TABLENAME + "'  and table_schema='" + DATABASENAME + "'");
-        ResultSet result = instance.getColumnNames(table_name);
-
-        expResult.first();
-        result.first();
-
-        String expected = expResult.getString(1);
-        String resultString = result.getString(1);
-
-        assertEquals(expected, resultString);
+        ResultSet resultRS = instance.getColumnNames(TABLENAMEWITHROWS);
+        resultRS.first();
+        String expResult="request";
+        String result=resultRS.getString(1);
+        assertEquals(expResult, result);
 
     }
 
@@ -141,8 +135,10 @@ public class MySQLDBConnectTest {
         ResultSet result = instance.secondAnalyseTablesNulls(TABLENAMEWITHROWS);
         assertNotNull(result);
         result.first();
-        String s = result.getString(1);
-        assertTrue(s.length() > 0);
+        String resultString = result.getString(11);
+        String expResult="4";
+        
+        assertEquals(expResult,resultString);
 
     }
 
@@ -178,46 +174,53 @@ public class MySQLDBConnectTest {
 
     /**
      * Test of transPoseNb method, of class MySQLDBConnect.
+     * check that an array with column number and number of nulls is 
+     * passed correctly
+     * 
      */
     @Test
     public void testTransPoseNb() throws Exception {
         System.out.println("transPoseNb");
-        String table_name = "";
-        MySQLDBConnect instance = new MySQLDBConnect();
-        ArrayList expResult = null;
-        ArrayList result = instance.transPoseNb(table_name);
+        
+        ArrayList<String[]> resultRs = instance.transPoseNb(TABLENAMEWITHROWS);
+        String result=resultRs.get(5)[1];
+        String result1=resultRs.get(5)[2];
+        String result2=resultRs.get(5)[0].toString();
+        String expResult="4";
+        String expResult1="3";
+        String expResult2="eao1";
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(expResult1, result1);
+        assertEquals(expResult2, result2);
     }
 
     /**
      * Test of getNumberOfTable method, of class MySQLDBConnect.
+     * check the number of tables in database correctly returned.
      */
     @Test
-    public void testGetNumberOfTable() {
+    public void testGetNumberOfTable() throws SQLException {
         System.out.println("getNumberOfTable");
-        MySQLDBConnect instance = new MySQLDBConnect();
-        int expResult = 0;
+        instance.showTables();
+        
+        int expResult = 4;
         int result = instance.getNumberOfTable();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
      * Test of resultSetToTableModel method, of class MySQLDBConnect.
      */
     @Test
-    public void testResultSetToTableModel() {
+    public void testResultSetToTableModel() throws SQLException {
         System.out.println("resultSetToTableModel");
-        ResultSet rs = null;
-        MySQLDBConnect instance = new MySQLDBConnect();
-        TableModel expResult = null;
-        TableModel result = instance.resultSetToTableModel(rs);
+        ResultSet rs = instance.initialAnalyseTables();
+        TableModel table_model =instance.resultSetToTableModel(rs);
+        String result =table_model.getColumnName(1);
+        String expResult ="column_cnt";
+        
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
     }
 
     /**
