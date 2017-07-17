@@ -217,7 +217,7 @@ public class MySQLDBConnect {
 
         Statement statement = conn.createStatement();
         ResultSet getColNames = statement.executeQuery("select  column_name as \"Columns\" from information_schema.columns where table_name='" + table_name + "'  and table_schema='" + databaseName + "'");
-
+       // System.out.println("select  column_name as \"Columns\" from information_schema.columns where table_name='" + table_name + "'  and table_schema='" + databaseName + "'");
         return getColNames;
     }
 
@@ -242,33 +242,34 @@ public class MySQLDBConnect {
         String query = "select ";
 
         ResultSet col_results = getColumnNames(table_name);
-        col_results.first();
+        
+        if(col_results.next()) {
+            for (int i = 0; i < j; i++) {
+                query += "SUM(CASE WHEN " + col_results.getString(1)
+                        + " IS NULL THEN 1 ELSE 0 END) as nulls_"
+                        + col_results.getString(1);
+                query += ", SUM(CASE WHEN " + col_results.getString(1)
+                        + " ='' THEN 1 ELSE 0 END) as blanks_"
+                        + col_results.getString(1);
+                if (i == j - 1) {
+                    query += " ";
 
-        for (int i = 0; i < j; i++) {
-            query += "SUM(CASE WHEN " + col_results.getString(1)
-                    + " IS NULL THEN 1 ELSE 0 END) as nulls_"
-                    + col_results.getString(1);
-            query += ", SUM(CASE WHEN " + col_results.getString(1)
-                    + " ='' THEN 1 ELSE 0 END) as blanks_"
-                    + col_results.getString(1);
-            if (i == j - 1) {
-                query += " ";
+                } else {
+                    query += ", ";
+                }
+                col_results.next();
 
-            } else {
-                query += ", ";
             }
-            col_results.next();
 
+            query += "from " + table_name + ";";
+
+            //======================================================================
+            // Excecuting dynamically built queries to get counts for nulls and blanks from tables
+            //======================================================================
+            ResultSet nbCnt = statement.executeQuery(query);
+            return nbCnt;
         }
-
-        query += "from " + table_name + ";";
-
-        //======================================================================
-        // Excecuting dynamically built queries to get counts for nulls and blanks from tables
-        //======================================================================
-        ResultSet nbCnt = statement.executeQuery(query);
-        return nbCnt;
-
+        return null;
     }
 
     /**
