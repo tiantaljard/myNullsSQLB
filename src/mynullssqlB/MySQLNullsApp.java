@@ -28,13 +28,14 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     private MySQLDBConnect db;
     private String dynamic_query;
-    CardLayout card ;
+    
+    
 
     /**
      * Creates new form MySQLNullsApp
      */
     public MySQLNullsApp() {
-       card = (CardLayout) mainRightPanel.getLayout();
+       
         
         try {
             /*
@@ -48,6 +49,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             initComponents();
             showConnectionDialog();
             initializeModel();
+            CardLayout card  = (CardLayout) mainRightPanel.getLayout();
             card.show(mainRightPanel, "mainSummary");
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
