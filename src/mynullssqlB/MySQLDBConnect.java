@@ -58,7 +58,7 @@ public class MySQLDBConnect {
         MySQLDBConnect db = new MySQLDBConnect("127.0.0.1", "reqlocaldb", "root", "Zppsit0!", "3306");
         try {
             db.getConnection();
-            ArrayList<String[]> transposed = db.transPoseNb("uploads");
+            ArrayList<String[]> transposed = db.transPoseNb("users");
 
             String result = transposed.get(5)[0];
             System.out.println("transposed " + result);
@@ -69,27 +69,27 @@ public class MySQLDBConnect {
                 System.out.print(" " + col[1]);
                 System.out.print(" " + col[2]);
             }
-            db.getColumnNames("uploads");
-
-            ResultSet resultRS = db.initialAnalyseTables();
-            resultRS.first();
-
-            ResultSet rs = db.initialAnalyseTables();
-            TableModel table_model = db.resultSetToTableModel(rs);
-            System.out.println("TABLE MODEL COLUMN NAME " + table_model.getColumnName(1));
-
-            System.out.println("GET COLUMN NAMES " + resultRS.getString(1) + "\n");
-
-            ResultSet nullcount = db.secondAnalyseTablesNulls("uploads");
-            nullcount.first();
-            System.out.println("Null Count " + nullcount.getString(1) + nullcount.getString(2) + nullcount.getString(3) + "string 11 " + nullcount.getString(11));
-
-            System.out.println("TABLE ROW COUNT" + db.getRowCount("uploads"));
-            System.out.println("TABLE Column COUNT" + db.getColCount("uploads"));
-            //db.transPoseNb("uploads");
-            System.out.println("TABLE Null COUNT" + db.getNullCount("uploads"));
-            System.out.println("TABLE Blank COUNT" + db.getBlankCount("uploads"));
-            
+//            db.getColumnNames("uploads");
+//
+//            ResultSet resultRS = db.initialAnalyseTables();
+//            resultRS.first();
+//
+//            ResultSet rs = db.initialAnalyseTables();
+//            TableModel table_model = db.resultSetToTableModel(rs);
+//            System.out.println("TABLE MODEL COLUMN NAME " + table_model.getColumnName(1));
+//
+//            System.out.println("GET COLUMN NAMES " + resultRS.getString(1) + "\n");
+//
+//            ResultSet nullcount = db.secondAnalyseTablesNulls("requests");
+//            nullcount.first();
+//            System.out.println("Null Count " + nullcount.getString(1) + nullcount.getString(2) + nullcount.getString(3) + "string 11 " + nullcount.getString(11));
+//
+//            System.out.println("TABLE ROW COUNT" + db.getRowCount("uploads"));
+//            System.out.println("TABLE Column COUNT" + db.getColCount("uploads"));
+//            //db.transPoseNb("uploads");
+//            System.out.println("TABLE Null COUNT" + db.getNullCount("uploads"));
+//            System.out.println("TABLE Blank COUNT" + db.getBlankCount("uploads"));
+//            
             System.out.println("get null count in Main "+ db.getColNullCount("users", "loginreq"));
             
 
@@ -235,10 +235,9 @@ public class MySQLDBConnect {
         // Dynamically building nulls and blanks counts from getColumnNames
         //======================================================================
         Statement statement = conn.createStatement();
-        ResultSet colCount = statement.executeQuery(" select count(*) from information_schema.columns where table_name = '" + table_name + "';");
+        ResultSet colCount = statement.executeQuery(" select count(*) from information_schema.columns where table_name = '" + table_name + "' and table_schema='" + databaseName + "';");
         colCount.first();
         int j = colCount.getInt(1);
-
         String query = "select ";
 
         ResultSet col_results = getColumnNames(table_name);
@@ -258,10 +257,13 @@ public class MySQLDBConnect {
                     query += ", ";
                 }
                 col_results.next();
+                
+                
 
             }
 
             query += "from " + table_name + ";";
+            
 
             //======================================================================
             // Excecuting dynamically built queries to get counts for nulls and blanks from tables
@@ -354,7 +356,7 @@ public class MySQLDBConnect {
 
     public int getColNullCount(String table_name, String columnName) throws SQLException {
 
-        getConnection();
+      //  getConnection();
 
         ArrayList<String[]> colNulls = transPoseNb(table_name);
         System.out.println("Print Array Size"+colNulls.size());
