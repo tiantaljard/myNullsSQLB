@@ -210,6 +210,7 @@ public class MySQLDBConnectTest {
 
     /**
      * Test of resultSetToTableModel method, of class MySQLDBConnect.
+     * Check if a result set is converted into a table model
      */
     @Test
     public void testResultSetToTableModel() throws SQLException {
@@ -232,6 +233,79 @@ public class MySQLDBConnectTest {
         String result =table_model.getColumnName(2);
         String expResult ="Blank";
         assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of main method, of class MySQLDBConnect.
+     */
+    @Test
+    public void testMain() {
+        System.out.println("main");
+        String[] args = null;
+        MySQLDBConnect.main(args);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getNullCount method, of class MySQLDBConnect.
+     */
+    @Test
+    public void testGetNullCount() throws Exception {
+        System.out.println("getNullCount");
+        String table_name = "";
+        MySQLDBConnect instance = new MySQLDBConnect();
+        int expResult = 0;
+        int result = instance.getNullCount(table_name);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getBlankCount method, of class MySQLDBConnect.
+     */
+    @Test
+    public void testGetBlankCount() throws Exception {
+        System.out.println("getBlankCount");
+        String table_name = "";
+        MySQLDBConnect instance = new MySQLDBConnect();
+        int expResult = 0;
+        int result = instance.getBlankCount(table_name);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getColNullCount method, of class MySQLDBConnect.
+     */
+    @Test
+    public void testGetColNullCount() throws Exception {
+        System.out.println("getColNullCount");
+        String table_name = "users";
+        String columnName = "loginreq";
+        
+        int expResult = 10;
+        int result = instance.getColNullCount(table_name, columnName);
+        assertEquals(expResult, result);
+    
+    }
+
+    /**
+     * Test of getColBlankCount method, of class MySQLDBConnect.
+     */
+    @Test
+    public void testGetColBlankCount() throws Exception {
+        System.out.println("getColBlankCount");
+        String table_name = "";
+        String columnName = "";
+        MySQLDBConnect instance = new MySQLDBConnect();
+        int expResult = 0;
+        int result = instance.getColBlankCount(table_name, columnName);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
 
 }

@@ -42,6 +42,8 @@ public class MySQLDBConnect {
 
     private static final String COLCOUNT = "_colcount";
     private static final String ROWCOUNT = "_rowcount";
+    private static final String NULLCOUNT = "_nullcount";
+    private static final String BLANKCOUNT = "_blankcount";
 
     /**
      * MAIN METHOD - ONLY USED FOR TESTING IN THIS CLASS
@@ -56,32 +58,40 @@ public class MySQLDBConnect {
         MySQLDBConnect db = new MySQLDBConnect("127.0.0.1", "reqlocaldb", "root", "Zppsit0!", "3306");
         try {
             db.getConnection();
-            ArrayList<String[]> transposed = db.transPoseNb("requests");
+            ArrayList<String[]> transposed = db.transPoseNb("uploads");
 
             String result = transposed.get(5)[0];
             System.out.println("transposed " + result);
-//            for (int i = 0; i < transposed.size(); i++) {
-//                String[] col = transposed.get(i);
-//                    System.out.print("  \n    cnt "+i);
-//                   System.out.print(" "+col[0]);
-//                   System.out.print(" "+col[1]);
-//                   System.out.print(" "+col[2]);
-//            }
-            db.getColumnNames("requests");
+            for (int i = 0; i < transposed.size(); i++) {
+                String[] col = transposed.get(i);
+                System.out.print("  \n    cnt " + i);
+                System.out.print(" " + col[0]);
+                System.out.print(" " + col[1]);
+                System.out.print(" " + col[2]);
+            }
+            db.getColumnNames("uploads");
 
             ResultSet resultRS = db.initialAnalyseTables();
             resultRS.first();
-            
+
             ResultSet rs = db.initialAnalyseTables();
             TableModel table_model = db.resultSetToTableModel(rs);
-            System.out.println("TABLE MODEL COLUMN NAME "+table_model.getColumnName(1));
-            
-            
-            System.out.println("GET COLUMN NAMES " + resultRS.getString(1) +"\n");
+            System.out.println("TABLE MODEL COLUMN NAME " + table_model.getColumnName(1));
 
-            ResultSet nullcount = db.secondAnalyseTablesNulls("requests");
+            System.out.println("GET COLUMN NAMES " + resultRS.getString(1) + "\n");
+
+            ResultSet nullcount = db.secondAnalyseTablesNulls("uploads");
             nullcount.first();
             System.out.println("Null Count " + nullcount.getString(1) + nullcount.getString(2) + nullcount.getString(3) + "string 11 " + nullcount.getString(11));
+
+            System.out.println("TABLE ROW COUNT" + db.getRowCount("uploads"));
+            System.out.println("TABLE Column COUNT" + db.getColCount("uploads"));
+            //db.transPoseNb("uploads");
+            System.out.println("TABLE Null COUNT" + db.getNullCount("uploads"));
+            System.out.println("TABLE Blank COUNT" + db.getBlankCount("uploads"));
+            
+            System.out.println("get null count in Main "+ db.getColNullCount("users", "loginreq"));
+            
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -126,9 +136,9 @@ public class MySQLDBConnect {
     }
 
     /**
-     * creates a list of table that exist in the database
+     * Creates a list of table that exist in the database
      *
-     * @return a list of tables in the database schema
+     * @return ResultSet
      * @throws SQLException
      */
     public ResultSet showTables() throws SQLException {
@@ -150,7 +160,7 @@ public class MySQLDBConnect {
      * creates a hash table to store the column count and row count for each
      * table
      *
-     * @return table name,column count, row count
+     * @return ResultSet
      * @throws SQLException
      */
     public ResultSet initialAnalyseTables() throws SQLException {
@@ -200,7 +210,7 @@ public class MySQLDBConnect {
      * Retrieving columns names from a given table.
      *
      * @param table_name
-     * @return
+     * @return ResultSet
      * @throws SQLException
      */
     public ResultSet getColumnNames(String table_name) throws SQLException {
@@ -211,25 +221,13 @@ public class MySQLDBConnect {
         return getColNames;
     }
 
-    /*
-    query = "select * FROM MYTABLE WHERE true "
-        
-       addFilter(String[] filter)
-       {
-           query += String[0]  // AND OR
-                   query += " " + String[1]
-                           query += " " String[2]
-                                   query += " " String[2]
-                                   
-       }        
-    if("query has where claus") {}
-  /*
-    
-     */
     /**
+     * Build a dynamic query statement that is used in transPoseNb() to
+     * determine which if the columns of a specified table contain nulls and or
+     * blanks
      *
      * @param table_name
-     * @return
+     * @return ResultSet
      * @throws SQLException
      */
     public ResultSet secondAnalyseTablesNulls(String table_name) throws SQLException {
@@ -277,7 +275,7 @@ public class MySQLDBConnect {
      * get the number of columns for a table from a hash map table
      *
      * @param table_name
-     * @return count of columns in table
+     * @return int
      * @throws SQLException
      */
     public int getColCount(String table_name) throws SQLException {
@@ -288,19 +286,28 @@ public class MySQLDBConnect {
      * get the number of rows for a table from a hash map table
      *
      * @param table_name
-     * @return count of rows in table
+     * @return int
      * @throws SQLException
      */
     public int getRowCount(String table_name) throws SQLException {
         return tblCache.get(table_name + ROWCOUNT);
     }
 
+    public int getNullCount(String table_name) throws SQLException {
+        return tblCache.get(table_name + NULLCOUNT);
+    }
+
+    public int getBlankCount(String table_name) throws SQLException {
+        return tblCache.get(table_name + BLANKCOUNT);
+    }
+
     /**
-     * method to transpose count of null and blank values in each column of a
-     * table.
+     * transPoseNb use a dynamically generated query built in
+     * secondAnalyseTablesNulls() to create an array of columnname,count of
+     * nulls, count of blanks for a specified table.
      *
      * @param table_name
-     * @return
+     * @return ArrayList<String[]>
      * @throws SQLException
      */
     public ArrayList<String[]> transPoseNb(String table_name) throws SQLException {
@@ -316,6 +323,8 @@ public class MySQLDBConnect {
         String coll0 = null;
         String coll1 = null;
         String coll2 = null;
+        int tableNulls = 0;
+        int tableBlanks = 0;
 
         while (nBCnt.next()) {
 
@@ -329,9 +338,51 @@ public class MySQLDBConnect {
                 String[] col = new String[]{coll0, coll1, coll2};
 
                 nbc.add(col);
+                tableNulls += Integer.parseInt(coll1);
+                tableBlanks += Integer.parseInt(coll1);
+
             }
         }
+        tblCache.put(table_name + NULLCOUNT, tableNulls);
+        tblCache.put(table_name + BLANKCOUNT, tableBlanks);
+
+        nBCnt.first();
+
         return nbc;
+    }
+
+    public int getColNullCount(String table_name, String columnName) throws SQLException {
+
+        getConnection();
+
+        ArrayList<String[]> colNulls = transPoseNb(table_name);
+        System.out.println("Print Array Size"+colNulls.size());
+        if (colNulls.size() > 0) {
+
+            for (int i = 0; i < colNulls.size(); i++) {
+                String[] col = colNulls.get(i);
+                if (col[0].toString().equals(columnName)) {
+                    return Integer.parseInt(col[1]);
+                }
+            }
+        }
+        return 0;
+    }
+
+    public int getColBlankCount(String table_name, String columnName) throws SQLException {
+
+        getConnection();
+        ArrayList<String[]> colNulls = transPoseNb(table_name);
+
+        String result = colNulls.get(5)[0];
+        System.out.println("transposed " + result);
+        for (int i = 0; i < colNulls.size(); i++) {
+            String[] col = colNulls.get(i);
+            if (col[0].toString().equals(columnName)) {
+                return Integer.parseInt(col[2]);
+            }
+        }
+        return 0;
     }
 
     public int getNumberOfTable() {
