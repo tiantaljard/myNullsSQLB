@@ -18,11 +18,12 @@ import javax.swing.JOptionPane;
  */
 public class DBConnectDialog extends javax.swing.JDialog {
 
-    private MySQLDBConnect db ;
+    private MySQLDBConnect db;
 
     public MySQLDBConnect getDb() {
         return db;
     }
+
     /**
      * Creates new form myNullsSQLJFrame
      */
@@ -217,7 +218,7 @@ public class DBConnectDialog extends javax.swing.JDialog {
         String port = portJTextField.getText();
         String username = usernameJTextField.getText();
         String password = passwordJTextField.getText();
-        
+
         //======================================================================
         // Validate text for null and blank values
         //======================================================================
@@ -245,16 +246,16 @@ public class DBConnectDialog extends javax.swing.JDialog {
 
             Object[] options = {"OK"};
             Component frame;
-            
-            int n = JOptionPane.showOptionDialog(null,
-                    "Server and Database Connection Successful",
-                    "Connection Success",
-                    JOptionPane.PLAIN_MESSAGE,
-                    JOptionPane.INFORMATION_MESSAGE,
-                    null,
-                    options,
-                    options[0]);
-            
+
+//            int n = JOptionPane.showOptionDialog(null,
+//                    "Server and Database Connection Successful",
+//                    "Connection Success",
+//                    JOptionPane.PLAIN_MESSAGE,
+//                    JOptionPane.INFORMATION_MESSAGE,
+//                    null,
+//                    options,
+//                    options[0]);
+
             AnalyseJButton.setEnabled(true);
 
         } catch (SQLException e) { // if server and database connection fail run this
@@ -289,7 +290,7 @@ public class DBConnectDialog extends javax.swing.JDialog {
         String port = portJTextField.getText();
         String username = usernameJTextField.getText();
         String password = passwordJTextField.getText();
-        
+
         //======================================================================
         // Validate text for null and blank values
         //======================================================================
@@ -317,18 +318,20 @@ public class DBConnectDialog extends javax.swing.JDialog {
 
             Object[] options = {"OK"};
             Component frame;
-            
+
             setVisible(false);
 
-            
             ResultSet tbl_results = db.showTables();
             while (tbl_results.next()) {
-                
+
             }
         } catch (SQLException e) { // if server and database connection fail run this
             JOptionPane.showMessageDialog(null,
                     "The connection to the server and database was not Successful \n"
-                    + "Connection Error: " + e);
+                    + " Please confirm the database connection parameters are correct \n"
+            //             +"Connection Error: " + e);
+            );
+
         }
     }//GEN-LAST:event_AnalyseJButtonActionPerformed
 
