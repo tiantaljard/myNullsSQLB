@@ -28,29 +28,38 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     private MySQLDBConnect db;
     private String dynamic_query;
-    
-    
 
     /**
      * Creates new form MySQLNullsApp
      */
     public MySQLNullsApp() {
-       
-        
+
         try {
             /*
             ResultTableModel tableModel = new ResultTableModel();
-            System.out.println(db.getNumberOfTable());
+            System.out.println(db.getNumberOfTables());
             
             tableModel.setResultset(tbls);
             
-            tableModel.setsqlRowCount(db.getNumberOfTable());
+            tableModel.setsqlRowCount(db.getNumberOfTables());
              */
             initComponents();
             showConnectionDialog();
             initializeModel();
-            CardLayout card  = (CardLayout) mainRightPanel.getLayout();
-            card.show(mainRightPanel, "mainSummary");
+            db.initialAnalyseTables();
+            db.buildTableNullsBlankSummary();
+
+            ArrayList<String[]> tableNullBlankSummary = db.buildTableNullsBlankSummary();
+
+            mainSummaryTable.setModel(new DefaultTableModel(tableNullBlankSummary.toArray(new String[][]{}),
+                    new String[]{"Table Name", "Column Count", "Row Count", "Nulls in Table",
+                        "Blanks in Table", "Total Fields", "Percentage Nulls", "Percentage Blanks"}) {
+
+            });
+
+            CardLayout card = (CardLayout) mainRightPanel.getLayout();
+            card.show(mainRightPanel, "card3");
+
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -157,7 +166,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         tblNmScrollPanel.setViewportView(tableNameTable);
 
         tblNmParentPanel.add(tblNmScrollPanel, java.awt.BorderLayout.CENTER);
-        tblNmScrollPanel.getAccessibleContext().setAccessibleParent(colNmParentPanel);
 
         jSplitPane1.setLeftComponent(tblNmParentPanel);
 
@@ -253,6 +261,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         mainRightPanel.add(columnDetailsSpiltPanel, "card2");
 
+        mainSummary.setLayout(new java.awt.BorderLayout());
+
         mainSummaryTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -266,26 +276,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         ));
         mainSummaryScrollPanel.setViewportView(mainSummaryTable);
 
-        javax.swing.GroupLayout mainSummaryLayout = new javax.swing.GroupLayout(mainSummary);
-        mainSummary.setLayout(mainSummaryLayout);
-        mainSummaryLayout.setHorizontalGroup(
-            mainSummaryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 475, Short.MAX_VALUE)
-            .addGroup(mainSummaryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(mainSummaryLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(mainSummaryScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-        );
-        mainSummaryLayout.setVerticalGroup(
-            mainSummaryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 532, Short.MAX_VALUE)
-            .addGroup(mainSummaryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(mainSummaryLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(mainSummaryScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-        );
+        mainSummary.add(mainSummaryScrollPanel, java.awt.BorderLayout.CENTER);
 
         mainRightPanel.add(mainSummary, "card3");
 

@@ -195,16 +195,16 @@ public class MySQLDBConnectTest {
     }
 
     /**
-     * Test of getNumberOfTable method, of class MySQLDBConnect.
+     * Test of getNumberOfTables method, of class MySQLDBConnect.
      * check the number of tables in database correctly returned.
      */
     @Test
-    public void testGetNumberOfTable() throws SQLException {
+    public void testGetNumberOfTables() throws SQLException {
         System.out.println("getNumberOfTable");
         instance.showTables();
         
         int expResult = 4;
-        int result = instance.getNumberOfTable();
+        int result = instance.getNumberOfTables();
         assertEquals(expResult, result);
     }
 
@@ -224,6 +224,8 @@ public class MySQLDBConnectTest {
 
     /**
      * Test of resultSetToColumnNameTableModel method, of class MySQLDBConnect.
+     * checks if a table model is created when a result set is passed to the
+     * method
      */
     @Test
     public void testResultSetToColumnNameTableModel() throws SQLException{
@@ -237,48 +239,52 @@ public class MySQLDBConnectTest {
 
     /**
      * Test of main method, of class MySQLDBConnect.
+     * dummy test on main method to prevent the test wizard from recreating a
+     * test on main.
      */
     @Test
     public void testMain() {
         System.out.println("main");
-        String[] args = null;
-        MySQLDBConnect.main(args);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        assertEquals("dummy", "dummy");
     }
 
     /**
-     * Test of getNullCount method, of class MySQLDBConnect.
+     * Test of getNullTableCount method, of class MySQLDBConnect.
+     * Checks that the total number of fields with NULL (is null) values 
+     * in all records in a specified table is correctly calculated.
      */
     @Test
-    public void testGetNullCount() throws Exception {
+    public void testGetNullTableCount() throws Exception {
         System.out.println("getNullCount");
-        String table_name = "";
-        MySQLDBConnect instance = new MySQLDBConnect();
-        int expResult = 0;
-        int result = instance.getNullCount(table_name);
+        String table_name = "users";
+        instance.transPoseNb(table_name);
+        int expResult = 20;
+        int result = instance.getNullTableCount(table_name);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
-     * Test of getBlankCount method, of class MySQLDBConnect.
+     * Test of getBlankTableCount method, of class MySQLDBConnect.
+     * Checks that the total number of fields with BLANK (='') values 
+     * in all records in a specified table is correctly calculated.
      */
     @Test
-    public void testGetBlankCount() throws Exception {
-        System.out.println("getBlankCount");
-        String table_name = "";
-        MySQLDBConnect instance = new MySQLDBConnect();
-        int expResult = 0;
-        int result = instance.getBlankCount(table_name);
+    public void testGetBlankTableCount() throws Exception {
+        System.out.println("getBlankCount");        
+        String table_name = "requests";
+        instance.transPoseNb(table_name);
+        int expResult = 6;
+        int result = instance.getBlankTableCount(table_name);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
     }
 
     /**
      * Test of getColNullCount method, of class MySQLDBConnect.
+     * Checks that the correct value is passed for the count of records with 
+     * nulls for a specified column on a specified table.
+     * 
      */
     @Test
     public void testGetColNullCount() throws Exception {
@@ -294,18 +300,18 @@ public class MySQLDBConnectTest {
 
     /**
      * Test of getColBlankCount method, of class MySQLDBConnect.
+     * Checks that the correct value is passed for the count of records with 
+     * blanks for a specified column on a specified table.
      */
     @Test
     public void testGetColBlankCount() throws Exception {
         System.out.println("getColBlankCount");
-        String table_name = "";
-        String columnName = "";
-        MySQLDBConnect instance = new MySQLDBConnect();
-        int expResult = 0;
+        String table_name = "requests";
+        String columnName = "eao1";
+        
+        int expResult = 3;
         int result = instance.getColBlankCount(table_name, columnName);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
 }
