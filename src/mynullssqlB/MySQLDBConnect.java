@@ -197,6 +197,7 @@ public class MySQLDBConnect {
         }
 
         masterquery = masterquery + unionquery + " ) as data1;";
+        System.out.println("MASTER QUERY"+ masterquery);
 
         Statement statement = conn.createStatement();
         ResultSet iat_results = statement.executeQuery(masterquery);
@@ -434,13 +435,51 @@ public class MySQLDBConnect {
                     + "\n percentage Blanks  " + to2DP.format(percentageTableBlanks)
             );
 
-             String[] tablerecord = new String[]{tableName+"", columnCount+"", rowCount+"",tableNulls+"",tableBlanks+"",totalfields+"",to2DP.format(percentageTableNulls),to2DP.format(percentageTableBlanks)};
+            String[] tablerecord = new String[]{tableName + "", columnCount + "", rowCount + "", tableNulls + "", tableBlanks + "", totalfields + "", to2DP.format(percentageTableNulls), to2DP.format(percentageTableBlanks)};
 
             tNBS.add(tablerecord);
 
         }
 
         return tNBS;
+    }
+
+    public ArrayList<String[]> buildTableInitialSummary() throws SQLException {
+        ArrayList<String[]> tIS = new ArrayList<>();
+        ResultSet tableNames = showTables();
+        String tableName;
+        double columnCount;
+        double rowCount;
+        double tableNulls;
+        double tableBlanks;
+        double totalfields;
+        double percentageTableNulls;
+        double percentageTableBlanks;
+        double zeroValue = 0;
+        double hundredValue = 100;
+        DecimalFormat to2DP = new DecimalFormat("0.00");
+        //  to2DP.format(balance) 
+        while (tableNames.next()) {
+
+            tableName = tableNames.getString(1);
+
+            columnCount = getColCount(tableName);
+            rowCount = getRowCount(tableName);
+            totalfields = columnCount * rowCount * 1.0f;
+            zeroValue = 0;
+
+            System.out.println("Print TABLE NAME in build  BLA Summary:" + tableName
+                    + "\n colcount: " + columnCount
+                    + "\n rowcount: " + rowCount
+            );
+
+            String[] tablerecord = new String[]{tableName + "", formatDouble(columnCount) + "", formatDouble(rowCount) + ""};
+
+            tIS.add(tablerecord);
+
+        }
+
+        return tIS;
     }
 
     /**
@@ -542,6 +581,15 @@ public class MySQLDBConnect {
             return null;
         }
     }
+    
+        public static String formatDouble(double d) {
+        if (d == (long) d) {
+            return String.format("%d", (long) d);
+        } else {
+            return String.format("%s", d);
+        }
+    }
+
 
     /**
      * resultSetToColumnNameTableModel() converts a SQL result of column names
