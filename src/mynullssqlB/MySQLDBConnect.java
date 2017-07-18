@@ -147,14 +147,14 @@ public class MySQLDBConnect {
      * @return ResultSet
      * @throws SQLException
      */
-    public ResultSet showTables() throws SQLException {
+    public ResultSet getTableNames() throws SQLException {
         Statement statement = conn.createStatement();
 
-        ResultSet tbl_results = statement.executeQuery("select  count(*) from information_schema.tables where table_schema='" + databaseName + "'");
+        ResultSet tbl_results = statement.executeQuery("select  count(*) from information_schema.tables where table_schema='" + databaseName + "' and table_type='BASE TABLE'");
         tbl_results.first();
         numberOfTable = tbl_results.getInt(1);
 
-        tbl_results = statement.executeQuery("select  table_name as \"Tables\" from information_schema.tables where table_schema='" + databaseName + "'");
+        tbl_results = statement.executeQuery("select  table_name as \"Tables\" from information_schema.tables where table_schema='" + databaseName + "' and table_type='BASE TABLE'");
 
         return tbl_results;
     }
@@ -174,7 +174,7 @@ public class MySQLDBConnect {
         String masterquery = "Select table_name, column_cnt, rowcount from ( ";
         String unionquery = "";
 
-        ResultSet tableNames = showTables();
+        ResultSet tableNames = getTableNames();
         int tablecount = getNumberOfTables();
         tableNames.first();
 
@@ -197,10 +197,10 @@ public class MySQLDBConnect {
         }
 
         masterquery = masterquery + unionquery + " ) as data1;";
-        System.out.println("MASTER QUERY"+ masterquery);
 
         Statement statement = conn.createStatement();
         ResultSet iat_results = statement.executeQuery(masterquery);
+        //System.out.println(masterquery);
 
         while (iat_results.next()) {
 
@@ -271,7 +271,7 @@ public class MySQLDBConnect {
             //======================================================================
             // Excecuting dynamically built queries to get counts for nulls and blanks from tables
             //======================================================================
-            System.out.println(query);
+
             ResultSet nbCnt = statement.executeQuery(query);
             return nbCnt;
         }
@@ -380,16 +380,22 @@ public class MySQLDBConnect {
         }
         tblCache.put(table_name + NULLCOUNT, tableNulls);
         tblCache.put(table_name + BLANKCOUNT, tableBlanks);
-        System.out.println(table_name + BLANKCOUNT + " - " + tableBlanks);
 
         nBCnt.first();
 
         return nbc;
     }
 
-    public ArrayList<String[]> buildTableNullsBlankSummary() throws SQLException {
-        ArrayList<String[]> tNBS = new ArrayList<>();
-        ResultSet tableNames = showTables();
+    public Object[][] buildTableNullsBlankSummary() throws SQLException {
+        //ArrayList<String[]> tNBS = new ArrayList<>();
+
+        int ArrayrowCount = getNumberOfTables();
+        int ArraycolCount = 5;
+
+        Object[][] tableNullBlankSummaryArray = new Object[ArrayrowCount][ArraycolCount];
+
+        ResultSet tableNames = getTableNames();
+        tableNames.first();
         String tableName;
         double columnCount;
         double rowCount;
@@ -402,7 +408,9 @@ public class MySQLDBConnect {
         double hundredValue = 100;
         DecimalFormat to2DP = new DecimalFormat("0.00");
         //  to2DP.format(balance) 
-        while (tableNames.next()) {
+
+        int count = 0;
+        for (int i = 0; i < this.numberOfTable; i++) {
 
             tableName = tableNames.getString(1);
 
@@ -425,28 +433,18 @@ public class MySQLDBConnect {
                 percentageTableBlanks = (tableBlanks / totalfields) * hundredValue;
             }
 
-            System.out.println("Print TABLE NAME in build  BLA Summary:" + tableName
-                    + "\n colcount: " + columnCount
-                    + "\n rowcount: " + rowCount
-                    + "\n table nulls " + tableNulls
-                    + "\n table blanks " + tableBlanks
-                    + "\n total fields " + totalfields
-                    + "\n percentage Nulls   " + to2DP.format(percentageTableNulls)
-                    + "\n percentage Blanks  " + to2DP.format(percentageTableBlanks)
-            );
-
-            String[] tablerecord = new String[]{tableName + "", columnCount + "", rowCount + "", tableNulls + "", tableBlanks + "", totalfields + "", to2DP.format(percentageTableNulls), to2DP.format(percentageTableBlanks)};
-
-            tNBS.add(tablerecord);
+            tableNullBlankSummaryArray[count] = new Object[]{tableName, columnCount, rowCount, to2DP.format(percentageTableNulls), to2DP.format(percentageTableBlanks)};
+            tableNames.next();
+            count++;
 
         }
 
-        return tNBS;
+        return tableNullBlankSummaryArray;
     }
 
     public ArrayList<String[]> buildTableInitialSummary() throws SQLException {
         ArrayList<String[]> tIS = new ArrayList<>();
-        ResultSet tableNames = showTables();
+        ResultSet tableNames = getTableNames();
         String tableName;
         double columnCount;
         double rowCount;
@@ -581,15 +579,14 @@ public class MySQLDBConnect {
             return null;
         }
     }
-    
-        public static String formatDouble(double d) {
+
+    public static String formatDouble(double d) {
         if (d == (long) d) {
             return String.format("%d", (long) d);
         } else {
             return String.format("%s", d);
         }
     }
-
 
     /**
      * resultSetToColumnNameTableModel() converts a SQL result of column names

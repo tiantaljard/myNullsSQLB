@@ -321,10 +321,8 @@ public class DBConnectDialog extends javax.swing.JDialog {
 
             setVisible(false);
 
-            ResultSet tbl_results = db.showTables();
-            while (tbl_results.next()) {
-
-            }
+            ResultSet tbl_results = db.getTableNames();
+            
         } catch (SQLException e) { // if server and database connection fail run this
             JOptionPane.showMessageDialog(null,
                     "The connection to the server and database was not Successful \n"

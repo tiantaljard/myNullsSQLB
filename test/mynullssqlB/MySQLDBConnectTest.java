@@ -69,13 +69,13 @@ public class MySQLDBConnectTest {
     }
 
     /**
-     * Test of showTables method, of class MySQLDBConnect. Check that table
+     * Test of getTableNames method, of class MySQLDBConnect. Check that table
      * names are returned from the schema
      */
     @Test
     public void testShowTables() throws Exception {
         System.out.println("showTables");
-        ResultSet result = instance.showTables();
+        ResultSet result = instance.getTableNames();
         assertNotNull(result);
         result.first();
         String s = result.getString(1);
@@ -201,7 +201,7 @@ public class MySQLDBConnectTest {
     @Test
     public void testGetNumberOfTables() throws SQLException {
         System.out.println("getNumberOfTable");
-        instance.showTables();
+        instance.getTableNames();
         
         int expResult = 4;
         int result = instance.getNumberOfTables();
