@@ -249,17 +249,17 @@ public class MySQLDBConnect {
 
         if (col_results.next()) {
             for (int i = 0; i < j; i++) {
-                query += "SUM(CASE WHEN " + col_results.getString(1)
-                        + " IS NULL THEN 1 ELSE 0 END) as nulls_"
+                query += "SUM(CASE WHEN `" + col_results.getString(1)
+                        + "` IS NULL THEN 1 ELSE 0 END) as `nulls_"
                         + col_results.getString(1);
-                query += ", SUM(CASE WHEN " + col_results.getString(1)
-                        + " ='' THEN 1 ELSE 0 END) as blanks_"
+                query += "`, SUM(CASE WHEN `" + col_results.getString(1)
+                        + "` ='' THEN 1 ELSE 0 END) as `blanks_"
                         + col_results.getString(1);
                 if (i == j - 1) {
-                    query += " ";
+                    query += "` ";
 
                 } else {
-                    query += ", ";
+                    query += "`, ";
                 }
                 col_results.next();
 
@@ -270,6 +270,7 @@ public class MySQLDBConnect {
             //======================================================================
             // Excecuting dynamically built queries to get counts for nulls and blanks from tables
             //======================================================================
+            System.out.println(query);
             ResultSet nbCnt = statement.executeQuery(query);
             return nbCnt;
         }
