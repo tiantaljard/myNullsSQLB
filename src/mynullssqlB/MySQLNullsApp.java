@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTable;
@@ -46,19 +47,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             initComponents();
             showConnectionDialog();
             initializeModel();
-            db.initialAnalyseTables();
-            db.buildTableNullsBlankSummary();
-
-            ArrayList<String[]> tableNullBlankSummary = db.buildTableNullsBlankSummary();
-
-            mainSummaryTable.setModel(new DefaultTableModel(tableNullBlankSummary.toArray(new String[][]{}),
-                    new String[]{"Table Name", "Column Count", "Row Count", "Nulls in Table",
-                        "Blanks in Table", "Total Fields", "Percentage Nulls", "Percentage Blanks"}) {
-
-            });
-
-            CardLayout card = (CardLayout) mainRightPanel.getLayout();
-            card.show(mainRightPanel, "card3");
+            setInitialSummaryTable();
 
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
@@ -78,12 +67,35 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         jMenuBar2 = new javax.swing.JMenuBar();
         jMenu3 = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
+        mainJPanel = new javax.swing.JPanel();
+        initialSummaryPanel = new javax.swing.JPanel();
+        initialSummaryScrollPanel = new javax.swing.JScrollPane();
+        initialSummaryTable = new javax.swing.JTable() {
+
+            @Override
+            public Class getColumnClass(int column) {
+                switch (column) {
+                    case 0:
+                    return String.class;
+                    case 1:
+                    return Integer.class;
+                    case 2:
+                    return Integer.class;
+
+                    default:
+                    return Integer.class;
+                }
+            }
+        }
+
+        ;
         jSplitPane1 = new javax.swing.JSplitPane();
         tblNmParentPanel = new javax.swing.JPanel();
         tblNmFilterPanel = new javax.swing.JPanel();
         tableNameFilter = new javax.swing.JTextField();
         tblNmScrollPanel = new javax.swing.JScrollPane();
         tableNameTable = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
         mainRightPanel = new javax.swing.JPanel();
         columnDetailsSpiltPanel = new javax.swing.JSplitPane();
         jScrollPane4 = new javax.swing.JScrollPane();
@@ -123,6 +135,16 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         jMenuBar2.add(jMenu4);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        mainJPanel.setLayout(new java.awt.CardLayout());
+
+        initialSummaryPanel.setLayout(new java.awt.BorderLayout());
+
+        initialSummaryScrollPanel.setViewportView(initialSummaryTable);
+
+        initialSummaryPanel.add(initialSummaryScrollPanel, java.awt.BorderLayout.CENTER);
+
+        mainJPanel.add(initialSummaryPanel, "initialSummaryCard");
 
         jSplitPane1.setPreferredSize(new java.awt.Dimension(800, 536));
 
@@ -166,6 +188,19 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         tblNmScrollPanel.setViewportView(tableNameTable);
 
         tblNmParentPanel.add(tblNmScrollPanel, java.awt.BorderLayout.CENTER);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 669, Short.MAX_VALUE)
+        );
+
+        tblNmParentPanel.add(jPanel1, java.awt.BorderLayout.LINE_END);
 
         jSplitPane1.setLeftComponent(tblNmParentPanel);
 
@@ -282,6 +317,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         jSplitPane1.setRightComponent(mainRightPanel);
 
+        mainJPanel.add(jSplitPane1, "card2");
+
+        getContentPane().add(mainJPanel, java.awt.BorderLayout.CENTER);
+
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
 
@@ -289,23 +328,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(41, Short.MAX_VALUE)
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -522,6 +544,53 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         setTableRowSorter(columnNameTable);
     }
 
+    public void setInitialSummaryTable() throws SQLException {
+
+        TableModel initialSummaryModel
+                = db.resultSetToTableModel(db.initialAnalyseTables());
+        
+        ResultSet rs = db.initialAnalyseTables();
+        int colCount =  rs.getMetaData().getColumnCount();
+        int rowCount = initialSummaryModel.getRowCount();
+
+        Object[][] objarray = new Object[rowCount][colCount];
+        int count = 0;
+        while (rs.next()) {
+            objarray[count] = new Object[]{rs.getObject(1), (Long)rs.getObject(2), (Long)rs.getObject(3)};
+
+            count++;
+
+        }
+        Object[] columns = {"Track #", "Title", "Length"};
+        DefaultTableModel d = new DefaultTableModel(objarray, columns);
+        initialSummaryTable.setModel(d);
+
+         
+        initialSummaryTable.getTableHeader().setReorderingAllowed(false);
+
+        setTableRowSorter(initialSummaryTable);
+        CardLayout card = (CardLayout) mainJPanel.getLayout();
+        card.show(mainJPanel, "initialSummaryCard");
+
+    }
+
+    public void setNullsBlankSummaryTable() throws SQLException {
+        db.initialAnalyseTables();
+
+        ArrayList<String[]> tableISummary = db.buildTableInitialSummary();
+
+        initialSummaryTable.setModel(new DefaultTableModel(tableISummary.toArray(new String[][]{}),
+                new String[]{"Table Name", "Column Count", "Row Count"}) {
+
+//                    new String[]{"Table Name", "Column Count", "Row Count", "Nulls in Table",
+//                        "Blanks in Table", "Total Fields", "Percentage Nulls", "Percentage Blanks"}) {
+        });
+
+        CardLayout card = (CardLayout) mainJPanel.getLayout();
+        card.show(mainJPanel, "initialSummaryCard");
+
+    }
+
     public void setDataTable(ResultSet data) {
         TableModel model = db.resultSetToTableModel(data);
         dataTable.setModel(model);
@@ -533,6 +602,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         TableRowSorter<TableModel> sorter
                 = new TableRowSorter<TableModel>(table.getModel());
         table.setRowSorter(sorter);
+        
         return sorter;
 
     }
@@ -606,6 +676,14 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }
 
+    public static String formatDouble(double d) {
+        if (d == (long) d) {
+            return String.format("%d", (long) d);
+        } else {
+            return String.format("%s", d);
+        }
+    }
+
     public void buildColumnDataQuery() {
         ArrayList<String> columns_selected;
 
@@ -640,14 +718,19 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JTextField columnNameFilter;
     private javax.swing.JTable columnNameTable;
     private javax.swing.JTable dataTable;
+    private javax.swing.JPanel initialSummaryPanel;
+    private javax.swing.JScrollPane initialSummaryScrollPanel;
+    private javax.swing.JTable initialSummaryTable;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuBar jMenuBar2;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JPanel mainJPanel;
     private javax.swing.JPanel mainRightPanel;
     private javax.swing.JPanel mainSummary;
     private javax.swing.JScrollPane mainSummaryScrollPanel;
