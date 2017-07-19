@@ -72,10 +72,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         jMenuBar2 = new javax.swing.JMenuBar();
         jMenu3 = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
-        summaryTablePopupMenu = new javax.swing.JPopupMenu();
+        tablePopupMenu = new javax.swing.JPopupMenu();
         showNBSummaryTbl = new javax.swing.JMenuItem();
         showInitialSummaryTbl = new javax.swing.JMenuItem();
         showDataNavigatorPanel = new javax.swing.JMenuItem();
+        showAllTablesDataNavigatorTbl = new javax.swing.JMenuItem();
         mainJPanel = new javax.swing.JPanel();
         initialSummaryPanel = new javax.swing.JPanel();
         initialsummaryScrollPanel = new javax.swing.JScrollPane();
@@ -114,30 +115,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 }
             }
         };
-        mainSummary = new javax.swing.JPanel();
-        mainSummaryScrollPanel = new javax.swing.JScrollPane();
-        mainSummaryTable = new javax.swing.JTable();
-        nullBlankSummaryPanel = new javax.swing.JPanel();
-        nullBlankSummaryScrollPanel = new javax.swing.JScrollPane();
-        NullBlanksummaryTable = new javax.swing.JTable() {
-            @Override
-            public Class getColumnClass(int column) {
-                switch (column) {
-                    case 0:
-                    return String.class;
-                    case 1:
-                    return Long.class;
-                    case 2:
-                    return Long.class;
-                    default:
-                    return String.class;
-                }
-            }
-        }
-        ;
-        topNullBlankSummaryView1 = new javax.swing.JPanel();
-        NullBlankSummaryfilterPanel = new javax.swing.JPanel();
-        initialSummaryTableFilter1 = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -148,7 +125,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         jMenu4.setText("Edit");
         jMenuBar2.add(jMenu4);
 
-        summaryTablePopupMenu =new JPopupMenu();
+        tablePopupMenu =new JPopupMenu();
 
         showNBSummaryTbl.setText("Show Nulls & Blank Summary Table");
         showNBSummaryTbl.addActionListener(new java.awt.event.ActionListener() {
@@ -168,6 +145,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         showDataNavigatorPanel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 showDataNavigatorPanelActionPerformed(evt);
+            }
+        });
+
+        showAllTablesDataNavigatorTbl.setText("Show All Tables");
+        showAllTablesDataNavigatorTbl.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showAllTablesDataNavigatorTblActionPerformed(evt);
             }
         });
 
@@ -358,92 +342,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         mainRightPanel.add(columnDetailsSpiltPanel, "card2");
 
-        mainSummary.setLayout(new java.awt.BorderLayout());
-
-        mainSummaryTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        mainSummaryScrollPanel.setViewportView(mainSummaryTable);
-
-        mainSummary.add(mainSummaryScrollPanel, java.awt.BorderLayout.CENTER);
-
-        mainRightPanel.add(mainSummary, "card3");
-
         dataExplorerSplitPane.setRightComponent(mainRightPanel);
 
         mainJPanel.add(dataExplorerSplitPane, "dataExplorerCard");
-
-        nullBlankSummaryPanel.setLayout(new java.awt.BorderLayout());
-
-        NullBlanksummaryTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Long.class, java.lang.Long.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        nullBlankSummaryScrollPanel.setViewportView(NullBlanksummaryTable);
-
-        nullBlankSummaryPanel.add(nullBlankSummaryScrollPanel, java.awt.BorderLayout.CENTER);
-
-        topNullBlankSummaryView1.setLayout(new java.awt.BorderLayout());
-
-        initialSummaryTableFilter1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                initialSummaryTableFilter1ActionPerformed(evt);
-            }
-        });
-        initialSummaryTableFilter1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                initialSummaryTableFilter1KeyReleased(evt);
-            }
-        });
-
-        javax.swing.GroupLayout NullBlankSummaryfilterPanelLayout = new javax.swing.GroupLayout(NullBlankSummaryfilterPanel);
-        NullBlankSummaryfilterPanel.setLayout(NullBlankSummaryfilterPanelLayout);
-        NullBlankSummaryfilterPanelLayout.setHorizontalGroup(
-            NullBlankSummaryfilterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(NullBlankSummaryfilterPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(initialSummaryTableFilter1, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(639, Short.MAX_VALUE))
-        );
-        NullBlankSummaryfilterPanelLayout.setVerticalGroup(
-            NullBlankSummaryfilterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, NullBlankSummaryfilterPanelLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(initialSummaryTableFilter1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-
-        topNullBlankSummaryView1.add(NullBlankSummaryfilterPanel, java.awt.BorderLayout.CENTER);
-
-        nullBlankSummaryPanel.add(topNullBlankSummaryView1, java.awt.BorderLayout.NORTH);
-
-        mainJPanel.add(nullBlankSummaryPanel, "initialSummaryCard");
 
         getContentPane().add(mainJPanel, java.awt.BorderLayout.CENTER);
 
@@ -461,6 +362,26 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private void tableNameTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableNameTableMouseClicked
         setColumnNameTable();
         setJTableColOneFilter(columnNameTable, columnNameFilter);
+
+        if (evt.getButton() == MouseEvent.BUTTON3) {
+            tablePopupMenu.remove(showNBSummaryTbl);
+            tablePopupMenu.remove(showInitialSummaryTbl);
+            tablePopupMenu.remove(showDataNavigatorPanel);
+            tablePopupMenu.remove(showAllTablesDataNavigatorTbl);
+
+            tablePopupMenu.add(showInitialSummaryTbl);
+            System.out.println("DB "+db.getTotalNumberOfTables());
+            System.out.println("MODEL "+tableNameTable.getModel().getRowCount());
+
+            if (db.getTotalNumberOfTables() == tableNameTable.getModel().getRowCount() ) {
+                tablePopupMenu.remove(showAllTablesDataNavigatorTbl);
+            } else {
+                tablePopupMenu.add(showAllTablesDataNavigatorTbl);
+            }
+            tablePopupMenu.show(tableNameTable, evt.getX(), evt.getY());
+
+        }
+
 
     }//GEN-LAST:event_tableNameTableMouseClicked
 
@@ -518,30 +439,24 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         setJTableColOneFilter(summaryTable, initialSummaryTableFilter);
     }//GEN-LAST:event_initialSummaryTableFilterKeyReleased
 
-    private void initialSummaryTableFilter1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initialSummaryTableFilter1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_initialSummaryTableFilter1ActionPerformed
-
-    private void initialSummaryTableFilter1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_initialSummaryTableFilter1KeyReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_initialSummaryTableFilter1KeyReleased
-
     private void summaryTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_summaryTableMouseClicked
 
         if (evt.getButton() == MouseEvent.BUTTON3) {
-            summaryTablePopupMenu.remove(showNBSummaryTbl);
-            summaryTablePopupMenu.remove(showInitialSummaryTbl);
-            summaryTablePopupMenu.remove(showDataNavigatorPanel);
+            tablePopupMenu.remove(showNBSummaryTbl);
+            tablePopupMenu.remove(showInitialSummaryTbl);
+            tablePopupMenu.remove(showDataNavigatorPanel);
+            tablePopupMenu.remove(showAllTablesDataNavigatorTbl);
 
             if (summaryTable.getModel().getColumnCount() == 3) {
-                summaryTablePopupMenu.add(showNBSummaryTbl);
-                summaryTablePopupMenu.add(showDataNavigatorPanel);
+                tablePopupMenu.add(showNBSummaryTbl);
+                tablePopupMenu.add(showDataNavigatorPanel);
             }
             if (summaryTable.getModel().getColumnCount() == 5) {
-                summaryTablePopupMenu.add(showInitialSummaryTbl);
-                summaryTablePopupMenu.add(showDataNavigatorPanel);
+                tablePopupMenu.add(showInitialSummaryTbl);
+                tablePopupMenu.add(showDataNavigatorPanel);
+                
             }
-            summaryTablePopupMenu.show(summaryTable, evt.getX(), evt.getY());
+            tablePopupMenu.show(summaryTable, evt.getX(), evt.getY());
 
         }
     }//GEN-LAST:event_summaryTableMouseClicked
@@ -572,6 +487,15 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_showDataNavigatorPanelActionPerformed
+
+    private void showAllTablesDataNavigatorTblActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showAllTablesDataNavigatorTblActionPerformed
+        try {
+            initializeModel();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_showAllTablesDataNavigatorTblActionPerformed
 
     /**
      * @param args the command line arguments
@@ -685,7 +609,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      * @return ArrayList<String>
      */
     public ArrayList<String> rowsColOneSelected(JTable jTable) {
-        ArrayList<String> rowsColOneSelected = new ArrayList<String>();
+        ArrayList<String> rowsColOneSelected = new ArrayList<>();
         try {
             int[] rows = jTable.getSelectedRows();
             for (int i = 0; i < rows.length; i++) {
@@ -912,7 +836,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         String sqlWhere = "";
         // If it is the initial Summary Table Model get the selected tables
         // or all tables in database if none are selected.
-        TableModel tableModel =summaryTable.getModel();
+        TableModel tableModel = summaryTable.getModel();
         if (tableModel.getColumnCount() == 3) {
 
             if (selectedTables.isEmpty()) {
@@ -934,15 +858,15 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             if (selectedTables.isEmpty()) {
                 sqlWhere = "and table_name in (";
                 int tableCount = tableModel.getRowCount();
-                for (int tc=0; tc < tableCount; tc++) {
-                    sqlWhere +="'" + tableModel.getValueAt((tc), (0)) + "'";
+                for (int tc = 0; tc < tableCount; tc++) {
+                    sqlWhere += "'" + tableModel.getValueAt((tc), (0)) + "'";
                     if (tc == tableCount - 1) {
                         sqlWhere += ")";
                     } else {
                         sqlWhere += ",";
                     }
                 }
-                
+
             } else {
                 sqlWhere = "and table_name in (";
                 for (int i = 0; i < selectedTables.size(); i++) {
@@ -955,7 +879,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 }
             }
         }
-        System.out.println("BUILD TABLE SQL WHERE"+sqlWhere);
+        System.out.println("BUILD TABLE SQL WHERE" + sqlWhere);
         return sqlWhere;
     }
 
@@ -1157,8 +1081,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel NullBlankSummaryfilterPanel;
-    private javax.swing.JTable NullBlanksummaryTable;
     private javax.swing.JPanel colNmFilterPanel;
     private javax.swing.JPanel colNmParentPanel;
     private javax.swing.JScrollPane colNmScrollPanel;
@@ -1169,7 +1091,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JTable dataTable;
     private javax.swing.JPanel initialSummaryPanel;
     private javax.swing.JTextField initialSummaryTableFilter;
-    private javax.swing.JTextField initialSummaryTableFilter1;
     private javax.swing.JScrollPane initialsummaryScrollPanel;
     private javax.swing.JPanel intialSummaryfilterPanel;
     private javax.swing.JMenu jMenu1;
@@ -1181,22 +1102,17 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JPanel mainJPanel;
     private javax.swing.JPanel mainRightPanel;
-    private javax.swing.JPanel mainSummary;
-    private javax.swing.JScrollPane mainSummaryScrollPanel;
-    private javax.swing.JTable mainSummaryTable;
-    private javax.swing.JPanel nullBlankSummaryPanel;
-    private javax.swing.JScrollPane nullBlankSummaryScrollPanel;
+    private javax.swing.JMenuItem showAllTablesDataNavigatorTbl;
     private javax.swing.JMenuItem showDataNavigatorPanel;
     private javax.swing.JMenuItem showInitialSummaryTbl;
     private javax.swing.JMenuItem showNBSummaryTbl;
     private javax.swing.JTable summaryTable;
-    private javax.swing.JPopupMenu summaryTablePopupMenu;
     private javax.swing.JTextField tableNameFilter;
     private javax.swing.JTable tableNameTable;
+    private javax.swing.JPopupMenu tablePopupMenu;
     private javax.swing.JPanel tblNmFilterPanel;
     private javax.swing.JPanel tblNmParentPanel;
     private javax.swing.JScrollPane tblNmScrollPanel;
     private javax.swing.JPanel topInitialSummaryView;
-    private javax.swing.JPanel topNullBlankSummaryView1;
     // End of variables declaration//GEN-END:variables
 }

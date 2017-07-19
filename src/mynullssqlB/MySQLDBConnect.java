@@ -36,6 +36,7 @@ public class MySQLDBConnect {
     private MySQLNullsApp mySQLNullsApp;
 
     private int numberOfTable;
+    private int totalNumberOfTable;
     /**
      * for caching table names column count and row count
      */
@@ -153,6 +154,7 @@ public class MySQLDBConnect {
         ResultSet tbl_results = statement.executeQuery("select  count(*) from information_schema.tables where table_schema='" + databaseName + "' and table_type='BASE TABLE'");
         tbl_results.first();
         numberOfTable = tbl_results.getInt(1);
+        totalNumberOfTable = tbl_results.getInt(1);
 
         tbl_results = statement.executeQuery("select  table_name as \"Tables\" from information_schema.tables where table_schema='" + databaseName + "' and table_type='BASE TABLE'");
 
@@ -175,6 +177,7 @@ public class MySQLDBConnect {
         ResultSet tbl_results = statement.executeQuery("select  count(*) from information_schema.tables where table_schema='" + databaseName + "' and table_type='BASE TABLE' "+SQLwhere);
         tbl_results.first();
         numberOfTable = tbl_results.getInt(1);
+        
 
         tbl_results = statement.executeQuery("select  table_name as \"Tables\" from information_schema.tables where table_schema='" + databaseName + "' and table_type='BASE TABLE' "+SQLwhere);
 
@@ -509,6 +512,15 @@ public class MySQLDBConnect {
     public int getNumberOfTables() {
         return numberOfTable;
     }
+        /**
+     * getTotalNumberOfTables() return the number of tables in a database
+     *
+     * @return int
+     */
+    public int getTotalNumberOfTables() {
+        return totalNumberOfTable;
+    }
+
 
     /**
      * resultSetToTableModel() converts a SQL result set into a JTable model
