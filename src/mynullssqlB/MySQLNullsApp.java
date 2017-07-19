@@ -6,12 +6,14 @@
 package mynullssqlB;
 
 import java.awt.CardLayout;
+import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
@@ -70,6 +72,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         jMenu3 = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
         summaryTablePopupMenu = new javax.swing.JPopupMenu();
+        showNBSummaryTbl = new javax.swing.JMenuItem();
+        showInitialSummaryTbl = new javax.swing.JMenuItem();
         mainJPanel = new javax.swing.JPanel();
         initialSummaryPanel = new javax.swing.JPanel();
         initialsummaryScrollPanel = new javax.swing.JScrollPane();
@@ -156,6 +160,22 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         jMenu4.setText("Edit");
         jMenuBar2.add(jMenu4);
+
+        summaryTablePopupMenu =new JPopupMenu();
+
+        showNBSummaryTbl.setText("Show Nulls & Blank Summary Table");
+        showNBSummaryTbl.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showNBSummaryTblActionPerformed(evt);
+            }
+        });
+
+        showInitialSummaryTbl.setText("Show Initial Table Summary");
+        showInitialSummaryTbl.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showInitialSummaryTblActionPerformed(evt);
+            }
+        });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -536,8 +556,37 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }//GEN-LAST:event_initialSummaryTableFilter1KeyReleased
 
     private void summaryTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_summaryTableMouseClicked
-        // TODO add your handling code here:
+        if (evt.getButton() == MouseEvent.BUTTON3) {
+            summaryTablePopupMenu.remove(showNBSummaryTbl);
+            summaryTablePopupMenu.remove(showInitialSummaryTbl);
+            
+            if (summaryTable.getModel().getColumnCount() == 3) {
+                summaryTablePopupMenu.add(showNBSummaryTbl);
+            }
+            if (summaryTable.getModel().getColumnCount() == 5) {
+                summaryTablePopupMenu.add(showInitialSummaryTbl);
+            }
+            summaryTablePopupMenu.show(summaryTable, evt.getX(), evt.getY());
+
+        }
     }//GEN-LAST:event_summaryTableMouseClicked
+
+    private void showNBSummaryTblActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showNBSummaryTblActionPerformed
+
+        try {
+            setNullsBlankSummaryTable();
+        } catch (SQLException ex) {
+            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_showNBSummaryTblActionPerformed
+
+    private void showInitialSummaryTblActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showInitialSummaryTblActionPerformed
+                try {
+            setInitialSummaryTable();
+        } catch (SQLException ex) {
+            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_showInitialSummaryTblActionPerformed
 
     /**
      * @param args the command line arguments
@@ -732,9 +781,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         setTableRowSorter(summaryTable);
         CardLayout card = (CardLayout) mainJPanel.getLayout();
         card.show(mainJPanel, "initialSummaryCard");
-        tableViewinUse="initialSummaryPanel";
+        tableViewinUse = "initialSummaryPanel";
         initialSummaryPanel.setVisible(true);
-        
+
     }
 
     public void setNullsBlankSummaryTable() throws SQLException {
@@ -752,7 +801,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         summaryTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
         summaryTable.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
         summaryTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
-        
+
         setTableRowSorter(summaryTable);
 
         CardLayout card = (CardLayout) mainJPanel.getLayout();
@@ -824,9 +873,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     public void buildTransposeTable(String table_name) throws SQLException {
 
         ArrayList<String[]> l = db.transPoseNb(table_name);
-
     }
 
+    /**
+     * buildColumnDataSQLWhere() builds the "where" part of the SQL query
+     * to retrieve data from the database for the column names selected in the 
+     * "column names navigator" table. See buildColumnDataQuery().
+     */
     public void buildColumnDataSQLWhere() {
 
         TableModel columnNames = columnNameTable.getModel();
@@ -843,27 +896,25 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
         }
         dynamic_query = dynamic_query + sqlWhere + ";";
-
     }
 
-    public static String formatDouble(double d) {
-        if (d == (long) d) {
-            return String.format("%d", (long) d);
-        } else {
-            return String.format("%s", d);
-        }
-    }
+    
+    
 
+    /**
+     * buildColumnDataQuery() builds the "select column"  part of the SQL query
+     * to retrieve data from the database for the column names selected in the 
+     * "column names navigator" table. See buildColumnDataSQLWhere()
+     */
     public void buildColumnDataQuery() {
         ArrayList<String> columns_selected;
-
         ResultSet columns = null;
 
         String table_name = (rowColOneSelected(tableNameTable));
         columns_selected = rowsColOneSelected(columnNameTable);
-
+        
         String query = "select ";
-
+        
         for (int i = 0; i < columns_selected.size(); i++) {
             query += columns_selected.get(i).toString();
             if (i == columns_selected.size() - 1) {
@@ -872,13 +923,24 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 query += ",";
             }
         }
-
         dynamic_query = query + " from " + table_name + " where 1=1 ";
-
+       
         buildColumnDataSQLWhere();
-
     }
-
+    
+    /**
+     * formatDouble() formats a [double] variable to get rid of trailing 
+     * decimals to display the number cleanly with sufficient amount of accuracy
+     * @param double
+     * @return String
+     */
+    public static String formatDouble(double d) {
+        if (d == (long) d) {
+            return String.format("%d", (long) d);
+        } else {
+            return String.format("%s", d);
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel NullBlankSummaryfilterPanel;
@@ -910,6 +972,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JTable mainSummaryTable;
     private javax.swing.JPanel nullBlankSummaryPanel;
     private javax.swing.JScrollPane nullBlankSummaryScrollPanel;
+    private javax.swing.JMenuItem showInitialSummaryTbl;
+    private javax.swing.JMenuItem showNBSummaryTbl;
     private javax.swing.JTable summaryTable;
     private javax.swing.JPopupMenu summaryTablePopupMenu;
     private javax.swing.JTextField tableNameFilter;

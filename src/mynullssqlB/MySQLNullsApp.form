@@ -21,11 +21,32 @@
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPopupMenu" name="summaryTablePopupMenu">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="summaryTablePopupMenu =new JPopupMenu();"/>
+      </AuxValues>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
     </Container>
+    <Component class="javax.swing.JMenuItem" name="showNBSummaryTbl">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="&quot;Show Nulls &amp; Blank Summary Table&quot;" type="code"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showNBSummaryTblActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JMenuItem" name="showInitialSummaryTbl">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Show Initial Table Summary"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showInitialSummaryTblActionPerformed"/>
+      </Events>
+    </Component>
     <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="jMenu1">
