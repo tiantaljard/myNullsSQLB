@@ -643,7 +643,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         Statement statement = db.conn.createStatement();
 
         ResultSet getColData = statement.executeQuery(dynamic_query);
-
+        System.out.println("in get col data "+getColData.getNString(1) );
+        getColData.first();
         return getColData;
 
     }
@@ -741,7 +742,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         ResultTableModel dataTableModel = new ResultTableModel();
         dataTableModel.setResultset(data);
        
-        System.out.println(db.getRowCount(rowColOneSelected(tableNameTable)));
+        System.out.println("GOT HERE "+db.getRowCount(rowColOneSelected(tableNameTable)));
         dataTableModel.setsqlRowCount(db.getRowCount(rowColOneSelected(tableNameTable)));
 
         //TableModel model = db.resultSetToTableModel(data);
