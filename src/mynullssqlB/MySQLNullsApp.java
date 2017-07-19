@@ -370,10 +370,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             tablePopupMenu.remove(showAllTablesDataNavigatorTbl);
 
             tablePopupMenu.add(showInitialSummaryTbl);
-            System.out.println("DB "+db.getTotalNumberOfTables());
-            System.out.println("MODEL "+tableNameTable.getModel().getRowCount());
+            System.out.println("DB " + db.getTotalNumberOfTables());
+            System.out.println("MODEL " + tableNameTable.getModel().getRowCount());
 
-            if (db.getTotalNumberOfTables() == tableNameTable.getModel().getRowCount() ) {
+            if (db.getTotalNumberOfTables() == tableNameTable.getModel().getRowCount()) {
                 tablePopupMenu.remove(showAllTablesDataNavigatorTbl);
             } else {
                 tablePopupMenu.add(showAllTablesDataNavigatorTbl);
@@ -454,7 +454,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             if (summaryTable.getModel().getColumnCount() == 5) {
                 tablePopupMenu.add(showInitialSummaryTbl);
                 tablePopupMenu.add(showDataNavigatorPanel);
-                
+
             }
             tablePopupMenu.show(summaryTable, evt.getX(), evt.getY());
 
@@ -659,6 +659,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
 
         columnNameTable.setModel(db.resultSetToColumnNameTableModel(columns));
+
         columnNameTable.getColumnModel().getColumn(0).setMinWidth(90);
         columnNameTable.getColumnModel().getColumn(0).setMaxWidth(260);
         // columnNameTable.getColumnModel().getColumn(1).setMinWidth(15);
@@ -736,11 +737,17 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }
 
-    public void setDataTable(ResultSet data) {
-        TableModel model = db.resultSetToTableModel(data);
-        dataTable.setModel(model);
+    public void setDataTable(ResultSet data) throws SQLException {
+        ResultTableModel dataTableModel = new ResultTableModel();
+        dataTableModel.setResultset(data);
+       
+        System.out.println(db.getRowCount(rowColOneSelected(tableNameTable)));
+        dataTableModel.setsqlRowCount(db.getRowCount(rowColOneSelected(tableNameTable)));
+
+        //TableModel model = db.resultSetToTableModel(data);
+        //dataTable.setModel(model);
         //  dataTable.getColumn(0);
-        summaryTable.setAutoCreateRowSorter(true);
+        dataTable.setAutoCreateRowSorter(true);
         //setTableRowSorter(dataTable);
     }
 
