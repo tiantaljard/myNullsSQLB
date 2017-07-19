@@ -60,7 +60,7 @@ public class MySQLDBConnect {
         try {
             db.getConnection();
             db.initialAnalyseTables();
-            db.buildTableNullsBlankSummary();
+            //db.buildTableNullsBlankSummary();
             ArrayList<String[]> transposed = db.transPoseNb("uploads");
 
             String result = transposed.get(5)[0];
@@ -155,6 +155,28 @@ public class MySQLDBConnect {
         numberOfTable = tbl_results.getInt(1);
 
         tbl_results = statement.executeQuery("select  table_name as \"Tables\" from information_schema.tables where table_schema='" + databaseName + "' and table_type='BASE TABLE'");
+
+        return tbl_results;
+    }
+    
+    
+    
+    
+
+    /**
+     * getTableNames(String SQLwhere) 
+     * @param String SQLwhere
+     * @return ResultSet 
+     * @throws SQLException 
+     */
+    public ResultSet getTableNames(String SQLwhere) throws SQLException {
+        Statement statement = conn.createStatement();
+
+        ResultSet tbl_results = statement.executeQuery("select  count(*) from information_schema.tables where table_schema='" + databaseName + "' and table_type='BASE TABLE' "+SQLwhere);
+        tbl_results.first();
+        numberOfTable = tbl_results.getInt(1);
+
+        tbl_results = statement.executeQuery("select  table_name as \"Tables\" from information_schema.tables where table_schema='" + databaseName + "' and table_type='BASE TABLE' "+SQLwhere);
 
         return tbl_results;
     }
@@ -386,61 +408,7 @@ public class MySQLDBConnect {
         return nbc;
     }
 
-    public Object[][] buildTableNullsBlankSummary() throws SQLException {
-        //ArrayList<String[]> tNBS = new ArrayList<>();
 
-        int ArrayrowCount = getNumberOfTables();
-        int ArraycolCount = 5;
-
-        Object[][] tableNullBlankSummaryArray = new Object[ArrayrowCount][ArraycolCount];
-
-        ResultSet tableNames = getTableNames();
-        tableNames.first();
-        String tableName;
-        double columnCount;
-        double rowCount;
-        double tableNulls;
-        double tableBlanks;
-        double totalfields;
-        double percentageTableNulls;
-        double percentageTableBlanks;
-        double zeroValue = 0;
-        double hundredValue = 100;
-        DecimalFormat to2DP = new DecimalFormat("0.00");
-        //  to2DP.format(balance) 
-
-        int count = 0;
-        for (int i = 0; i < this.numberOfTable; i++) {
-
-            tableName = tableNames.getString(1);
-
-            columnCount = getColCount(tableName);
-            rowCount = getRowCount(tableName);
-            totalfields = columnCount * rowCount * 1.0f;
-            zeroValue = 0;
-
-            //System.out.println("Totalfields "+totalfields);
-            transPoseNb(tableName);
-            tableNulls = getNullTableCount(tableName);
-            tableBlanks = getBlankTableCount(tableName);
-
-            if (totalfields == zeroValue) {
-
-                percentageTableNulls = 0;
-                percentageTableBlanks = 0;
-            } else {
-                percentageTableNulls = (tableNulls / totalfields) * hundredValue;
-                percentageTableBlanks = (tableBlanks / totalfields) * hundredValue;
-            }
-
-            tableNullBlankSummaryArray[count] = new Object[]{tableName, columnCount, rowCount, to2DP.format(percentageTableNulls), to2DP.format(percentageTableBlanks)};
-            tableNames.next();
-            count++;
-
-        }
-
-        return tableNullBlankSummaryArray;
-    }
 
     public ArrayList<String[]> buildTableInitialSummary() throws SQLException {
         ArrayList<String[]> tIS = new ArrayList<>();

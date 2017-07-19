@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -77,22 +78,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         mainJPanel = new javax.swing.JPanel();
         initialSummaryPanel = new javax.swing.JPanel();
         initialsummaryScrollPanel = new javax.swing.JScrollPane();
-        summaryTable = new javax.swing.JTable() {
-            @Override
-            public Class getColumnClass(int column) {
-                switch (column) {
-                    case 0:
-                    return String.class;
-                    case 1:
-                    return Long.class;
-                    case 2:
-                    return Long.class;
-                    default:
-                    return String.class;
-                }
-            }
-        }
-        ;
+        summaryTable = new javax.swing.JTable();
         topInitialSummaryView = new javax.swing.JPanel();
         intialSummaryfilterPanel = new javax.swing.JPanel();
         initialSummaryTableFilter = new javax.swing.JTextField();
@@ -183,29 +169,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         initialSummaryPanel.setLayout(new java.awt.BorderLayout());
 
-        summaryTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Long.class, java.lang.Long.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
         summaryTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 summaryTableMouseClicked(evt);
@@ -559,7 +522,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         if (evt.getButton() == MouseEvent.BUTTON3) {
             summaryTablePopupMenu.remove(showNBSummaryTbl);
             summaryTablePopupMenu.remove(showInitialSummaryTbl);
-            
+
             if (summaryTable.getModel().getColumnCount() == 3) {
                 summaryTablePopupMenu.add(showNBSummaryTbl);
             }
@@ -581,7 +544,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }//GEN-LAST:event_showNBSummaryTblActionPerformed
 
     private void showInitialSummaryTblActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showInitialSummaryTblActionPerformed
-                try {
+        try {
+
             setInitialSummaryTable();
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
@@ -628,6 +592,16 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         private ResultSet resultset;
         private int sqlRowCount;
 
+        /*
+        getColumnClass(int columnIndex) determine the object class of the field
+        value and return the class type to the table model
+         */
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            Class columnClass = getValueAt(0, columnIndex).getClass();
+            return columnClass;
+        }
+
         @Override
         public int getColumnCount() {
             try {
@@ -652,8 +626,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         @Override
         public Object getValueAt(int row, int column) {
             try {
-                resultset.absolute(row); //To change body of generated methods, choose Tools | Templates.
-                return resultset.getString(column);
+                resultset.absolute(row + 1); //To change body of generated methods, choose Tools | Templates.
+                return resultset.getObject(column + 1);
 
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -675,10 +649,19 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }
 
+    public class ArrayTableModel extends DefaultTableModel {
+
+        public Class<?> getColumnClass(int columnIndex) {
+            Class columnClass = getValueAt(0, columnIndex).getClass();
+            return columnClass;
+        }
+    }
+
     /**
      * Method the get the currently selected rows from a JTable
      *
-     * @return
+     * @param jTable
+     * @return ArrayList<String>
      */
     public ArrayList<String> rowsColOneSelected(JTable jTable) {
         ArrayList<String> rowsColOneSelected = new ArrayList<String>();
@@ -754,20 +737,15 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 
         ResultSet rs = db.initialAnalyseTables();
-        int colCount = rs.getMetaData().getColumnCount();
         int rowCount = db.getNumberOfTables();
 
-        Object[][] objarray = new Object[rowCount][colCount];
-        int count = 0;
-
-        for (int i = 0; i < db.getNumberOfTables(); i++) {
-            objarray[count] = new Object[]{rs.getObject(1), (Long) rs.getObject(2), (Long) rs.getObject(3)};
-            rs.next();
-            count++;
-        }
-
         Object[] columns = {"Table Name", "Column Count", "Row Count"};
-        DefaultTableModel summaryTableModel = new DefaultTableModel(objarray, columns);
+        ResultTableModel summaryTableModel = new ResultTableModel();
+        summaryTableModel.setResultset(rs);
+
+        summaryTableModel.setColumnIdentifiers(columns);
+        summaryTableModel.setsqlRowCount(rowCount);
+
         summaryTable.setModel(summaryTableModel);
 
         ((DefaultTableCellRenderer) summaryTable.getTableHeader().getDefaultRenderer())
@@ -778,7 +756,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         summaryTable.getTableHeader().setReorderingAllowed(false);
 
-        setTableRowSorter(summaryTable);
+        summaryTable.setAutoCreateRowSorter(true);
+
         CardLayout card = (CardLayout) mainJPanel.getLayout();
         card.show(mainJPanel, "initialSummaryCard");
         tableViewinUse = "initialSummaryPanel";
@@ -791,10 +770,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 
-        Object[][] tableNullsBlankSummaryArray = db.buildTableNullsBlankSummary();
+        Object[][] tableNullsBlankSummaryArray = buildArrayNullsBlankSummary();
 
         Object[] columns = {"Table Name", "Column Count", "Row Count", "% Nulls", "% Blanks"};
-        DefaultTableModel summaryNullsBlankTableModel = new DefaultTableModel(tableNullsBlankSummaryArray, columns);
+        ArrayTableModel summaryNullsBlankTableModel = new ArrayTableModel();
+        //DefaultTableModel summaryNullsBlankTableModel = new DefaultTableModel(tableNullsBlankSummaryArray, columns);
+        summaryNullsBlankTableModel.setDataVector(tableNullsBlankSummaryArray, columns);
         summaryTable.setModel(summaryNullsBlankTableModel);
 
         summaryTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
@@ -814,7 +795,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         TableModel model = db.resultSetToTableModel(data);
         dataTable.setModel(model);
         //  dataTable.getColumn(0);
-        setTableRowSorter(dataTable);
+        summaryTable.setAutoCreateRowSorter(true);
+        //setTableRowSorter(dataTable);
     }
 
     public TableRowSorter<TableModel> setTableRowSorter(JTable table) {
@@ -860,24 +842,95 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         tableNameTable.setModel(db.resultSetToTableModel(tbls));
         TableRowSorter<TableModel> tableNameTableSorter = setTableRowSorter(tableNameTable);
     }
-
-    public JTable getTableNameTable() {
-        return tableNameTable;
-    }
-
-    /**
-     * @todo complete the funtion: still to make the model.
-     * @param table_name
-     * @throws SQLException
+    
+        /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    getTableNameTable()  DELETE THIS DELETE THIS
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
      */
-    public void buildTransposeTable(String table_name) throws SQLException {
-
-        ArrayList<String[]> l = db.transPoseNb(table_name);
-    }
 
     /**
-     * buildColumnDataSQLWhere() builds the "where" part of the SQL query
-     * to retrieve data from the database for the column names selected in the 
+     * @todo DELETE THIS
+     * @return 
+     */
+//    public JTable getTableNameTable() {
+//        return tableNameTable;
+//    }
+
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    getTableSQLWhereRecordCount()
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * buildTableSQLWhere() builds a where clause to restrict the table
+     * selection to only those selected in the table window
+     *
+     * @return
+     */
+    public String buildTableSQLWhere() {
+
+        ArrayList<String> selectedTables = rowsColOneSelected(summaryTable);
+        String sqlWhere;
+
+        if (selectedTables.isEmpty()) {
+            sqlWhere = " and 1=1 ";
+        } else {
+            sqlWhere = "and table_name in (";
+            for (int i = 0; i < selectedTables.size(); i++) {
+                sqlWhere += "'" + selectedTables.get(i).toString() + "'";
+                if (i == selectedTables.size() - 1) {
+                    sqlWhere += ")";
+                } else {
+                    sqlWhere += ",";
+                }
+            }
+
+        }
+        return sqlWhere;
+    }
+
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    getTableSQLWhereRecordCount()
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * getTableSQLWhereRecordCount() determine how many records have been
+     * selected in the summary table. if none are selected a count of all the
+     * tables in the database is returned.
+     *
+     * @return
+     */
+    public int getTableSQLWhereRecordCount() {
+        int selectedArrayCount;
+        ArrayList<String> selectedTables = rowsColOneSelected(summaryTable);
+        if (selectedTables.isEmpty()) {
+            selectedArrayCount = db.getNumberOfTables();
+
+        } else {
+            selectedArrayCount = selectedTables.size();
+        }
+        return selectedArrayCount;
+
+    }
+
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    buildColumnDataSQLWhere()
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * buildColumnDataSQLWhere() builds the "where" part of the SQL query to
+     * retrieve data from the database for the column names selected in the
      * "column names navigator" table. See buildColumnDataQuery().
      */
     public void buildColumnDataSQLWhere() {
@@ -898,12 +951,16 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         dynamic_query = dynamic_query + sqlWhere + ";";
     }
 
-    
-    
-
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    buildColumnDataQuery()
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
-     * buildColumnDataQuery() builds the "select column"  part of the SQL query
-     * to retrieve data from the database for the column names selected in the 
+     * buildColumnDataQuery() builds the "select column" part of the SQL query
+     * to retrieve data from the database for the column names selected in the
      * "column names navigator" table. See buildColumnDataSQLWhere()
      */
     public void buildColumnDataQuery() {
@@ -912,9 +969,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         String table_name = (rowColOneSelected(tableNameTable));
         columns_selected = rowsColOneSelected(columnNameTable);
-        
+
         String query = "select ";
-        
+
         for (int i = 0; i < columns_selected.size(); i++) {
             query += columns_selected.get(i).toString();
             if (i == columns_selected.size() - 1) {
@@ -924,13 +981,28 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
         }
         dynamic_query = query + " from " + table_name + " where 1=1 ";
-       
+
         buildColumnDataSQLWhere();
     }
-    
+
     /**
-     * formatDouble() formats a [double] variable to get rid of trailing 
+     *
+     */
+    public void buildSummaryTablesSelected() throws SQLException {
+
+    }
+
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    formatDouble()
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * formatDouble() formats a [double] variable to get rid of trailing
      * decimals to display the number cleanly with sufficient amount of accuracy
+     *
      * @param double
      * @return String
      */
@@ -941,6 +1013,83 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             return String.format("%s", d);
         }
     }
+
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    buildArrayNullsBlankSummary()
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * buildArrayNullsBlankSummary() builds an array with which to create a
+     * table model for the summary of database tables their percentage nulls and
+     * blanks
+     *
+     * @return
+     * @throws SQLException
+     */
+    public Object[][] buildArrayNullsBlankSummary() throws SQLException {
+        //ArrayList<String[]> tNBS = new ArrayList<>();
+
+        int ArrayrowCount = getTableSQLWhereRecordCount();
+
+        int ArraycolCount = 5;
+
+        Object[][] tableNullBlankSummaryArray = new Object[ArrayrowCount][ArraycolCount];
+        ResultSet tableNames = db.getTableNames(buildTableSQLWhere());
+        tableNames.first();
+        String tableName;
+        double columnCount;
+        double rowCount;
+        double tableNulls;
+        double tableBlanks;
+        double totalfields;
+        double percentageTableNulls;
+        double percentageTableBlanks;
+        double zeroValue = 0;
+        double hundredValue = 100;
+        DecimalFormat to2DP = new DecimalFormat("0.00");
+        //  to2DP.format(balance) 
+
+        int count = 0;
+        for (int i = 0; i < db.getNumberOfTables(); i++) {
+
+            tableName = tableNames.getString(1);
+
+            columnCount = db.getColCount(tableName);
+            rowCount = db.getRowCount(tableName);
+            totalfields = columnCount * rowCount * 1.0f;
+            zeroValue = 0;
+
+            //System.out.println("Totalfields "+totalfields);
+            db.transPoseNb(tableName);
+            tableNulls = db.getNullTableCount(tableName);
+            tableBlanks = db.getBlankTableCount(tableName);
+
+            if (totalfields == zeroValue) {
+
+                percentageTableNulls = 0;
+                percentageTableBlanks = 0;
+            } else {
+                percentageTableNulls = (tableNulls / totalfields) * hundredValue;
+                percentageTableBlanks = (tableBlanks / totalfields) * hundredValue;
+            }
+
+            tableNullBlankSummaryArray[count] = new Object[]{tableName, columnCount, rowCount, to2DP.format(percentageTableNulls), to2DP.format(percentageTableBlanks)};
+            tableNames.next();
+            count++;
+
+        }
+
+        return tableNullBlankSummaryArray;
+    }
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel NullBlankSummaryfilterPanel;
