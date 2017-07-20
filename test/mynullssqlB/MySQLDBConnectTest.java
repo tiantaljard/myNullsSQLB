@@ -85,7 +85,7 @@ public class MySQLDBConnectTest {
     }
 
     /**
-     * Test of initialAnalyseTables method, of class MySQLDBConnect. Check
+     * Test of analyseTables method, of class MySQLDBConnect. Check
      * initial result set for tables, column count and row count
      *
      */
@@ -104,7 +104,7 @@ public class MySQLDBConnectTest {
         expResult.first();
         String expected = expResult.getString(1);
 
-        ResultSet result = instance.initialAnalyseTables();
+        ResultSet result = instance.analyseTables();
         result.first();
         String resultString = result.getString(1);
         assertEquals(expected, resultString);
@@ -126,13 +126,13 @@ public class MySQLDBConnectTest {
     }
 
     /**
-     * Test of secondAnalyseTablesNulls method, of class MySQLDBConnect. check
+     * Test of analyseTablesNullsBlanks method, of class MySQLDBConnect. check
      * that a result set is returned.
      */
     @Test
     public void testSecondAnalyseTablesNulls() throws Exception {
         System.out.println("secondAnalyseTablesNulls");
-        ResultSet result = instance.secondAnalyseTablesNulls(TABLENAMEWITHROWS);
+        ResultSet result = instance.analyseTablesNullsBlanks(TABLENAMEWITHROWS);
         assertNotNull(result);
         result.first();
         String resultString = result.getString(11);
@@ -149,7 +149,7 @@ public class MySQLDBConnectTest {
     @Test
     public void testGetColCount() throws Exception {
         System.out.println("getColCount");
-        instance.initialAnalyseTables();
+        instance.analyseTables();
         int expResult=6;
 
         int result = instance.getColCount(TABLENAME);
@@ -164,7 +164,7 @@ public class MySQLDBConnectTest {
     @Test
     public void testGetRowCount() throws Exception {
         System.out.println("getRowCount");
-        instance.initialAnalyseTables();
+        instance.analyseTables();
         int expResult=19;
 
         int result = instance.getRowCount(TABLENAMEWITHROWS);
@@ -215,7 +215,7 @@ public class MySQLDBConnectTest {
     @Test
     public void testResultSetToTableModel() throws SQLException {
         System.out.println("resultSetToTableModel");
-        ResultSet rs = instance.initialAnalyseTables();
+        ResultSet rs = instance.analyseTables();
         TableModel table_model =instance.resultSetToTableModel(rs);
         String result =table_model.getColumnName(1);
         String expResult ="column_cnt";

@@ -21,8 +21,10 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 /**
- *
+ * @Date July 2017
  * @author TianTaljard
+ * The purpose of the class is to provide a connection to a database and
+ * retrieve data from a database using SQL. This class supports MySQLNullsApp
  */
 public class MySQLDBConnect {
 
@@ -47,6 +49,13 @@ public class MySQLDBConnect {
     private static final String NULLCOUNT = "_nullcount";
     private static final String BLANKCOUNT = "_blankcount";
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    main(String[] args)
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
      * MAIN METHOD - ONLY USED FOR TESTING IN THIS CLASS
      *
@@ -60,7 +69,7 @@ public class MySQLDBConnect {
         MySQLDBConnect db = new MySQLDBConnect("127.0.0.1", "reqlocaldb", "root", "Zppsit0!", "3306");
         try {
             db.getConnection();
-            db.initialAnalyseTables();
+            db.analyseTables();
             //db.buildTableNullsBlankSummary();
             ArrayList<String[]> transposed = db.transPoseNb("uploads");
 
@@ -79,16 +88,16 @@ public class MySQLDBConnect {
             }
 //            db.getColumnNames("uploads");
 //
-//            ResultSet resultRS = db.initialAnalyseTables();
+//            ResultSet resultRS = db.analyseTables();
 //            resultRS.first();
 //
-//            ResultSet rs = db.initialAnalyseTables();
+//            ResultSet rs = db.analyseTables();
 //            TableModel table_model = db.resultSetToTableModel(rs);
 //            System.out.println("TABLE MODEL COLUMN NAME " + table_model.getColumnName(1));
 //
 //            System.out.println("GET COLUMN NAMES " + resultRS.getString(1) + "\n");
 //
-//            ResultSet nullcount = db.secondAnalyseTablesNulls("requests");
+//            ResultSet nullcount = db.analyseTablesNullsBlanks("requests");
 //            nullcount.first();
 //            System.out.println("Null Count " + nullcount.getString(1) + nullcount.getString(2) + nullcount.getString(3) + "string 11 " + nullcount.getString(11));
 //
@@ -104,17 +113,32 @@ public class MySQLDBConnect {
             ex.printStackTrace();
         }
     }
-    //======================================================================
-    // AFTER MAIN 
-    //======================================================================
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    MySQLDBConnect()
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
      * Default Constructor
      */
     public MySQLDBConnect() {
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    MySQLDBConnect(String serverIP, String databaseName, String username, String password, String port)
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
+     * MySQLDBConnect(String serverIP, String databaseName, String
+     * username,String password, String port) creates an instance of the
+     * class.The parameters used to connect to the database are entered in the
+     * DBConnectDialog.
      *
      * @param serverIP
      * @param databaseName
@@ -132,8 +156,16 @@ public class MySQLDBConnect {
 
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    getConnection() 
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
-     * Establish Connection to the database
+     * Establish Connection to the database. The parameters used to connect to
+     * the database are entered in the DBConnectDialog.
      *
      * @throws SQLException
      */
@@ -142,8 +174,16 @@ public class MySQLDBConnect {
                 + port + "/" + databaseName, username, password);
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    ResultSet getTableNames()
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
-     * Creates a list of table that exist in the database
+     * Creates a list of tables that exist in the database. Not that no where
+     * clause is passed. This is always the full list of tables in the database.
      *
      * @return ResultSet
      * @throws SQLException
@@ -160,30 +200,44 @@ public class MySQLDBConnect {
 
         return tbl_results;
     }
-    
-    
-    
-    
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    getTableNames(String SQLwhere)
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
-     * getTableNames(String SQLwhere) 
+     * getTableNames(String SQLwhere) returns a result set of table names from
+     * information_schema filtered by the SQL where clause passed into the
+     * method. This method is used to enable a reduced result set of table names
+     * when navigating between the two summary tables as well as between the
+     * summary tables and the data explorer view.
+     *
      * @param String SQLwhere
-     * @return ResultSet 
-     * @throws SQLException 
+     * @return ResultSet
+     * @throws SQLException
      */
     public ResultSet getTableNames(String SQLwhere) throws SQLException {
         Statement statement = conn.createStatement();
 
-        ResultSet tbl_results = statement.executeQuery("select  count(*) from information_schema.tables where table_schema='" + databaseName + "' and table_type='BASE TABLE' "+SQLwhere);
+        ResultSet tbl_results = statement.executeQuery("select  count(*) from information_schema.tables where table_schema='" + databaseName + "' and table_type='BASE TABLE' " + SQLwhere);
         tbl_results.first();
         numberOfTable = tbl_results.getInt(1);
-        
 
-        tbl_results = statement.executeQuery("select  table_name as \"Tables\" from information_schema.tables where table_schema='" + databaseName + "' and table_type='BASE TABLE' "+SQLwhere);
+        tbl_results = statement.executeQuery("select  table_name as \"Tables\" from information_schema.tables where table_schema='" + databaseName + "' and table_type='BASE TABLE' " + SQLwhere);
 
         return tbl_results;
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    analyseTables() 
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
      * scans the database and return a result set for each table that shows the
      * table name, column count and row count
@@ -194,7 +248,7 @@ public class MySQLDBConnect {
      * @return ResultSet
      * @throws SQLException
      */
-    public ResultSet initialAnalyseTables() throws SQLException {
+    public ResultSet analyseTables() throws SQLException {
 
         String masterquery = "Select table_name, column_cnt, rowcount from ( ";
         String unionquery = "";
@@ -237,8 +291,15 @@ public class MySQLDBConnect {
         return iat_results;
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    getColumnNames(String table_name)
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
-     * Retrieving columns names from a given table.
+     * Retrieving columns names from information_schema for a given table.
      *
      * @param String table_name
      * @return ResultSet
@@ -252,6 +313,13 @@ public class MySQLDBConnect {
         return getColNames;
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    analyseTablesNullsBlanks(String table_name)
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
      * Build a dynamic query statement that is used in transPoseNb() to
      * determine which if the columns of a specified table contain nulls and or
@@ -261,7 +329,7 @@ public class MySQLDBConnect {
      * @return ResultSet
      * @throws SQLException
      */
-    public ResultSet secondAnalyseTablesNulls(String table_name) throws SQLException {
+    public ResultSet analyseTablesNullsBlanks(String table_name) throws SQLException {
         //======================================================================
         // Dynamically building nulls and blanks counts from getColumnNames
         //======================================================================
@@ -303,8 +371,16 @@ public class MySQLDBConnect {
         return null;
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    getColCount(String table_name)
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
-     * get the number of columns for a table from a hash map table
+     * get the number of columns for a table from a hash map table. The hash map
+     * table is set with the column count in the analyseTables() method.
      *
      * @param table_name
      * @return int
@@ -314,8 +390,16 @@ public class MySQLDBConnect {
         return tblCache.get(table_name + COLCOUNT);
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    getRowCount(String table_name)
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
-     * get the number of rows for a table from a hash map table
+     * get the number of rows for a table from a hash map table. The hash map
+     * table is set with the row count in the analyseTables() method.
      *
      * @param String table_name
      * @return int
@@ -325,6 +409,13 @@ public class MySQLDBConnect {
         return tblCache.get(table_name + ROWCOUNT);
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    getNullTableCount(String table_name) 
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
      * Gets the calculated number of NULL fields for a specified table from a
      * hash map table. The trasPoseNb() function has to be called before this
@@ -338,6 +429,13 @@ public class MySQLDBConnect {
         return tblCache.get(table_name + NULLCOUNT);
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    getBlankTableCount(String table_name
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
      * Gets the calculated number BLANK fields for a specified table from a hash
      * map table. The trasPoseNb() function has to be called before this
@@ -351,10 +449,17 @@ public class MySQLDBConnect {
         return tblCache.get(table_name + BLANKCOUNT);
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    transPoseNb(String table_name)
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
      * transPoseNb use a dynamically generated query built in
-     * secondAnalyseTablesNulls() to create an array of column names,count of
-     * nulls, count of blanks for a specified table.
+     * analyseTablesNullsBlanks() to create an array which lists column names
+     * and the count of nulls, count of blanks for a specified table.
      *
      * @param table_name
      * @return ArrayList<String[]>
@@ -364,7 +469,7 @@ public class MySQLDBConnect {
 
         ArrayList<String[]> nbc = new ArrayList<>();
 
-        ResultSet nBCnt = secondAnalyseTablesNulls(table_name);
+        ResultSet nBCnt = analyseTablesNullsBlanks(table_name);
 
         ResultSetMetaData col_meta = nBCnt.getMetaData();
 
@@ -411,50 +516,17 @@ public class MySQLDBConnect {
         return nbc;
     }
 
-
-
-    public ArrayList<String[]> buildTableInitialSummary() throws SQLException {
-        ArrayList<String[]> tIS = new ArrayList<>();
-        ResultSet tableNames = getTableNames();
-        String tableName;
-        double columnCount;
-        double rowCount;
-        double tableNulls;
-        double tableBlanks;
-        double totalfields;
-        double percentageTableNulls;
-        double percentageTableBlanks;
-        double zeroValue = 0;
-        double hundredValue = 100;
-        DecimalFormat to2DP = new DecimalFormat("0.00");
-        //  to2DP.format(balance) 
-        while (tableNames.next()) {
-
-            tableName = tableNames.getString(1);
-
-            columnCount = getColCount(tableName);
-            rowCount = getRowCount(tableName);
-            totalfields = columnCount * rowCount * 1.0f;
-            zeroValue = 0;
-
-            System.out.println("Print TABLE NAME in build  BLA Summary:" + tableName
-                    + "\n colcount: " + columnCount
-                    + "\n rowcount: " + rowCount
-            );
-
-            String[] tablerecord = new String[]{tableName + "", formatDouble(columnCount) + "", formatDouble(rowCount) + ""};
-
-            tIS.add(tablerecord);
-
-        }
-
-        return tIS;
-    }
-
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    getColNullCount(String table_name, String columnName)
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
-     * getColNullCount() returns the number of null fields (records) found in
-     * when a count of is null is done for a specified column on a specified
-     * table in SQL
+     * getColNullCount(String table_name, String columnName) returns the number
+     * of null fields (records) found when a count of is null is done for a
+     * specified column on a specified table in SQL
      *
      * @param String table_name
      * @param String columnName
@@ -478,10 +550,17 @@ public class MySQLDBConnect {
         return 0;
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    getColBlankCount(String table_name, String columnName)
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
      * getColBlankCount() returns the number of blank fields (records) found in
-     * when a count of ='' is done for a specified column on a specified table
-     * in SQL
+     * data when a count of ='' is done for a specified column on a specified
+     * table in SQL
      *
      * @param String table_name
      * @param String columnName
@@ -504,16 +583,37 @@ public class MySQLDBConnect {
         return 0;
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    getNumberOfTables()
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
-     * getNumberOfTables() return the number of tables in a database
+     * getNumberOfTables() return the number of tables in a database from
+     * information schema database, if no selection has been made in
+     * summaryTable or tableNameTable getNumberOfTables() is equal to
+     * getTotalNumberOfTables. However, if table names have been selected in the
+     * table view (summaryTable or tableNameTable) then getNumberOfTables()
+     * reflect the count of tables selected.
      *
      * @return int
      */
     public int getNumberOfTables() {
         return numberOfTable;
     }
-        /**
-     * getTotalNumberOfTables() return the number of tables in a database
+
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    getTotalNumberOfTables()
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * getTotalNumberOfTables() return the total number of tables in a database
+     * from information schema database
      *
      * @return int
      */
@@ -521,9 +621,17 @@ public class MySQLDBConnect {
         return totalNumberOfTable;
     }
 
-
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    resultSetToTableModel(ResultSet rs) 
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
-     * resultSetToTableModel() converts a SQL result set into a JTable model
+     * resultSetToTableModel() converts a SQL result set into a JTable model by
+     * reading the data (and meta data for column names) into two vectors and
+     * then using the data and column name vectors to construct a tablemodel
      *
      * @param ResultSet columnNames
      * @return TableModel
@@ -560,14 +668,13 @@ public class MySQLDBConnect {
         }
     }
 
-    public static String formatDouble(double d) {
-        if (d == (long) d) {
-            return String.format("%d", (long) d);
-        } else {
-            return String.format("%s", d);
-        }
-    }
-
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    resultSetToColumnNameTableModel(ResultSet rs)
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
      * resultSetToColumnNameTableModel() converts a SQL result of column names
      * into JTable model with columns for - column names - check box to allow
@@ -619,6 +726,27 @@ public class MySQLDBConnect {
             e.printStackTrace();
 
             return null;
+        }
+    }
+
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    formatDouble(double d)
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * formatDouble(double d) formats a to display as cleanly as possible.
+     *
+     * @param d
+     * @return
+     */
+    public static String formatDouble(double d) {
+        if (d == (long) d) {
+            return String.format("%d", (long) d);
+        } else {
+            return String.format("%s", d);
         }
     }
 

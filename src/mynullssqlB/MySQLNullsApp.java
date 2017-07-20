@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -29,8 +30,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 /**
  * @Date July 2017
  * @author TianTaljard
- * The purpose of the class is to provide a GUI to find, analyse and explore 
- * nulls and blanks in data  
+ * The purpose of the class is to provide a GUI to find,
+ * analyse and explore nulls and blanks in data
  */
 public class MySQLNullsApp extends javax.swing.JFrame {
 
@@ -602,6 +603,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             return "";
         }
 
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            //all cells false
+            return false;
+        }
+
         public ResultSet getResultset() {
             return resultset;
         }
@@ -768,6 +775,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
 
         columnNameTable.setModel(db.resultSetToColumnNameTableModel(columns));
+        columnNameTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         columnNameTable.getColumnModel().getColumn(0).setMinWidth(90);
         columnNameTable.getColumnModel().getColumn(0).setMaxWidth(260);
@@ -804,7 +812,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 
-        ResultSet rs = db.initialAnalyseTables();
+        ResultSet rs = db.analyseTables();
         int rowCount = db.getNumberOfTables();
 
         Object[] columns = {"Table Name", "Column Count", "Row Count"};
@@ -815,6 +823,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         summaryTableModel.setsqlRowCount(rowCount);
 
         summaryTable.setModel(summaryTableModel);
+        summaryTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         ((DefaultTableCellRenderer) summaryTable.getTableHeader().getDefaultRenderer())
                 .setHorizontalAlignment(SwingConstants.CENTER);
@@ -1188,28 +1197,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         dynamic_query = query + " from " + table_name + " where 1=1 ";
 
         buildColumnDataSQLWhere();
-    }
-
-    /*
-    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    formatDouble()
-    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-     */
-    /**
-     * formatDouble() formats a [double] variable to get rid of trailing
-     * decimals to display the number cleanly with sufficient amount of accuracy
-     *
-     * @param double
-     * @return String
-     */
-    public static String formatDouble(double d) {
-        if (d == (long) d) {
-            return String.format("%d", (long) d);
-        } else {
-            return String.format("%s", d);
-        }
     }
 
     /*
