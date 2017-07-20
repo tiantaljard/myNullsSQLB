@@ -37,6 +37,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     private MySQLDBConnect db;
     private String dynamic_query;
+    private String dynamic_query_rowcount;
+    private int dynamic_rowcount;
     private String tableViewinUse = "";
 
     /**
@@ -81,6 +83,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         showInitialSummaryTbl = new javax.swing.JMenuItem();
         showDataNavigatorPanel = new javax.swing.JMenuItem();
         showAllTablesDataNavigatorTbl = new javax.swing.JMenuItem();
+        showSelectedColumnData = new javax.swing.JMenuItem();
         mainJPanel = new javax.swing.JPanel();
         initialSummaryPanel = new javax.swing.JPanel();
         initialsummaryScrollPanel = new javax.swing.JScrollPane();
@@ -158,6 +161,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 showAllTablesDataNavigatorTblActionPerformed(evt);
             }
         });
+
+        showSelectedColumnData.setText("jMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -400,12 +405,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     private void columnNameTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_columnNameTableKeyReleased
         try {
+            //getColumnDataRowCount();
             setDataTable(getColumnData());
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
-        buildColumnDataSQLWhere();
-        System.out.println(dynamic_query);
+//        buildColumnDataSQLWhere();
+//        System.out.println(dynamic_query);
     }//GEN-LAST:event_columnNameTableKeyReleased
 
     private void tableNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameFilterKeyReleased
@@ -429,6 +435,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     private void columnNameTableMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_columnNameTableMouseReleased
         try {
+            
             setDataTable(getColumnData());
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
@@ -750,8 +757,22 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         ResultSet getColData = statement.executeQuery(dynamic_query);
         System.out.println("in get col data " + getColData.absolute(999));
         getColData.first();
+        getColData.first();
         return getColData;
     }
+    
+        public int getColumnDataRowCount() throws SQLException {
+        
+
+        Statement statement = db.conn.createStatement();
+
+        ResultSet getColDataRowCount = statement.executeQuery(dynamic_query_rowcount);
+        System.out.println("in get col data Row Count" + getColDataRowCount.getObject(1));
+        return Integer.parseInt(getColDataRowCount.getObject(1).toString());
+         
+    }
+    
+    
 
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1163,6 +1184,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
         }
         dynamic_query = dynamic_query + sqlWhere + ";";
+        dynamic_query_rowcount = dynamic_query_rowcount + sqlWhere+";";
+        
     }
 
     /*
@@ -1195,6 +1218,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
         }
         dynamic_query = query + " from " + table_name + " where 1=1 ";
+        dynamic_query_rowcount = "select count(*) from "+ table_name +" where 1=1 ";
 
         buildColumnDataSQLWhere();
     }
@@ -1301,6 +1325,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JMenuItem showDataNavigatorPanel;
     private javax.swing.JMenuItem showInitialSummaryTbl;
     private javax.swing.JMenuItem showNBSummaryTbl;
+    private javax.swing.JMenuItem showSelectedColumnData;
     private javax.swing.JTable summaryTable;
     private javax.swing.JTextField tableNameFilter;
     private javax.swing.JTable tableNameTable;
