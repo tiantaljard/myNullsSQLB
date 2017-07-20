@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPopupMenu;
@@ -26,8 +27,10 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
 /**
- *
+ * @Date July 2017
  * @author TianTaljard
+ * The purpose of the class is to provide a GUI to find, analyse and explore 
+ * nulls and blanks in data  
  */
 public class MySQLNullsApp extends javax.swing.JFrame {
 
@@ -496,8 +499,16 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_showAllTablesDataNavigatorTblActionPerformed
-
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    main(String args[])
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
+     * main(String args[]) is the main method
+     *
      * @param args the command line arguments
      */
     public static void main(String args[]) {
@@ -532,6 +543,17 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         });
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    ResultTableModel extends DefaultTableModel
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * ResultTableModel extends DefaultTableModel to allow a table model to be
+     * easily created from a SQL ResultSet
+     */
     public class ResultTableModel extends DefaultTableModel {
 
         private ResultSet resultset;
@@ -594,6 +616,18 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    ArrayTableModel extends the DefaultTableModel
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * ArrayTableModel extends the DefaultTableModel to implement getColumnClass
+     * which allows the data model to be aware of the class or data type of the
+     * data in each column.
+     */
     public class ArrayTableModel extends DefaultTableModel {
 
         public Class<?> getColumnClass(int columnIndex) {
@@ -602,13 +636,21 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    getRowsColOneSelectedArray(JTable jTable)
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
-     * Method the get the currently selected rows from a JTable
+     * getRowsColOneSelectedArray(JTable jTable) returns an Array of values of
+     * the first column of the selected rows in the table selected
      *
      * @param jTable
      * @return ArrayList<String>
      */
-    public ArrayList<String> rowsColOneSelected(JTable jTable) {
+    public ArrayList<String> getRowsColOneSelectedArray(JTable jTable) {
         ArrayList<String> rowsColOneSelected = new ArrayList<>();
         try {
             int[] rows = jTable.getSelectedRows();
@@ -622,7 +664,49 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         return rowsColOneSelected;
     }
 
-    public String rowColOneSelected(JTable jTable) {
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    getRowsColOneSelectedVector(JTable jTable)
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * getRowsColOneSelectedVector(JTable jTable) returns am vector of values of
+     * the first column of the selected rows in the table selected.
+     *
+     * @param jTable
+     * @return
+     */
+    public Vector getRowsColOneSelectedVector(JTable jTable) {
+        Vector rowsColOneSelected = new Vector();
+        try {
+            int[] rows = jTable.getSelectedRows();
+            for (int i = 0; i < rows.length; i++) {
+                rowsColOneSelected.add(jTable.getValueAt(rows[i], 0).toString());
+                System.out.println(jTable.getValueAt(rows[i], 0).toString());
+            }
+        } catch (Exception e) {
+            rowsColOneSelected = null;
+        }
+        return rowsColOneSelected;
+    }
+
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    getRowColOneSelected(JTable jTable)
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * getRowColOneSelected(JTable jTable) returns the value of the first column
+     * of the selected row in the table selected in the view.
+     *
+     * @param jTable
+     * @return String
+     */
+    public String getRowColOneSelected(JTable jTable) {
         int[] rows = jTable.getSelectedRows();
         String rowColOneSelected = null;
 
@@ -637,22 +721,46 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    getColumnData()
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * getColumnData() gets the data from the database for the column names
+     * selected in the columnNamesTable in the data explorer view.
+     *
+     * @return
+     * @throws SQLException
+     */
     public ResultSet getColumnData() throws SQLException {
         buildColumnDataQuery();
 
         Statement statement = db.conn.createStatement();
 
         ResultSet getColData = statement.executeQuery(dynamic_query);
-        System.out.println("in get col data "+getColData.getNString(1) );
+        System.out.println("in get col data " + getColData.absolute(999));
         getColData.first();
         return getColData;
-
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    setColumnNameTable()
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * setColumnNameTable() set the table model for the columnNameTable in the
+     * data explorer view.
+     */
     public void setColumnNameTable() {
         ResultSet columns = null;
         try {
-            columns = db.getColumnNames(rowColOneSelected(tableNameTable));
+            columns = db.getColumnNames(getRowColOneSelected(tableNameTable));
 
         } catch (SQLException ex) {
 
@@ -678,6 +786,19 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         setTableRowSorter(columnNameTable);
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    setInitialSummaryTable()
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * setInitialSummaryTable() sets the table model for the Initial Summary
+     * Table.
+     *
+     * @throws SQLException
+     */
     public void setInitialSummaryTable() throws SQLException {
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -709,9 +830,21 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         card.show(mainJPanel, "initialSummaryCard");
         tableViewinUse = "initialSummaryPanel";
         initialSummaryPanel.setVisible(true);
-
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    setNullsBlankSummaryTable()
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * setNullsBlankSummaryTable() sets the table model for the Nulls Blank
+     * Summary Table.
+     *
+     * @throws SQLException
+     */
     public void setNullsBlankSummaryTable() throws SQLException {
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -738,12 +871,32 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    setDataTable(ResultSet data)
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * setDataTable(ResultSet data) sets the data for the data view table in the
+     * data navigation view. The data is the result set of select (*) from the
+     * selected table columns in the tableNameTable and columnNameTable. Thus,
+     * the user selects a table, then columns and then data for those columns
+     * are displayed.
+     *
+     * @param data
+     * @throws SQLException
+     */
     public void setDataTable(ResultSet data) throws SQLException {
         ResultTableModel dataTableModel = new ResultTableModel();
+        System.out.println("GOT HERE " + db.getRowCount(getRowColOneSelected(tableNameTable)));
+        dataTableModel.setsqlRowCount(db.getRowCount(getRowColOneSelected(tableNameTable)));
         dataTableModel.setResultset(data);
-       
-        System.out.println("GOT HERE "+db.getRowCount(rowColOneSelected(tableNameTable)));
-        dataTableModel.setsqlRowCount(db.getRowCount(rowColOneSelected(tableNameTable)));
+
+        dataTableModel.setColumnIdentifiers(getRowsColOneSelectedVector(columnNameTable));
+
+        dataTable.setModel(dataTableModel);
 
         //TableModel model = db.resultSetToTableModel(data);
         //dataTable.setModel(model);
@@ -752,6 +905,19 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         //setTableRowSorter(dataTable);
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    setTableRowSorter(JTable table)
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * Creates a table row sorter to allow JTABLE to be sorted and filtered.
+     *
+     * @param table
+     * @return TableRowSorter
+     */
     public TableRowSorter<TableModel> setTableRowSorter(JTable table) {
         TableRowSorter<TableModel> sorter
                 = new TableRowSorter<TableModel>(table.getModel());
@@ -761,6 +927,21 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    setJTableColOneFilter(JTable table_name, JTextField textFilter)
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * setJTableColOneFilter(JTable table_name, JTextField textFilter) determine
+     * if text has been entered in a text field for filtering table data. if
+     * there are
+     *
+     * @param table_name
+     * @param textFilter
+     */
     public void setJTableColOneFilter(JTable table_name, JTextField textFilter) {
         TableRowSorter<TableModel> sorter = setTableRowSorter(table_name);
 
@@ -773,8 +954,17 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    showConnectionDialog()
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
     /**
-     * Shows the dialog box to enter database server parameters
+     * Shows the dialog box to enter database server parameters to allow the
+     * application to connect to a database.
+     *
      *
      */
     public void showConnectionDialog() {
@@ -786,6 +976,21 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    initializeModel()
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * initializeModel() populates the table with database table names in the
+     * data explorer view. Since it does NOT take a SQLwhere clause it populates
+     * the tableNameTable with all the table names for a database from the
+     * information schema database.
+     *
+     * @throws SQLException
+     */
     public void initializeModel() throws SQLException {
         /*
             @todo makes this threadsafe
@@ -796,6 +1001,24 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         TableRowSorter<TableModel> tableNameTableSorter = setTableRowSorter(tableNameTable);
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    ginitializeModel(String whereSQL)
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * initializeModel(String whereSQL) populates the table with database table
+     * names in the data explorer view. It takes a SQLWhere clause as a
+     * parameter to limit the number of tables displayed. This method is called
+     * from the summary tables which and the SQLwhere allows only the tables
+     * that was selected in the summary tables to be displayed in the
+     * tableNameTable.
+     *
+     * @param whereSQL
+     * @throws SQLException
+     */
     public void initializeModel(String whereSQL) throws SQLException {
         /*
             @todo makes this threadsafe
@@ -813,21 +1036,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    getTableNameTable()  DELETE THIS DELETE THIS
-    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-     */
-    /**
-     * @todo DELETE THIS
-     * @return
-     */
-//    public JTable getTableNameTable() {
-//        return tableNameTable;
-//    }
-
-    /*
-    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     getTableSQLWhereRecordCount()
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -840,7 +1048,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      */
     public String buildTableSQLWhere() {
 
-        ArrayList<String> selectedTables = rowsColOneSelected(summaryTable);
+        ArrayList<String> selectedTables = getRowsColOneSelectedArray(summaryTable);
         String sqlWhere = "";
         // If it is the initial Summary Table Model get the selected tables
         // or all tables in database if none are selected.
@@ -907,7 +1115,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      */
     public int getTableSQLWhereRecordCount() {
         int selectedArrayCount;
-        ArrayList<String> selectedTables = rowsColOneSelected(summaryTable);
+        ArrayList<String> selectedTables = getRowsColOneSelectedArray(summaryTable);
         if (selectedTables.isEmpty()) {
             selectedArrayCount = db.getNumberOfTables();
 
@@ -964,8 +1172,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         ArrayList<String> columns_selected;
         ResultSet columns = null;
 
-        String table_name = (rowColOneSelected(tableNameTable));
-        columns_selected = rowsColOneSelected(columnNameTable);
+        String table_name = (getRowColOneSelected(tableNameTable));
+        columns_selected = getRowsColOneSelectedArray(columnNameTable);
 
         String query = "select ";
 
@@ -980,13 +1188,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         dynamic_query = query + " from " + table_name + " where 1=1 ";
 
         buildColumnDataSQLWhere();
-    }
-
-    /**
-     *
-     */
-    public void buildSummaryTablesSelected() throws SQLException {
-
     }
 
     /*
@@ -1087,7 +1288,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
      */
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel colNmFilterPanel;
     private javax.swing.JPanel colNmParentPanel;
