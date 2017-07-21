@@ -411,7 +411,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private void columnNameTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_columnNameTableKeyReleased
         try {
             //getColumnDataRowCount();
-            columnNameTableSelctionColumn=columnNameTable.getSelectedColumn();
+
+            columnNameTableSelctionColumn = columnNameTable.getSelectedColumn();
             setDataTable(getColumnData());
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
@@ -439,7 +440,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     private void columnNameTableMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_columnNameTableMouseReleased
 
-         columnNameTableSelctionColumn = columnNameTable.columnAtPoint(evt.getPoint());
+        columnNameTableSelctionColumn = columnNameTable.columnAtPoint(evt.getPoint());
 
         try {
             setDataTable(getColumnData());
@@ -676,7 +677,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      */
     /**
      * getRowsColOneSelectedArray(JTable jTable) returns an Array of values of
-     * the first column of the selected rows in the table selected
+     * the first column of the selected rows in the table selected.
      *
      * @param jTable
      * @return ArrayList<String>
@@ -703,30 +704,27 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
      */
     /**
-     * getColumnNamesForDataTable(JTable jTable) returns am vector of values of
-     * the first column of the selected rows in the table selected. This method
-     * is used to build a vector of column names for the dataTable. if the user
-     * did not choose specific columns before selecting filters 
-     * (see getColumnData()), then all the columns for the "selected" table 
-     * is used to build the dataTable with.
+     * getColumnNamesForDataTable(JTable jTable) returns am vector of values 
+     * that is used to specify the column names of the table model of the dataTable
+     * JTable. The contents of the vector depends on what rows the user have selected
+     * in the columnNameTable, if any. If the user click on a cell to change a filter
+     * the column name selection should not change.If the user
+     * did not choose specific columns before selecting filters (see
+     * getColumnData()), then all the columns for the "selected" table is used
+     * to build the dataTable with.
      *
      * @param jTable
      * @return
      */
     public Vector getColumnNamesForDataTable(JTable jTable) throws SQLException {
 
-        
-        System.out.println("dynamicSelectFrom Vector build  "+dynamicSelectFrom);
-        System.out.println("ZZZZ  "+dynamicSelectFrom.length());
+        if (dynamicSelectFrom.length() > 5 && columnNameTableSelctionColumn == 0) {
 
-        if (dynamicSelectFrom.length() > 5 && columnNameTableSelctionColumn ==0) {
-            
             columnNamesSelectedInColumnNameTable.removeAll(columnNamesSelectedInColumnNameTable);
-            
+
             try {
                 int[] rows = jTable.getSelectedRows();
                 for (int i = 0; i < rows.length; i++) {
-                    System.out.println("build dataTable columnnames from columnNameTable "+jTable.getValueAt(rows[i], 0).toString());
                     columnNamesSelectedInColumnNameTable.add(jTable.getValueAt(rows[i], 0).toString());
                 }
             } catch (Exception e) {
@@ -734,24 +732,19 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
             return columnNamesSelectedInColumnNameTable;
 
-        }
-        else if (dynamicSelectFrom.length() > 5 && columnNameTableSelctionColumn !=0) {
+        } else if (dynamicSelectFrom.length() > 5 && columnNameTableSelctionColumn != 0) {
             return columnNamesSelectedInColumnNameTable;
-        }
-        
-        else {
-        columnNamesSelectedInColumnNameTable.removeAll(columnNamesSelectedInColumnNameTable);    
+        } else {
+            columnNamesSelectedInColumnNameTable.removeAll(columnNamesSelectedInColumnNameTable);
             int colcount = db.getColCount(getRowColOneSelected(tableNameTable));
             ResultSet rs = db.getColumnNames(getRowColOneSelected(tableNameTable));
             rs.first();
             for (int rsi = 1; rsi < colcount; rsi++) {
-                System.out.println("build dataTable columnnames from tableNameTable "+rs.getObject(1).toString());
                 columnNamesSelectedInColumnNameTable.add(rs.getObject(1).toString());
                 rs.next();
             }
             return columnNamesSelectedInColumnNameTable;
         }
-
     }
 
     /*
@@ -792,23 +785,27 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      */
     /**
      * getColumnData() gets the data from the database for the column names
-     * selected in the columnNamesTable in the data explorer view.
+     * selected in the columnNamesTable in the data explorer view. 
      *
      * @return
      * @throws SQLException
      */
     public ResultSet getColumnData() throws SQLException {
+        
         String query = "";
+        // keeps track of the number of rows the dynamic query has
         dynamic_query_rowcount = "select count(*) from " + getRowColOneSelected(tableNameTable) + " where 1=1";
         if (columnNameTableSelctionColumn == 0) {
             buildColumnDataSelectOnColumnNameSelect();
             query = dynamicSelectFrom;
 
         }
-
+        // check which part of the columnNameTable the user is interacting with
+        // and if a previous column selection has been made for the database
+        // table that is currently being explored.
+        
         if (columnNameTableSelctionColumn != 0 && dynamicSelectFrom.length() < 5) {
-
-            System.out.println("before buildColumnDataSelectOnFilterSelect ");
+            
             buildColumnDataSelectOnFilterSelect();
             query = dynamicFilterSelectFrom;
 
@@ -1379,13 +1376,26 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         return tableNullBlankSummaryArray;
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    buildArrayNullsBlankSummary()
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * this method clears variables that are used to keep track of columns
+     * selected, and where clauses specified as the user interact with the
+     * columnNameTable to build a query for the dataTable to view data.
+     *
+     */
     public void resetDynamicVariables() {
         dynamic_query_rowcount = "";
         dynamic_rowcount = 0;
         dynamicSelectFrom = "";
         dynamicSQLWhere = "";
         dynamicFilterSelectFrom = "";
-        columnNameTableSelctionColumn=-1;
+        columnNameTableSelctionColumn = -1;
 
     }
     ;
