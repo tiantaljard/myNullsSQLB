@@ -928,6 +928,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 //        dataTable.getColumn(0);
         //
         setTableRowSorter(dataTable);
+        //
     }
 
     /*
