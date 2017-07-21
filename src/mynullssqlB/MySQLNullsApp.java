@@ -910,25 +910,22 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      */
     public void setDataTable(ResultSet data) throws SQLException {
         
-        /*
         ResultTableModel dataTableModel = new ResultTableModel();
-        System.out.println("GOT HERE " + db.getRowCount(getRowColOneSelected(tableNameTable)));
-        //dataTableModel.setsqlRowCount(db.getRowCount(getRowColOneSelected(tableNameTable)));
-        dataTableModel.setsqlRowCount(dynamic_rowcount);
         
-        dataTableModel.setResultset(data);
 
         dataTableModel.setColumnIdentifiers(getRowsColOneSelectedVector(columnNameTable));
-
+        dataTableModel.setsqlRowCount(dynamic_rowcount);
+        dataTableModel.setResultset(data);
+        
         dataTable.setModel(dataTableModel);
         dataTable.setAutoCreateRowSorter(true);
-*/
+
+        /*
         TableModel model = db.resultSetToTableModel(data);
         dataTable.setModel(model);
-//        dataTable.getColumn(0);
-        //
         setTableRowSorter(dataTable);
-        //
+        */
+        
     }
 
     /*
