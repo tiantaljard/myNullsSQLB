@@ -29,8 +29,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  * @Date July 2017
- * @author TianTaljard
- * The purpose of the class is to provide a GUI to find,
+ * @author TianTaljard The purpose of the class is to provide a GUI to find,
  * analyse and explore nulls and blanks in data
  */
 public class MySQLNullsApp extends javax.swing.JFrame {
@@ -435,7 +434,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     private void columnNameTableMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_columnNameTableMouseReleased
         try {
-            
+
             setDataTable(getColumnData());
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
@@ -602,10 +601,20 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         public Object getValueAt(int row, int column) {
             try {
                 resultset.absolute(row + 1); //To change body of generated methods, choose Tools | Templates.
-                return resultset.getObject(column + 1);
+                Object resp = resultset.getObject(column + 1);
+                if (resp == null) {
+                    return "[null]";
+                }
+                if (resp.equals("") ) {
+                    return "[blank]";
+                }
+                return resp;
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                // this is being handled. Not an issue.
+                // we should send this to the log.
+                //e.printStackTrace();
+                System.err.println(e.getMessage());
             }
             return "";
         }
@@ -751,14 +760,14 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      */
     public ResultSet getColumnData() throws SQLException {
         buildColumnDataQuery();
-        
+
         Statement statement = db.conn.createStatement();
         // Gets and sets the row count of the selected Query. this is to allow the table 
         // model to show the correct number or rows. 
         ResultSet getColDataRowCount = statement.executeQuery(dynamic_query_rowcount);
         getColDataRowCount.first();
-        dynamic_rowcount= Integer.parseInt(getColDataRowCount.getObject(1).toString());
-        
+        dynamic_rowcount = Integer.parseInt(getColDataRowCount.getObject(1).toString());
+
         ResultSet getColData = statement.executeQuery(dynamic_query);
         getColData.first();
         return getColData;
@@ -909,14 +918,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      * @throws SQLException
      */
     public void setDataTable(ResultSet data) throws SQLException {
-        
+
         ResultTableModel dataTableModel = new ResultTableModel();
-        
 
         dataTableModel.setColumnIdentifiers(getRowsColOneSelectedVector(columnNameTable));
         dataTableModel.setsqlRowCount(dynamic_rowcount);
         dataTableModel.setResultset(data);
-        
+
         dataTable.setModel(dataTableModel);
         dataTable.setAutoCreateRowSorter(true);
 
@@ -924,8 +932,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         TableModel model = db.resultSetToTableModel(data);
         dataTable.setModel(model);
         setTableRowSorter(dataTable);
-        */
-        
+         */
     }
 
     /*
@@ -1177,8 +1184,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
         }
         dynamic_query = dynamic_query + sqlWhere + ";";
-        dynamic_query_rowcount = dynamic_query_rowcount + sqlWhere+";";
-        
+        dynamic_query_rowcount = dynamic_query_rowcount + sqlWhere + ";";
+
     }
 
     /*
@@ -1211,7 +1218,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
         }
         dynamic_query = query + " from " + table_name + " where 1=1 ";
-        dynamic_query_rowcount = "select count(*) from "+ table_name +" where 1=1 ";
+        dynamic_query_rowcount = "select count(*) from " + table_name + " where 1=1 ";
 
         buildColumnDataSQLWhere();
     }
