@@ -35,9 +35,14 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class MySQLNullsApp extends javax.swing.JFrame {
 
     private MySQLDBConnect db;
-    private String dynamic_query;
     private String dynamic_query_rowcount;
     private int dynamic_rowcount;
+    private String dynamicSelectFrom;
+    private String dynamicSQLWhere;
+    private String dynamicFilterSelectFrom;
+    int columnNameTableSelctionColumn;
+    Vector columnNamesSelectedInColumnNameTable = new Vector();
+
     private String tableViewinUse = "";
 
     /**
@@ -368,6 +373,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tableNameTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableNameTableMouseClicked
+        resetDynamicVariables();
         setColumnNameTable();
         setJTableColOneFilter(columnNameTable, columnNameFilter);
 
@@ -378,8 +384,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             tablePopupMenu.remove(showAllTablesDataNavigatorTbl);
 
             tablePopupMenu.add(showInitialSummaryTbl);
-            System.out.println("DB " + db.getTotalNumberOfTables());
-            System.out.println("MODEL " + tableNameTable.getModel().getRowCount());
 
             if (db.getTotalNumberOfTables() == tableNameTable.getModel().getRowCount()) {
                 tablePopupMenu.remove(showAllTablesDataNavigatorTbl);
@@ -394,8 +398,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }//GEN-LAST:event_tableNameTableMouseClicked
 
     private void tableNameTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameTableKeyReleased
+        resetDynamicVariables();
         setColumnNameTable();
         setJTableColOneFilter(columnNameTable, columnNameFilter);
+
     }//GEN-LAST:event_tableNameTableKeyReleased
 
     private void columnNameTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_columnNameTableMouseClicked
@@ -405,12 +411,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private void columnNameTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_columnNameTableKeyReleased
         try {
             //getColumnDataRowCount();
+            columnNameTableSelctionColumn=columnNameTable.getSelectedColumn();
             setDataTable(getColumnData());
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
-//        buildColumnDataSQLWhere();
-//        System.out.println(dynamic_query);
     }//GEN-LAST:event_columnNameTableKeyReleased
 
     private void tableNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameFilterKeyReleased
@@ -433,12 +438,15 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }//GEN-LAST:event_colNmScrollPanelMouseReleased
 
     private void columnNameTableMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_columnNameTableMouseReleased
-        try {
 
+         columnNameTableSelctionColumn = columnNameTable.columnAtPoint(evt.getPoint());
+
+        try {
             setDataTable(getColumnData());
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }//GEN-LAST:event_columnNameTableMouseReleased
 
     private void initialSummaryTableFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initialSummaryTableFilterActionPerformed
@@ -605,7 +613,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 if (resp == null) {
                     return "[null]";
                 }
-                if (resp.equals("") ) {
+                if (resp.equals("")) {
                     return "[blank]";
                 }
                 return resp;
@@ -679,7 +687,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             int[] rows = jTable.getSelectedRows();
             for (int i = 0; i < rows.length; i++) {
                 rowsColOneSelected.add(jTable.getValueAt(rows[i], 0).toString());
-                System.out.println(jTable.getValueAt(rows[i], 0).toString());
+
             }
         } catch (Exception e) {
             rowsColOneSelected = null;
@@ -690,29 +698,60 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    getRowsColOneSelectedVector(JTable jTable)
+    getColumnNamesForDataTable(JTable jTable)
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
      */
     /**
-     * getRowsColOneSelectedVector(JTable jTable) returns am vector of values of
-     * the first column of the selected rows in the table selected.
+     * getColumnNamesForDataTable(JTable jTable) returns am vector of values of
+     * the first column of the selected rows in the table selected. This method
+     * is used to build a vector of column names for the dataTable. if the user
+     * did not choose specific columns before selecting filters 
+     * (see getColumnData()), then all the columns for the "selected" table 
+     * is used to build the dataTable with.
      *
      * @param jTable
      * @return
      */
-    public Vector getRowsColOneSelectedVector(JTable jTable) {
-        Vector rowsColOneSelected = new Vector();
-        try {
-            int[] rows = jTable.getSelectedRows();
-            for (int i = 0; i < rows.length; i++) {
-                rowsColOneSelected.add(jTable.getValueAt(rows[i], 0).toString());
-                System.out.println(jTable.getValueAt(rows[i], 0).toString());
+    public Vector getColumnNamesForDataTable(JTable jTable) throws SQLException {
+
+        
+        System.out.println("dynamicSelectFrom Vector build  "+dynamicSelectFrom);
+        System.out.println("ZZZZ  "+dynamicSelectFrom.length());
+
+        if (dynamicSelectFrom.length() > 5 && columnNameTableSelctionColumn ==0) {
+            
+            columnNamesSelectedInColumnNameTable.removeAll(columnNamesSelectedInColumnNameTable);
+            
+            try {
+                int[] rows = jTable.getSelectedRows();
+                for (int i = 0; i < rows.length; i++) {
+                    System.out.println("build dataTable columnnames from columnNameTable "+jTable.getValueAt(rows[i], 0).toString());
+                    columnNamesSelectedInColumnNameTable.add(jTable.getValueAt(rows[i], 0).toString());
+                }
+            } catch (Exception e) {
+                columnNamesSelectedInColumnNameTable = null;
             }
-        } catch (Exception e) {
-            rowsColOneSelected = null;
+            return columnNamesSelectedInColumnNameTable;
+
         }
-        return rowsColOneSelected;
+        else if (dynamicSelectFrom.length() > 5 && columnNameTableSelctionColumn !=0) {
+            return columnNamesSelectedInColumnNameTable;
+        }
+        
+        else {
+        columnNamesSelectedInColumnNameTable.removeAll(columnNamesSelectedInColumnNameTable);    
+            int colcount = db.getColCount(getRowColOneSelected(tableNameTable));
+            ResultSet rs = db.getColumnNames(getRowColOneSelected(tableNameTable));
+            rs.first();
+            for (int rsi = 1; rsi < colcount; rsi++) {
+                System.out.println("build dataTable columnnames from tableNameTable "+rs.getObject(1).toString());
+                columnNamesSelectedInColumnNameTable.add(rs.getObject(1).toString());
+                rs.next();
+            }
+            return columnNamesSelectedInColumnNameTable;
+        }
+
     }
 
     /*
@@ -759,16 +798,38 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      * @throws SQLException
      */
     public ResultSet getColumnData() throws SQLException {
-        buildColumnDataQuery();
+        String query = "";
+        dynamic_query_rowcount = "select count(*) from " + getRowColOneSelected(tableNameTable) + " where 1=1";
+        if (columnNameTableSelctionColumn == 0) {
+            buildColumnDataSelectOnColumnNameSelect();
+            query = dynamicSelectFrom;
+
+        }
+
+        if (columnNameTableSelctionColumn != 0 && dynamicSelectFrom.length() < 5) {
+
+            System.out.println("before buildColumnDataSelectOnFilterSelect ");
+            buildColumnDataSelectOnFilterSelect();
+            query = dynamicFilterSelectFrom;
+
+        } else {
+            query = dynamicSelectFrom;
+        }
+        buildColumnDataSQLWhere();
+
+        query = query + dynamicSQLWhere;
+        dynamic_query_rowcount = dynamic_query_rowcount + dynamicSQLWhere;
 
         Statement statement = db.conn.createStatement();
         // Gets and sets the row count of the selected Query. this is to allow the table 
         // model to show the correct number or rows. 
+        System.out.println("dynamic_query_rowcount  " + dynamic_query_rowcount);
         ResultSet getColDataRowCount = statement.executeQuery(dynamic_query_rowcount);
         getColDataRowCount.first();
         dynamic_rowcount = Integer.parseInt(getColDataRowCount.getObject(1).toString());
-
-        ResultSet getColData = statement.executeQuery(dynamic_query);
+        System.out.println("columnNameTableSelctionColumn " + columnNameTableSelctionColumn);
+        System.out.println("query final " + query);
+        ResultSet getColData = statement.executeQuery(query);
         getColData.first();
         return getColData;
     }
@@ -921,7 +982,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         ResultTableModel dataTableModel = new ResultTableModel();
 
-        dataTableModel.setColumnIdentifiers(getRowsColOneSelectedVector(columnNameTable));
+        dataTableModel.setColumnIdentifiers(getColumnNamesForDataTable(columnNameTable));
         dataTableModel.setsqlRowCount(dynamic_rowcount);
         dataTableModel.setResultset(data);
 
@@ -1125,7 +1186,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 }
             }
         }
-        System.out.println("BUILD TABLE SQL WHERE" + sqlWhere);
         return sqlWhere;
     }
 
@@ -1166,7 +1226,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     /**
      * buildColumnDataSQLWhere() builds the "where" part of the SQL query to
      * retrieve data from the database for the column names selected in the
-     * "column names navigator" table. See buildColumnDataQuery().
+     * "column names navigator" table. See
+     * buildColumnDataSelectOnColumnNameSelect().
      */
     public void buildColumnDataSQLWhere() {
 
@@ -1183,26 +1244,25 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 sqlWhere += " and " + columnNames.getValueAt(i, 0) + " like '%" + columnNames.getValueAt(i, 3) + "%'";
             }
         }
-        dynamic_query = dynamic_query + sqlWhere + ";";
-        dynamic_query_rowcount = dynamic_query_rowcount + sqlWhere + ";";
+        dynamicSQLWhere = sqlWhere + "";
 
     }
 
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    buildColumnDataQuery()
+    buildColumnDataSelectOnColumnNameSelect()
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
      */
     /**
-     * buildColumnDataQuery() builds the "select column" part of the SQL query
-     * to retrieve data from the database for the column names selected in the
-     * "column names navigator" table. See buildColumnDataSQLWhere()
+     * buildColumnDataSelectOnColumnNameSelect() builds the "select column" part
+     * of the SQL query to retrieve data from the database for the column names
+     * selected in the "column names navigator" table. See
+     * buildColumnDataSQLWhere()
      */
-    public void buildColumnDataQuery() {
+    public void buildColumnDataSelectOnColumnNameSelect() {
         ArrayList<String> columns_selected;
-        ResultSet columns = null;
 
         String table_name = (getRowColOneSelected(tableNameTable));
         columns_selected = getRowsColOneSelectedArray(columnNameTable);
@@ -1217,10 +1277,36 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 query += ",";
             }
         }
-        dynamic_query = query + " from " + table_name + " where 1=1 ";
-        dynamic_query_rowcount = "select count(*) from " + table_name + " where 1=1 ";
+        dynamicSelectFrom = query + " from " + table_name + " where 1=1 ";
 
-        buildColumnDataSQLWhere();
+    }
+
+    public void buildColumnDataSelectOnFilterSelect() throws SQLException {
+
+        ResultSet columns = null;
+
+        String table_name = (getRowColOneSelected(tableNameTable));
+        int colCount = db.getColCount(table_name);
+        columns = db.getColumnNames(table_name);
+        columns.first();
+
+        System.out.println("COLCOUNT " + colCount);
+
+        String query = "select ";
+
+        for (int i = 1; i < colCount; i++) {
+            System.out.println("print I  " + i);
+            query += columns.getObject(1).toString();
+            if (i == colCount - 1) {
+                query += "";
+            } else {
+                query += ",";
+            }
+            columns.next();
+        }
+
+        dynamicFilterSelectFrom = query + " from " + table_name + " where 1=1 ";
+        System.out.println("INSIDE build filter Select:  " + dynamicFilterSelectFrom);
     }
 
     /*
@@ -1271,7 +1357,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             totalfields = columnCount * rowCount * 1.0f;
             zeroValue = 0;
 
-            //System.out.println("Totalfields "+totalfields);
             db.transPoseNb(tableName);
             tableNulls = db.getNullTableCount(tableName);
             tableBlanks = db.getBlankTableCount(tableName);
@@ -1293,6 +1378,18 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         return tableNullBlankSummaryArray;
     }
+
+    public void resetDynamicVariables() {
+        dynamic_query_rowcount = "";
+        dynamic_rowcount = 0;
+        dynamicSelectFrom = "";
+        dynamicSQLWhere = "";
+        dynamicFilterSelectFrom = "";
+        columnNameTableSelctionColumn=-1;
+
+    }
+    ;
+        
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

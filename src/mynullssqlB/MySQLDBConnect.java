@@ -74,7 +74,6 @@ public class MySQLDBConnect {
             ArrayList<String[]> transposed = db.transPoseNb("uploads");
 
             String result = transposed.get(5)[0];
-            System.out.println("transposed " + result);
             for (int i = 0; i < transposed.size(); i++) {
                 String[] col = transposed.get(i);
                 System.out.print("  \n    cnt " + i);
@@ -279,7 +278,7 @@ public class MySQLDBConnect {
 
         Statement statement = conn.createStatement();
         ResultSet iat_results = statement.executeQuery(masterquery);
-        //System.out.println(masterquery);
+
 
         while (iat_results.next()) {
 
@@ -309,7 +308,6 @@ public class MySQLDBConnect {
 
         Statement statement = conn.createStatement();
         ResultSet getColNames = statement.executeQuery("select  column_name as \"Columns\" from information_schema.columns where table_name='" + table_name + "'  and table_schema='" + databaseName + "'");
-        // System.out.println("select  column_name as \"Columns\" from information_schema.columns where table_name='" + table_name + "'  and table_schema='" + databaseName + "'");
         return getColNames;
     }
 
@@ -360,7 +358,7 @@ public class MySQLDBConnect {
             }
 
             query += "from " + table_name + ";";
-            //    System.out.println(query);
+
             //======================================================================
             // Excecuting dynamically built queries to get counts for nulls and blanks from tables
             //======================================================================
@@ -537,7 +535,6 @@ public class MySQLDBConnect {
 
         //  getConnection();
         ArrayList<String[]> colNulls = transPoseNb(table_name);
-        System.out.println("Print Array Size" + colNulls.size());
         if (colNulls.size() > 0) {
 
             for (int i = 0; i < colNulls.size(); i++) {
@@ -573,7 +570,6 @@ public class MySQLDBConnect {
         ArrayList<String[]> colNulls = transPoseNb(table_name);
 
         String result = colNulls.get(5)[0];
-        System.out.println("transposed " + result);
         for (int i = 0; i < colNulls.size(); i++) {
             String[] col = colNulls.get(i);
             if (col[0].toString().equals(columnName)) {
