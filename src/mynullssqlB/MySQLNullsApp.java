@@ -751,28 +751,18 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      */
     public ResultSet getColumnData() throws SQLException {
         buildColumnDataQuery();
-
+        
         Statement statement = db.conn.createStatement();
-
+        // Gets and sets the row count of the selected Query. this is to allow the table 
+        // model to show the correct number or rows. 
+        ResultSet getColDataRowCount = statement.executeQuery(dynamic_query_rowcount);
+        getColDataRowCount.first();
+        dynamic_rowcount= Integer.parseInt(getColDataRowCount.getObject(1).toString());
+        
         ResultSet getColData = statement.executeQuery(dynamic_query);
-        System.out.println("in get col data " + getColData.absolute(999));
-        getColData.first();
         getColData.first();
         return getColData;
     }
-    
-        public int getColumnDataRowCount() throws SQLException {
-        
-
-        Statement statement = db.conn.createStatement();
-
-        ResultSet getColDataRowCount = statement.executeQuery(dynamic_query_rowcount);
-        System.out.println("in get col data Row Count" + getColDataRowCount.getObject(1));
-        return Integer.parseInt(getColDataRowCount.getObject(1).toString());
-         
-    }
-    
-    
 
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -919,20 +909,25 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      * @throws SQLException
      */
     public void setDataTable(ResultSet data) throws SQLException {
+        
+        /*
         ResultTableModel dataTableModel = new ResultTableModel();
         System.out.println("GOT HERE " + db.getRowCount(getRowColOneSelected(tableNameTable)));
-        dataTableModel.setsqlRowCount(db.getRowCount(getRowColOneSelected(tableNameTable)));
+        //dataTableModel.setsqlRowCount(db.getRowCount(getRowColOneSelected(tableNameTable)));
+        dataTableModel.setsqlRowCount(dynamic_rowcount);
+        
         dataTableModel.setResultset(data);
 
         dataTableModel.setColumnIdentifiers(getRowsColOneSelectedVector(columnNameTable));
 
         dataTable.setModel(dataTableModel);
-
-        //TableModel model = db.resultSetToTableModel(data);
-        //dataTable.setModel(model);
-        //  dataTable.getColumn(0);
         dataTable.setAutoCreateRowSorter(true);
-        //setTableRowSorter(dataTable);
+*/
+        TableModel model = db.resultSetToTableModel(data);
+        dataTable.setModel(model);
+//        dataTable.getColumn(0);
+        //
+        setTableRowSorter(dataTable);
     }
 
     /*
