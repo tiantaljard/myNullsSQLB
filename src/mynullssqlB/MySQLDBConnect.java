@@ -569,7 +569,7 @@ public class MySQLDBConnect {
         getConnection();
         ArrayList<String[]> colNulls = transPoseNb(table_name);
 
-        String result = colNulls.get(5)[0];
+        //String result = colNulls.get(5)[0];
         for (int i = 0; i < colNulls.size(); i++) {
             String[] col = colNulls.get(i);
             if (col[0].toString().equals(columnName)) {
@@ -615,53 +615,6 @@ public class MySQLDBConnect {
      */
     public int getTotalNumberOfTables() {
         return totalNumberOfTable;
-    }
-
-    /*
-    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    resultSetToTableModel(ResultSet rs) 
-    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-     */
-    /**
-     * resultSetToTableModel() converts a SQL result set into a JTable model by
-     * reading the data (and meta data for column names) into two vectors and
-     * then using the data and column name vectors to construct a tablemodel
-     *
-     * @param ResultSet columnNames
-     * @return TableModel
-     */
-    public DefaultTableModel resultSetToTableModel(ResultSet rs) {
-        try {
-            ResultSetMetaData metaData = rs.getMetaData();
-            int numberOfColumns = metaData.getColumnCount();
-            Vector columnNames = new Vector();
-
-            // Get the column names
-            for (int column = 0; column < numberOfColumns; column++) {
-                columnNames.addElement(metaData.getColumnLabel(column + 1));
-            }
-
-            // Get all rows.
-            Vector rows = new Vector();
-
-            while (rs.next()) {
-                Vector newRow = new Vector();
-
-                for (int i = 1; i <= numberOfColumns; i++) {
-                    newRow.addElement(rs.getObject(i));
-                }
-
-                rows.addElement(newRow);
-            }
-
-            return new DefaultTableModel(rows, columnNames);
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            return null;
-        }
     }
 
     /*

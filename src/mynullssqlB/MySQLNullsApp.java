@@ -403,6 +403,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         }
 
+        try {
+            setTableColumnSummaryTable();
+        } catch (SQLException ex) {
+            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
 
     }//GEN-LAST:event_tableNameTableMouseClicked
 
@@ -410,6 +416,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         resetDynamicVariables();
         setColumnNameTable();
         setJTableColOneFilter(columnNameTable, columnNameFilter);
+
+        try {
+            setTableColumnSummaryTable();
+        } catch (SQLException ex) {
+            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
 
     }//GEN-LAST:event_tableNameTableKeyReleased
 
@@ -432,7 +445,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         setJTableColOneFilter(tableNameTable, tableNameFilter);
         setColumnNameTable();
         setJTableColOneFilter(columnNameTable, columnNameFilter);
-
     }//GEN-LAST:event_tableNameFilterKeyReleased
 
     private void columnNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_columnNameFilterKeyReleased
@@ -848,12 +860,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         Statement statement = db.conn.createStatement();
         // Gets and sets the row count of the selected Query. this is to allow the table 
         // model to show the correct number or rows. 
-        System.out.println("dynamic_query_rowcount  " + dynamic_query_rowcount);
+
         ResultSet getColDataRowCount = statement.executeQuery(dynamic_query_rowcount);
         getColDataRowCount.first();
         dynamic_rowcount = Integer.parseInt(getColDataRowCount.getObject(1).toString());
-        System.out.println("columnNameTableSelctionColumn " + columnNameTableSelctionColumn);
-        System.out.println("query final " + query);
         ResultSet getColData = statement.executeQuery(query);
         getColData.first();
         return getColData;
@@ -1124,12 +1134,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         tableNameTable.setModel(tableNameTableModel);
         tableNameTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
 
         ((DefaultTableCellRenderer) tableNameTable.getTableHeader().getDefaultRenderer())
                 .setHorizontalAlignment(SwingConstants.CENTER);
 
         tableNameTable.setAutoCreateRowSorter(true);
+
     }
 
     /*
@@ -1167,7 +1177,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         tableNameTable.setModel(tableNameTableModel);
         tableNameTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
 
         ((DefaultTableCellRenderer) tableNameTable.getTableHeader().getDefaultRenderer())
                 .setHorizontalAlignment(SwingConstants.CENTER);
@@ -1181,7 +1190,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         //TableModel tableNameTableModel =tableNameTable.getModel();
          */
         //tableNameTable.S; 
-        System.out.println("ColumnName   in Tabletable" + tableNameTable.getColumnName(0));
 
         CardLayout card = (CardLayout) mainJPanel.getLayout();
         card.show(mainJPanel, "dataExplorerCard");
@@ -1357,12 +1365,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         columns = db.getColumnNames(table_name);
         columns.first();
 
-        System.out.println("COLCOUNT " + colCount);
-
         String query = "select ";
 
         for (int i = 1; i < colCount; i++) {
-            System.out.println("print I  " + i);
+
             query += columns.getObject(1).toString();
             if (i == colCount - 1) {
                 query += "";
@@ -1373,7 +1379,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
 
         dynamicFilterSelectFrom = query + " from " + table_name + " where 1=1 ";
-        System.out.println("INSIDE build filter Select:  " + dynamicFilterSelectFrom);
+
     }
 
     /*
@@ -1437,7 +1443,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 percentageTableBlanks = (tableBlanks / totalfields) * hundredValue;
             }
 
-            tableNullBlankSummaryArray[count] = new Object[]{tableName, columnCount, rowCount, to2DP.format(percentageTableNulls), to2DP.format(percentageTableBlanks)};
+            tableNullBlankSummaryArray[count] = new Object[]{tableName, (int) columnCount, (int) rowCount, to2DP.format(percentageTableNulls), to2DP.format(percentageTableBlanks)};
             tableNames.next();
             count++;
 
@@ -1472,12 +1478,104 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    buildTableColumnSummary() 
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * buildTableColumnSummary() builds an array from which to create a table
+     * mode for a summary of null and blank values for a specified table.
+     *
+     * @return Object[][]
+     * @throws SQLException
+     */
+    public Object[][] buildTableColumnSummary() throws SQLException {
+        String tableName = getRowColOneSelected(tableNameTable);
+        System.out.println("buildTableColumnSummary() tableName " + tableName);
+
+        int ArrayrowCount = db.getColCount(tableName);
+        int ArraycolCount = 6;
+
+        Object[][] tableColumnSummaryArray = new Object[ArrayrowCount][ArraycolCount];
+        ResultSet columnNames = db.getColumnNames(tableName);
+        columnNames.first();
+        String columnName;
+        double rowCount;
+        double columnNulls;
+        double columnBlanks;
+        double percentageColumnNulls;
+        double percentageColumnBlanks;
+        double zeroValue = 0;
+        double hundredValue = 100;
+        double totalfields;
+        DecimalFormat to2DP = new DecimalFormat("0.00");
+        //  to2DP.format(balance) 
+
+        int count = 0;
+        for (int i = 0; i < ArrayrowCount; i++) {
+            columnName = columnNames.getString(1);
+            rowCount = db.getRowCount(tableName);
+            /*
+             for ultimate performance  db.transPoseNb(tableName) should only be 
+            called once in the  sequencing of the program, but for now, since 
+            the data sets are small it is called every time.
+             IF it were to be called only once, the user should be forced to 
+             use it only after the nulls blank summary has been performed on a 
+             table.
+             */
+            db.transPoseNb(tableName);
+            columnNulls = db.getColNullCount(tableName, columnName);
+            columnBlanks = db.getColBlankCount(tableName, columnName);
+            totalfields = rowCount * 1.0f;
+
+            if (totalfields == zeroValue) {
+
+                percentageColumnNulls = 0;
+                percentageColumnBlanks = 0;
+            } else {
+                percentageColumnNulls = (columnNulls / totalfields) * hundredValue;
+                percentageColumnBlanks = (columnBlanks / totalfields) * hundredValue;
+            }
+
+            tableColumnSummaryArray[count] = new Object[]{columnName, (int) rowCount,(int) columnNulls, (int) columnBlanks, to2DP.format(percentageColumnNulls), to2DP.format(percentageColumnBlanks)};
+
+            columnNames.next();
+            count++;
+
+        }
+        return tableColumnSummaryArray;
+    }
+
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
      */
-    public void buildTableColumnSummary() {
-        String table_name = getRowColOneSelected(tableNameTable);
+    public void setTableColumnSummaryTable() throws SQLException {
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        Object[][] tableColumnSummaryArray = buildTableColumnSummary();
+
+        Object[] columns = {"Column Name", "Row Count", "Nulls Count", "Blanks Count", "% Nulls ", "% Blanks"};
+        ArrayTableModel summaryTableColumnTableModel = new ArrayTableModel();
+        summaryTableColumnTableModel.setDataVector(tableColumnSummaryArray, columns);
+        dataTable.setModel(summaryTableColumnTableModel);
+
+        dataTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
+        dataTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
+        dataTable.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
+        dataTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
+        dataTable.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
+
+        setTableRowSorter(dataTable);
+
+        CardLayout card = (CardLayout) mainJPanel.getLayout();
+        card.show(mainJPanel, "dataExplorerCard");
+        dataExplorerSplitPane.setVisible(true);
 
     }
 
