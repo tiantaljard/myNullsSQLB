@@ -88,9 +88,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         showDataNavigatorPanel = new javax.swing.JMenuItem();
         showAllTablesDataNavigatorTbl = new javax.swing.JMenuItem();
         showSelectedColumnData = new javax.swing.JMenuItem();
+        showAllTablesNBSummaryTbl = new javax.swing.JMenuItem();
         mainJPanel = new javax.swing.JPanel();
-        initialSummaryPanel = new javax.swing.JPanel();
-        initialsummaryScrollPanel = new javax.swing.JScrollPane();
+        summaryPanel = new javax.swing.JPanel();
+        summaryScrollPanel = new javax.swing.JScrollPane();
         summaryTable = new javax.swing.JTable();
         topInitialSummaryView = new javax.swing.JPanel();
         intialSummaryfilterPanel = new javax.swing.JPanel();
@@ -168,20 +169,27 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         showSelectedColumnData.setText("jMenuItem1");
 
+        showAllTablesNBSummaryTbl.setText("Show Nulls & Blank Summary for All Tables");
+        showAllTablesNBSummaryTbl.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showAllTablesNBSummaryTblActionPerformed(evt);
+            }
+        });
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         mainJPanel.setLayout(new java.awt.CardLayout());
 
-        initialSummaryPanel.setLayout(new java.awt.BorderLayout());
+        summaryPanel.setLayout(new java.awt.BorderLayout());
 
         summaryTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 summaryTableMouseClicked(evt);
             }
         });
-        initialsummaryScrollPanel.setViewportView(summaryTable);
+        summaryScrollPanel.setViewportView(summaryTable);
 
-        initialSummaryPanel.add(initialsummaryScrollPanel, java.awt.BorderLayout.CENTER);
+        summaryPanel.add(summaryScrollPanel, java.awt.BorderLayout.CENTER);
 
         topInitialSummaryView.setLayout(new java.awt.BorderLayout());
 
@@ -214,9 +222,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         topInitialSummaryView.add(intialSummaryfilterPanel, java.awt.BorderLayout.CENTER);
 
-        initialSummaryPanel.add(topInitialSummaryView, java.awt.BorderLayout.NORTH);
+        summaryPanel.add(topInitialSummaryView, java.awt.BorderLayout.NORTH);
 
-        mainJPanel.add(initialSummaryPanel, "initialSummaryCard");
+        mainJPanel.add(summaryPanel, "initialSummaryCard");
 
         dataExplorerSplitPane.setPreferredSize(new java.awt.Dimension(800, 536));
 
@@ -382,6 +390,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             tablePopupMenu.remove(showInitialSummaryTbl);
             tablePopupMenu.remove(showDataNavigatorPanel);
             tablePopupMenu.remove(showAllTablesDataNavigatorTbl);
+            tablePopupMenu.remove(showAllTablesNBSummaryTbl);
 
             tablePopupMenu.add(showInitialSummaryTbl);
 
@@ -465,16 +474,25 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             tablePopupMenu.remove(showInitialSummaryTbl);
             tablePopupMenu.remove(showDataNavigatorPanel);
             tablePopupMenu.remove(showAllTablesDataNavigatorTbl);
+            tablePopupMenu.remove(showAllTablesNBSummaryTbl);
 
             if (summaryTable.getModel().getColumnCount() == 3) {
                 tablePopupMenu.add(showNBSummaryTbl);
                 tablePopupMenu.add(showDataNavigatorPanel);
             }
             if (summaryTable.getModel().getColumnCount() == 5) {
+
                 tablePopupMenu.add(showInitialSummaryTbl);
                 tablePopupMenu.add(showDataNavigatorPanel);
 
             }
+
+            if (db.getTotalNumberOfTables() == summaryTable.getModel().getRowCount()) {
+                tablePopupMenu.remove(showAllTablesNBSummaryTbl);
+            } else {
+                tablePopupMenu.add(showAllTablesNBSummaryTbl);
+            }
+
             tablePopupMenu.show(summaryTable, evt.getX(), evt.getY());
 
         }
@@ -515,6 +533,16 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_showAllTablesDataNavigatorTblActionPerformed
+
+    private void showAllTablesNBSummaryTblActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showAllTablesNBSummaryTblActionPerformed
+
+        try {
+            setInitialSummaryTable();
+            setNullsBlankSummaryTable();
+        } catch (SQLException ex) {
+            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_showAllTablesNBSummaryTblActionPerformed
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -704,12 +732,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
      */
     /**
-     * getColumnNamesForDataTable(JTable jTable) returns am vector of values 
-     * that is used to specify the column names of the table model of the dataTable
-     * JTable. The contents of the vector depends on what rows the user have selected
-     * in the columnNameTable, if any. If the user click on a cell to change a filter
-     * the column name selection should not change.If the user
-     * did not choose specific columns before selecting filters (see
+     * getColumnNamesForDataTable(JTable jTable) returns am vector of values
+     * that is used to specify the column names of the table model of the
+     * dataTable JTable. The contents of the vector depends on what rows the
+     * user have selected in the columnNameTable, if any. If the user click on a
+     * cell to change a filter the column name selection should not change.If
+     * the user did not choose specific columns before selecting filters (see
      * getColumnData()), then all the columns for the "selected" table is used
      * to build the dataTable with.
      *
@@ -785,13 +813,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      */
     /**
      * getColumnData() gets the data from the database for the column names
-     * selected in the columnNamesTable in the data explorer view. 
+     * selected in the columnNamesTable in the data explorer view.
      *
      * @return
      * @throws SQLException
      */
     public ResultSet getColumnData() throws SQLException {
-        
+
         String query = "";
         // keeps track of the number of rows the dynamic query has
         dynamic_query_rowcount = "select count(*) from " + getRowColOneSelected(tableNameTable) + " where 1=1";
@@ -803,9 +831,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         // check which part of the columnNameTable the user is interacting with
         // and if a previous column selection has been made for the database
         // table that is currently being explored.
-        
+
         if (columnNameTableSelctionColumn != 0 && dynamicSelectFrom.length() < 5) {
-            
+
             buildColumnDataSelectOnFilterSelect();
             query = dynamicFilterSelectFrom;
 
@@ -916,7 +944,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         CardLayout card = (CardLayout) mainJPanel.getLayout();
         card.show(mainJPanel, "initialSummaryCard");
         tableViewinUse = "initialSummaryPanel";
-        initialSummaryPanel.setVisible(true);
+        summaryPanel.setVisible(true);
     }
 
     /*
@@ -954,7 +982,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         CardLayout card = (CardLayout) mainJPanel.getLayout();
         card.show(mainJPanel, "initialSummaryCard");
-        initialSummaryPanel.setVisible(true);
+        summaryPanel.setVisible(true);
 
     }
 
@@ -1085,14 +1113,29 @@ public class MySQLNullsApp extends javax.swing.JFrame {
          */
 
         ResultSet tbls = db.getTableNames();
-        tableNameTable.setModel(db.resultSetToTableModel(tbls));
-        TableRowSorter<TableModel> tableNameTableSorter = setTableRowSorter(tableNameTable);
+        int rowCount = db.getNumberOfTables();
+
+        Object[] columns = {"Tables"};
+        ResultTableModel tableNameTableModel = new ResultTableModel();
+        tableNameTableModel.setResultset(tbls);
+
+        tableNameTableModel.setColumnIdentifiers(columns);
+        tableNameTableModel.setsqlRowCount(rowCount);
+
+        tableNameTable.setModel(tableNameTableModel);
+        tableNameTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
+
+        ((DefaultTableCellRenderer) tableNameTable.getTableHeader().getDefaultRenderer())
+                .setHorizontalAlignment(SwingConstants.CENTER);
+
+        tableNameTable.setAutoCreateRowSorter(true);
     }
 
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    ginitializeModel(String whereSQL)
+    initializeModel(String whereSQL)
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
      */
@@ -1113,8 +1156,32 @@ public class MySQLNullsApp extends javax.swing.JFrame {
          */
 
         ResultSet tbls = db.getTableNames(whereSQL);
+        int rowCount = db.getNumberOfTables();
+
+        Object[] columns = {"Tables"};
+        ResultTableModel tableNameTableModel = new ResultTableModel();
+        tableNameTableModel.setResultset(tbls);
+
+        tableNameTableModel.setColumnIdentifiers(columns);
+        tableNameTableModel.setsqlRowCount(rowCount);
+
+        tableNameTable.setModel(tableNameTableModel);
+        tableNameTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
+
+        ((DefaultTableCellRenderer) tableNameTable.getTableHeader().getDefaultRenderer())
+                .setHorizontalAlignment(SwingConstants.CENTER);
+
+        tableNameTable.setAutoCreateRowSorter(true);
+        /*
+        ResultSet tbls = db.getTableNames(whereSQL);
         tableNameTable.setModel(db.resultSetToTableModel(tbls));
-        TableRowSorter<TableModel> tableNameTableSorter = setTableRowSorter(tableNameTable);
+        setTableRowSorter(tableNameTable);
+        tableNameTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        //TableModel tableNameTableModel =tableNameTable.getModel();
+         */
+        //tableNameTable.S; 
+        System.out.println("ColumnName   in Tabletable" + tableNameTable.getColumnName(0));
 
         CardLayout card = (CardLayout) mainJPanel.getLayout();
         card.show(mainJPanel, "dataExplorerCard");
@@ -1157,6 +1224,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 }
             }
         }
+
+        // if it is the Nulls Blank Summary Table get the selected tables
+        // else only the tables in the Nulls Blank table model
         if (tableModel.getColumnCount() == 5) {
 
             if (selectedTables.isEmpty()) {
@@ -1398,8 +1468,19 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         columnNameTableSelctionColumn = -1;
 
     }
-    ;
-        
+
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    public void buildTableColumnSummary() {
+        String table_name = getRowColOneSelected(tableNameTable);
+
+    }
+
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1415,9 +1496,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JTable columnNameTable;
     private javax.swing.JSplitPane dataExplorerSplitPane;
     private javax.swing.JTable dataTable;
-    private javax.swing.JPanel initialSummaryPanel;
     private javax.swing.JTextField initialSummaryTableFilter;
-    private javax.swing.JScrollPane initialsummaryScrollPanel;
     private javax.swing.JPanel intialSummaryfilterPanel;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -1429,10 +1508,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JPanel mainJPanel;
     private javax.swing.JPanel mainRightPanel;
     private javax.swing.JMenuItem showAllTablesDataNavigatorTbl;
+    private javax.swing.JMenuItem showAllTablesNBSummaryTbl;
     private javax.swing.JMenuItem showDataNavigatorPanel;
     private javax.swing.JMenuItem showInitialSummaryTbl;
     private javax.swing.JMenuItem showNBSummaryTbl;
     private javax.swing.JMenuItem showSelectedColumnData;
+    private javax.swing.JPanel summaryPanel;
+    private javax.swing.JScrollPane summaryScrollPanel;
     private javax.swing.JTable summaryTable;
     private javax.swing.JTextField tableNameFilter;
     private javax.swing.JTable tableNameTable;

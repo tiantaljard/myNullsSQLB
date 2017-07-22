@@ -632,7 +632,7 @@ public class MySQLDBConnect {
      * @param ResultSet columnNames
      * @return TableModel
      */
-    public TableModel resultSetToTableModel(ResultSet rs) {
+    public DefaultTableModel resultSetToTableModel(ResultSet rs) {
         try {
             ResultSetMetaData metaData = rs.getMetaData();
             int numberOfColumns = metaData.getColumnCount();
