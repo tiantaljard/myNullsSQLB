@@ -1391,8 +1391,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      */
     /**
      * buildArrayNullsBlankSummary() builds an array with which to create a
-     * table model for the summary of database tables their percentage nulls and
-     * blanks
+     * table model for the summary of database tables showing their percentage 
+     * nulls and blanks
+     * 
      *
      * @return
      * @throws SQLException
