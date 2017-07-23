@@ -756,39 +756,83 @@ public class MySQLDBConnect {
         int col_numColumns = col_meta.getColumnCount();
 
         int rowNum = 1;
+        int rowColsNulls = 0;
+        int rowColsBlank = 0;
+        int colNumber = 0;
 
+        ArrayList<int[]> rowColNulBlankCount = new ArrayList<>();
+
+        int[] nullCounts = new int[col_numColumns+1];
+        int[] blankCounts = new int[col_numColumns+1];
+
+//        while( rowsNullsBlankRs.next()) {
+//            int blanks = 0;
+//            int nulls = 0;
+//            for (int i = 0 ; i < col_numColumns ; i++) {
+//                int col = rowsNullsBlankRs.getInt(i+1);
+//                if(i%2 == 0) {
+//                    blankCounts[i] += col;
+//                }
+//                else {
+//                    nullCounts[i] += col;
+//                }
+//            }
+//            
+//            
+//            
+//        }
+
+        // loop through every result set row
         while (rowsNullsBlankRs.next()) {
             int rowNulls = 0;
             int rowBlanks = 0;
 
+            // loop through each column of the result set to determine if it has
+            // nulls or blanks
             for (int ci = 1; ci <= col_numColumns; ci += 2) {
-
-                
 
                 if (rowsNullsBlankRs.getString(ci) != null) {
                     rowNulls = rowNulls + Integer.parseInt(rowsNullsBlankRs.getString(ci));
                 } else {
+                    System.out.println("BLABLA");
                     rowNulls = 0;
                 }
 
                 if (rowsNullsBlankRs.getString(ci + 1) != null) {
                     rowBlanks = rowBlanks + Integer.parseInt(rowsNullsBlankRs.getString(ci + 1));
                 } else {
+                    System.out.println("BLABLA  HAHAHA");
                     rowBlanks = 0;
                 }
 
             }
-            int[] row = new int[]{rowNum, rowNulls, rowBlanks};
-            
-            System.out.println("rownum:"+rowNum+" Nulls Count"+ rowNulls+" blanks count"+rowBlanks);
 
+            int[] row = new int[]{rowNum, rowNulls, rowBlanks};
+
+            rowColNulBlankCount.add(row);
+
+            //System.out.println("rownum:" + rowNum + " Nulls Count" + rowNulls + " blanks count" + rowBlanks);
             rowNullsCache.put(rowNum, rowNulls);
             rowBlanksCache.put(rowNum, rowBlanks);
 
             rowsNullsBlankArray.add(row);
-            rowNum = rowNum + 1;
 
+            rowNum = rowNum + 1;
+            //   System.out.println("rowColsNulls:" + rowColsNulls + " rowColsBlank" + rowColsBlank);
         }
+        // loop through column count to determine how many rows has
+        // nulls and blanks columns equal to the column count
+        for (int cc = 0; cc < col_numColumns; cc++) {
+            int[] fromlist = rowColNulBlankCount.get(cc);
+            blankCounts[fromlist[2]]++;
+            nullCounts[fromlist[1]]++;   
+        }
+        
+                        for (int i = 0 ; i < blankCounts.length ; i++) {
+            System.out.println("Rows with " + i + " nulls =" + nullCounts[i]);
+            System.out.println("Rows with " + i + " blanks =" + blankCounts[i]);
+        }
+        
 
         rowsNullsBlankRs.first();
 
