@@ -401,7 +401,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             tablePopupMenu.remove(showDataNavigatorAllTables);
             tablePopupMenu.remove(showNBSummaryTblAllTables);
             tablePopupMenu.remove(showColsPercentageRows);
-            
 
             tablePopupMenu.add(showInitialSummaryTbl);
             tablePopupMenu.add(showColsPercentageRows);
@@ -569,8 +568,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }//GEN-LAST:event_showNBSummaryTblAllTablesActionPerformed
 
     private void showColsPercentageRowsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showColsPercentageRowsActionPerformed
-        try { 
-            setbuildRowsNulsBlankTable();
+        try {
+            setRowsNullsBlanksPerColumnTable();
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -726,6 +725,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             Class columnClass = getValueAt(0, columnIndex).getClass();
             return columnClass;
         }
+
     }
 
     /*
@@ -1015,25 +1015,20 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         summaryPanel.setVisible(true);
 
     }
-    
-        public void setbuildRowsNulsBlankTable() throws SQLException {
+
+    public void setRowsNullsBlanksPerColumnTable() throws SQLException {
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         centerRenderer.setVerticalAlignment(SwingConstants.CENTER);
 
+        Object[][] rowsNulsBlankArray = buildRowsNullsBlanksPerColumnArray();
 
-        Object[][]   rowsNulsBlankArray =  buildRowsNulsBlankArray();
-        
-        
-
-       
-                    
         Object[] columns = {"<html><center>Number of Columns Affected<center><br></html>",
-            "<html>Number of Rows Null for Affected Columns<center><br></html>",
-            "<html>% of Rows Null for Affected Columns<center><br></html>",
-            "<html>Number of Rows Blank for Affected Columns<center><br></html>",
-       "<html>% of Rows Blank for Affected Columns<center><br></html>"        
+            "<html><center>Number of Rows Null for Affected Columns<center><br></html>",
+            "<html><center>% of Rows Null for Affected Columns<center><br></html>",
+            "<html><center>Number of Rows Blank for Affected Columns<center><br></html>",
+            "<html><center>% of Rows Blank for Affected Columns<center><br></html>"
         };
         ArrayTableModel rowsNulsBlankArrayTableModel = new ArrayTableModel();
         //DefaultTableModel summaryNullsBlankTableModel = new DefaultTableModel(tableNullsBlankSummaryArray, columns);
@@ -1045,14 +1040,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         dataTable.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
         dataTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
 
-        setTableRowSorter(dataTable);
-        
-        
 
+
+        setTableRowSorter(dataTable);
 
     }
-    
-    
 
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1449,9 +1441,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      */
     /**
      * buildArrayNullsBlankSummary() builds an array with which to create a
-     * table model for the summary of database tables showing their percentage 
+     * table model for the summary of database tables showing their percentage
      * nulls and blanks
-     * 
+     *
      *
      * @return
      * @throws SQLException
@@ -1596,7 +1588,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 percentageColumnBlanks = (columnBlanks / totalfields) * hundredValue;
             }
 
-            tableColumnSummaryArray[count] = new Object[]{columnName, (int) rowCount,(int) columnNulls, (int) columnBlanks, to2DP.format(percentageColumnNulls), to2DP.format(percentageColumnBlanks)};
+            tableColumnSummaryArray[count] = new Object[]{columnName, (int) rowCount, (int) columnNulls, (int) columnBlanks, to2DP.format(percentageColumnNulls), to2DP.format(percentageColumnBlanks)};
 
             columnNames.next();
             count++;
@@ -1637,17 +1629,18 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         dataExplorerSplitPane.setVisible(true);
 
     }
+
     /**
-     * buildRowsNulsBlankArray(String table_name) creates an Array list from which
-     * to display a table which analyse how many rows exist in a table for every
-     * column count that is null or blank.
-     * 
+     * buildRowsNullsBlanksPerColumnArray(String table_name) creates an Array list from
+ which to display a table which analyse how many rows exist in a table for
+ every column count that is null or blank.
+     *
      * @param table_name
-     * @return ArrayList<Object[]
-     * @throws SQLException 
+     * @return ArrayList<Object[] @
+     * throws SQLException
      */
-    public Object[][] buildRowsNulsBlankArray() throws SQLException {
-        
+    public Object[][] buildRowsNullsBlanksPerColumnArray() throws SQLException {
+
         String tableName = getRowColOneSelected(tableNameTable);
         int tableRowCount = db.getRowCount(tableName);
         // Array list to hold 0 and 1 for each field
@@ -1655,9 +1648,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         ArrayList<int[]> rowColNulBlankCount = new ArrayList<>();
         // Array List to hold the count of rows for each number of columns
         // with nulls or blanks
-        int arrayRows=db.getColCount(tableName)+1;
+        int arrayRows = db.getColCount(tableName) + 1;
         int ArraycolCount = 5;
-        
+
         Object[][] rowsNullsBlankArray = new Object[arrayRows][ArraycolCount];
         DecimalFormat to2DP = new DecimalFormat("0.00");
 
@@ -1703,7 +1696,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         // loop through column count to determine how many rows has
         // nulls and blanks columns equal to the column count
 
-        for (int colno = 0; colno < (col_numColumns / 2)+1; colno++) {
+        for (int colno = 0; colno < (col_numColumns / 2) + 1; colno++) {
             int colNulls = 0;
             int colBlanks = 0;
 
@@ -1731,21 +1724,17 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             // Array to hold the hold the number of table records with that has 
             // columns and blank column count for each count of the number of 
             // columns the table has.
-           
+
             //Object[] colNumberNullBlankRowCount = {colNulls, Double.parseDouble(percentageRowsNull), colBlanks, Double.parseDouble(percentageRowsBlank)};
-            
-            rowsNullsBlankArray[colno] = new Object[]{colno,colNulls, Double.parseDouble(percentageRowsNull), colBlanks, Double.parseDouble(percentageRowsBlank)};
+            rowsNullsBlankArray[colno] = new Object[]{colno, colNulls, Double.parseDouble(percentageRowsNull), colBlanks, Double.parseDouble(percentageRowsBlank)};
 
-         //   rowsNullsBlankArray.add(colNumberNullBlankRowCount);
-
+            //   rowsNullsBlankArray.add(colNumberNullBlankRowCount);
         }
 
         rowsNullsBlankRs.first();
 
         return rowsNullsBlankArray;
-    }        
-        
-        
+    }
 
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1792,5 +1781,3 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JPanel topInitialSummaryView;
     // End of variables declaration//GEN-END:variables
 }
-
-
