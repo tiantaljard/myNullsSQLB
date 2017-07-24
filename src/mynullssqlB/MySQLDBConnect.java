@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,6 +18,8 @@ import java.util.Map;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+
+import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
  * @Date July 2017
@@ -280,12 +281,11 @@ public class MySQLDBConnect {
         }
 
         masterquery = masterquery + unionquery + " ) as data1;";
-
         Statement statement = conn.createStatement();
         ResultSet iat_results = statement.executeQuery(masterquery);
 
         while (iat_results.next()) {
-
+            
             tblCache.put(iat_results.getString(1) + COLCOUNT, Integer.parseInt(iat_results.getString("column_cnt")));
             tblCache.put(iat_results.getString(1) + ROWCOUNT, Integer.parseInt(iat_results.getString("rowcount")));
         }

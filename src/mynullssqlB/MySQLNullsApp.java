@@ -27,6 +27,10 @@ import javax.swing.table.TableRowSorter;
 import javax.swing.RowFilter;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartFrame;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
  * @Date July 2017
@@ -42,7 +46,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private String dynamicSQLWhere;
     private String dynamicFilterSelectFrom;
     int columnNameTableSelctionColumn;
-    Vector columnNamesSelectedInColumnNameTable = new Vector();
+    private Vector columnNamesSelectedInColumnNameTable = new Vector();
+    // Create DataSet Data Object for Charts
+    private DefaultCategoryDataset SummaryChartDataset = new DefaultCategoryDataset();
 
     private String tableViewinUse = "";
 
@@ -89,8 +95,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         showNBSummaryTblAllTables = new javax.swing.JMenuItem();
         showDataNavigator = new javax.swing.JMenuItem();
         showDataNavigatorAllTables = new javax.swing.JMenuItem();
-        showSelectedColumnData = new javax.swing.JMenuItem();
         showColsPercentageRows = new javax.swing.JMenuItem();
+        chartDialog = new javax.swing.JDialog();
+        ChartPanelMain = new javax.swing.JPanel();
+        showSummaryChart = new javax.swing.JMenuItem();
         mainJPanel = new javax.swing.JPanel();
         summaryPanel = new javax.swing.JPanel();
         summaryScrollPanel = new javax.swing.JScrollPane();
@@ -176,12 +184,49 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
         });
 
-        showSelectedColumnData.setText("jMenuItem1");
-
-        showColsPercentageRows.setText("show Analysis or Rows per Column Null or Blank");
+        showColsPercentageRows.setText("Show Analysis or Rows per Column Null or Blank");
         showColsPercentageRows.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 showColsPercentageRowsActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout ChartPanelMainLayout = new javax.swing.GroupLayout(ChartPanelMain);
+        ChartPanelMain.setLayout(ChartPanelMainLayout);
+        ChartPanelMainLayout.setHorizontalGroup(
+            ChartPanelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        ChartPanelMainLayout.setVerticalGroup(
+            ChartPanelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout chartDialogLayout = new javax.swing.GroupLayout(chartDialog.getContentPane());
+        chartDialog.getContentPane().setLayout(chartDialogLayout);
+        chartDialogLayout.setHorizontalGroup(
+            chartDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(chartDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(chartDialogLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(ChartPanelMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
+        chartDialogLayout.setVerticalGroup(
+            chartDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(chartDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(chartDialogLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(ChartPanelMain, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
+
+        showSummaryChart.setText("Show Summary Chart");
+        showSummaryChart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showSummaryChartActionPerformed(evt);
             }
         });
 
@@ -498,6 +543,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             tablePopupMenu.remove(showDataNavigator);
             tablePopupMenu.remove(showDataNavigatorAllTables);
             tablePopupMenu.remove(showNBSummaryTblAllTables);
+            tablePopupMenu.remove(showSummaryChart);
 
             if (summaryTable.getModel().getColumnCount() == 3) {
                 tablePopupMenu.add(showNBSummaryTbl);
@@ -507,6 +553,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
                 tablePopupMenu.add(showInitialSummaryTbl);
                 tablePopupMenu.add(showDataNavigator);
+                tablePopupMenu.add(showSummaryChart);
 
             }
 
@@ -574,6 +621,19 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_showColsPercentageRowsActionPerformed
+
+    private void showSummaryChartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showSummaryChartActionPerformed
+        JFreeChart barchart = ChartFactory.createBarChart(
+                "Table Nulls and Blank Percentages",
+                "Tables",
+                "Percentage %",
+                getSummaryChartDataset());
+
+        ChartFrame frame = new ChartFrame(
+                "Tables Nulls and Blank Percentages Bar Chart", barchart);
+        frame.pack();
+        frame.setVisible(true);
+    }//GEN-LAST:event_showSummaryChartActionPerformed
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -616,6 +676,23 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 new MySQLNullsApp().setVisible(true);
             }
         });
+    }
+
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    getSummaryChartDataset()
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * Get the dataset built for the Summary Chart based on the data in the
+     * summary table model currently generated.
+     *
+     * @return DefaultCategoryDataset
+     */
+    public DefaultCategoryDataset getSummaryChartDataset() {
+        return SummaryChartDataset;
     }
 
     /*
@@ -1040,8 +1117,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         dataTable.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
         dataTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
 
-
-
         setTableRowSorter(dataTable);
 
     }
@@ -1449,7 +1524,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      * @throws SQLException
      */
     public Object[][] buildArrayNullsBlankSummary() throws SQLException {
-        //ArrayList<String[]> tNBS = new ArrayList<>();
+        SummaryChartDataset.clear();
 
         int ArrayrowCount = getTableSQLWhereRecordCount();
 
@@ -1493,8 +1568,17 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 percentageTableNulls = (tableNulls / totalfields) * hundredValue;
                 percentageTableBlanks = (tableBlanks / totalfields) * hundredValue;
             }
-
+            // Building the array from which to create the table model    
             tableNullBlankSummaryArray[count] = new Object[]{tableName, (int) columnCount, (int) rowCount, to2DP.format(percentageTableNulls), to2DP.format(percentageTableBlanks)};
+
+            // Adding data to the Chart Data Object
+            if (percentageTableNulls > 0) {
+                SummaryChartDataset.addValue(percentageTableNulls, "Nulls %", tableName);
+            }
+            if (percentageTableBlanks > 0) {
+                SummaryChartDataset.addValue(percentageTableBlanks, "Blanks %", tableName);
+            }
+
             tableNames.next();
             count++;
 
@@ -1631,13 +1715,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }
 
     /**
-     * buildRowsNullsBlanksPerColumnArray(String table_name) creates an Array list from
- which to display a table which analyse how many rows exist in a table for
- every column count that is null or blank.
+     * buildRowsNullsBlanksPerColumnArray(String table_name) creates an Array
+     * list from which to display a table which analyse how many rows exist in a
+     * table for every column count that is null or blank.
      *
      * @param table_name
-     * @return ArrayList<Object[] @
-     * throws SQLException
+     * @return ArrayList<Object[] @ throws SQLException
      */
     public Object[][] buildRowsNullsBlanksPerColumnArray() throws SQLException {
 
@@ -1743,6 +1826,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel ChartPanelMain;
+    private javax.swing.JDialog chartDialog;
     private javax.swing.JPanel colNmFilterPanel;
     private javax.swing.JPanel colNmParentPanel;
     private javax.swing.JScrollPane colNmScrollPanel;
@@ -1768,7 +1853,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JMenuItem showInitialSummaryTbl;
     private javax.swing.JMenuItem showNBSummaryTbl;
     private javax.swing.JMenuItem showNBSummaryTblAllTables;
-    private javax.swing.JMenuItem showSelectedColumnData;
+    private javax.swing.JMenuItem showSummaryChart;
     private javax.swing.JPanel summaryPanel;
     private javax.swing.JScrollPane summaryScrollPanel;
     private javax.swing.JTable summaryTable;
