@@ -362,7 +362,7 @@ public class MySQLDBConnect {
             }
 
             query += "from " + table_name + ";";
-            System.out.println(query);
+            //System.out.println(query);
 
             //======================================================================
             // Excecuting dynamically built queries to get counts for nulls and blanks from tables
@@ -404,7 +404,7 @@ public class MySQLDBConnect {
             }
 
             query += "from " + table_name + ";";
-            System.out.println(query);
+            // System.out.println(query);
 
             //======================================================================
             // Excecuting dynamically built queries to get counts for nulls and blanks from tables
@@ -745,98 +745,93 @@ public class MySQLDBConnect {
         }
     }
 
-    public ArrayList<int[]> buildRowsNulsBlankArray(String table_name) throws SQLException {
-
-        ArrayList<int[]> rowsNullsBlankArray = new ArrayList<>();
+    public ArrayList<Object[]> buildRowsNulsBlankArray(String table_name) throws SQLException {
+        // Array list to hold 0 and 1 for each field
+        // in a row for nulls and for blanks
+        ArrayList<int[]> rowColNulBlankCount = new ArrayList<>();
+        // Array List to hold the count of rows for each number of columns
+        // with nulls or blanks
+        ArrayList<Object[]> rowsNullsBlankArray = new ArrayList<>();
+        DecimalFormat to2DP = new DecimalFormat("0.00");
 
         ResultSet rowsNullsBlankRs = analyseTableRowsNullsBlanks(table_name);
-
         ResultSetMetaData col_meta = rowsNullsBlankRs.getMetaData();
+        rowsNullsBlankRs.first();
 
         int col_numColumns = col_meta.getColumnCount();
 
         int rowNum = 1;
-        int rowColsNulls = 0;
-        int rowColsBlank = 0;
-        int colNumber = 0;
-
-        ArrayList<int[]> rowColNulBlankCount = new ArrayList<>();
-
-        int[] nullCounts = new int[col_numColumns+1];
-        int[] blankCounts = new int[col_numColumns+1];
-
-//        while( rowsNullsBlankRs.next()) {
-//            int blanks = 0;
-//            int nulls = 0;
-//            for (int i = 0 ; i < col_numColumns ; i++) {
-//                int col = rowsNullsBlankRs.getInt(i+1);
-//                if(i%2 == 0) {
-//                    blankCounts[i] += col;
-//                }
-//                else {
-//                    nullCounts[i] += col;
-//                }
-//            }
-//            
-//            
-//            
-//        }
 
         // loop through every result set row
-        while (rowsNullsBlankRs.next()) {
+        for (int resultsetloop = 1; resultsetloop <= getRowCount(table_name); resultsetloop++) {
+            //while (rowsNullsBlankRs.next()) {
             int rowNulls = 0;
             int rowBlanks = 0;
 
             // loop through each column of the result set to determine if it has
-            // nulls or blanks
+            // nulls or blanks. because nulls and blanks are held in the same line 
+            // of each result set the loop is progressed by 2 to jump nulls and 
+            // and blanks. thus ci = nulls ci+1 = blanks
             for (int ci = 1; ci <= col_numColumns; ci += 2) {
 
                 if (rowsNullsBlankRs.getString(ci) != null) {
                     rowNulls = rowNulls + Integer.parseInt(rowsNullsBlankRs.getString(ci));
                 } else {
-                    System.out.println("BLABLA");
                     rowNulls = 0;
                 }
-
                 if (rowsNullsBlankRs.getString(ci + 1) != null) {
                     rowBlanks = rowBlanks + Integer.parseInt(rowsNullsBlankRs.getString(ci + 1));
                 } else {
-                    System.out.println("BLABLA  HAHAHA");
                     rowBlanks = 0;
                 }
-
             }
 
             int[] row = new int[]{rowNum, rowNulls, rowBlanks};
-
             rowColNulBlankCount.add(row);
-
-            //System.out.println("rownum:" + rowNum + " Nulls Count" + rowNulls + " blanks count" + rowBlanks);
-            rowNullsCache.put(rowNum, rowNulls);
-            rowBlanksCache.put(rowNum, rowBlanks);
-
-            rowsNullsBlankArray.add(row);
+            System.out.println(rowNum);
 
             rowNum = rowNum + 1;
-            //   System.out.println("rowColsNulls:" + rowColsNulls + " rowColsBlank" + rowColsBlank);
+            rowsNullsBlankRs.next();
         }
         // loop through column count to determine how many rows has
         // nulls and blanks columns equal to the column count
-        for (int cc = 0; cc < col_numColumns; cc++) {
-            int[] fromlist = rowColNulBlankCount.get(cc);
-            blankCounts[fromlist[2]]++;
-            nullCounts[fromlist[1]]++;   
+
+        for (int colno = 0; colno < (col_numColumns / 2); colno++) {
+            int colNulls = 0;
+            int colBlanks = 0;
+
+            for (int rowarrayNo = 0; rowarrayNo < rowColNulBlankCount.size(); rowarrayNo++) {
+
+                int[] rowFromArray = rowColNulBlankCount.get(rowarrayNo);
+
+                if (colno == rowFromArray[1]) {
+                    colNulls++;
+                }
+                if (colno == rowFromArray[2]) {
+                    colBlanks++;
+                }
+            }
+
+            String percentageRowsNull = "0.00";
+            String percentageRowsBlank = "0.00";
+
+            if (rowColNulBlankCount.size() != 0) {
+                percentageRowsNull = to2DP.format((double) colNulls / (double) getRowCount(table_name) * 100);
+                percentageRowsBlank = to2DP.format((double) colBlanks / (double) getRowCount(table_name) * 100);
+            }
+
+            System.out.print("Sum of " + colno + " " + colNulls + " " + Double.parseDouble(percentageRowsNull) + " " + colBlanks + " " + Double.parseDouble(percentageRowsBlank) + " \n");
+            // Array to hold the hold the number of table records with that has 
+            // columns and blank column count for each count of the number of 
+            // columns the table has.
+            Object[] colNumberNullBlankRowCount = {colno, colNulls, Double.parseDouble(percentageRowsNull), colBlanks, Double.parseDouble(percentageRowsBlank)};
+
+            rowsNullsBlankArray.add(colNumberNullBlankRowCount);
+
         }
-        
-                        for (int i = 0 ; i < blankCounts.length ; i++) {
-            System.out.println("Rows with " + i + " nulls =" + nullCounts[i]);
-            System.out.println("Rows with " + i + " blanks =" + blankCounts[i]);
-        }
-        
 
         rowsNullsBlankRs.first();
 
         return rowsNullsBlankArray;
     }
-
 }
