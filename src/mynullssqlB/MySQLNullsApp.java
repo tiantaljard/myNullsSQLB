@@ -8,6 +8,7 @@ package mynullssqlB;
 import java.awt.CardLayout;
 import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
@@ -83,12 +84,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         jMenu3 = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
         tablePopupMenu = new javax.swing.JPopupMenu();
-        showNBSummaryTbl = new javax.swing.JMenuItem();
         showInitialSummaryTbl = new javax.swing.JMenuItem();
-        showDataNavigatorPanel = new javax.swing.JMenuItem();
-        showAllTablesDataNavigatorTbl = new javax.swing.JMenuItem();
+        showNBSummaryTbl = new javax.swing.JMenuItem();
+        showNBSummaryTblAllTables = new javax.swing.JMenuItem();
+        showDataNavigator = new javax.swing.JMenuItem();
+        showDataNavigatorAllTables = new javax.swing.JMenuItem();
         showSelectedColumnData = new javax.swing.JMenuItem();
-        showAllTablesNBSummaryTbl = new javax.swing.JMenuItem();
+        showColsPercentageRows = new javax.swing.JMenuItem();
         mainJPanel = new javax.swing.JPanel();
         summaryPanel = new javax.swing.JPanel();
         summaryScrollPanel = new javax.swing.JScrollPane();
@@ -139,13 +141,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         tablePopupMenu =new JPopupMenu();
 
-        showNBSummaryTbl.setText("Show Nulls & Blank Summary Table");
-        showNBSummaryTbl.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                showNBSummaryTblActionPerformed(evt);
-            }
-        });
-
         showInitialSummaryTbl.setText("Show Initial Table Summary");
         showInitialSummaryTbl.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -153,26 +148,40 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
         });
 
-        showDataNavigatorPanel.setText("Show Table Explorer");
-        showDataNavigatorPanel.addActionListener(new java.awt.event.ActionListener() {
+        showNBSummaryTbl.setText("Show Nulls & Blank Summary Table");
+        showNBSummaryTbl.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                showDataNavigatorPanelActionPerformed(evt);
+                showNBSummaryTblActionPerformed(evt);
             }
         });
 
-        showAllTablesDataNavigatorTbl.setText("Show All Tables");
-        showAllTablesDataNavigatorTbl.addActionListener(new java.awt.event.ActionListener() {
+        showNBSummaryTblAllTables.setText("Show Nulls & Blank Summary for All Tables");
+        showNBSummaryTblAllTables.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                showAllTablesDataNavigatorTblActionPerformed(evt);
+                showNBSummaryTblAllTablesActionPerformed(evt);
+            }
+        });
+
+        showDataNavigator.setText("Show Table Explorer");
+        showDataNavigator.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showDataNavigatorActionPerformed(evt);
+            }
+        });
+
+        showDataNavigatorAllTables.setText("Show All Tables");
+        showDataNavigatorAllTables.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showDataNavigatorAllTablesActionPerformed(evt);
             }
         });
 
         showSelectedColumnData.setText("jMenuItem1");
 
-        showAllTablesNBSummaryTbl.setText("Show Nulls & Blank Summary for All Tables");
-        showAllTablesNBSummaryTbl.addActionListener(new java.awt.event.ActionListener() {
+        showColsPercentageRows.setText("show Analysis or Rows per Column Null or Blank");
+        showColsPercentageRows.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                showAllTablesNBSummaryTblActionPerformed(evt);
+                showColsPercentageRowsActionPerformed(evt);
             }
         });
 
@@ -388,16 +397,19 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         if (evt.getButton() == MouseEvent.BUTTON3) {
             tablePopupMenu.remove(showNBSummaryTbl);
             tablePopupMenu.remove(showInitialSummaryTbl);
-            tablePopupMenu.remove(showDataNavigatorPanel);
-            tablePopupMenu.remove(showAllTablesDataNavigatorTbl);
-            tablePopupMenu.remove(showAllTablesNBSummaryTbl);
+            tablePopupMenu.remove(showDataNavigator);
+            tablePopupMenu.remove(showDataNavigatorAllTables);
+            tablePopupMenu.remove(showNBSummaryTblAllTables);
+            tablePopupMenu.remove(showColsPercentageRows);
+            
 
             tablePopupMenu.add(showInitialSummaryTbl);
+            tablePopupMenu.add(showColsPercentageRows);
 
             if (db.getTotalNumberOfTables() == tableNameTable.getModel().getRowCount()) {
-                tablePopupMenu.remove(showAllTablesDataNavigatorTbl);
+                tablePopupMenu.remove(showDataNavigatorAllTables);
             } else {
-                tablePopupMenu.add(showAllTablesDataNavigatorTbl);
+                tablePopupMenu.add(showDataNavigatorAllTables);
             }
             tablePopupMenu.show(tableNameTable, evt.getX(), evt.getY());
 
@@ -484,25 +496,25 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         if (evt.getButton() == MouseEvent.BUTTON3) {
             tablePopupMenu.remove(showNBSummaryTbl);
             tablePopupMenu.remove(showInitialSummaryTbl);
-            tablePopupMenu.remove(showDataNavigatorPanel);
-            tablePopupMenu.remove(showAllTablesDataNavigatorTbl);
-            tablePopupMenu.remove(showAllTablesNBSummaryTbl);
+            tablePopupMenu.remove(showDataNavigator);
+            tablePopupMenu.remove(showDataNavigatorAllTables);
+            tablePopupMenu.remove(showNBSummaryTblAllTables);
 
             if (summaryTable.getModel().getColumnCount() == 3) {
                 tablePopupMenu.add(showNBSummaryTbl);
-                tablePopupMenu.add(showDataNavigatorPanel);
+                tablePopupMenu.add(showDataNavigator);
             }
             if (summaryTable.getModel().getColumnCount() == 5) {
 
                 tablePopupMenu.add(showInitialSummaryTbl);
-                tablePopupMenu.add(showDataNavigatorPanel);
+                tablePopupMenu.add(showDataNavigator);
 
             }
 
             if (db.getTotalNumberOfTables() == summaryTable.getModel().getRowCount()) {
-                tablePopupMenu.remove(showAllTablesNBSummaryTbl);
+                tablePopupMenu.remove(showNBSummaryTblAllTables);
             } else {
-                tablePopupMenu.add(showAllTablesNBSummaryTbl);
+                tablePopupMenu.add(showNBSummaryTblAllTables);
             }
 
             tablePopupMenu.show(summaryTable, evt.getX(), evt.getY());
@@ -528,25 +540,25 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_showInitialSummaryTblActionPerformed
 
-    private void showDataNavigatorPanelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showDataNavigatorPanelActionPerformed
+    private void showDataNavigatorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showDataNavigatorActionPerformed
         try {
             initializeModel(buildTableSQLWhere());
 
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_showDataNavigatorPanelActionPerformed
+    }//GEN-LAST:event_showDataNavigatorActionPerformed
 
-    private void showAllTablesDataNavigatorTblActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showAllTablesDataNavigatorTblActionPerformed
+    private void showDataNavigatorAllTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showDataNavigatorAllTablesActionPerformed
         try {
             initializeModel();
 
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_showAllTablesDataNavigatorTblActionPerformed
+    }//GEN-LAST:event_showDataNavigatorAllTablesActionPerformed
 
-    private void showAllTablesNBSummaryTblActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showAllTablesNBSummaryTblActionPerformed
+    private void showNBSummaryTblAllTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showNBSummaryTblAllTablesActionPerformed
 
         try {
             setInitialSummaryTable();
@@ -554,7 +566,15 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_showAllTablesNBSummaryTblActionPerformed
+    }//GEN-LAST:event_showNBSummaryTblAllTablesActionPerformed
+
+    private void showColsPercentageRowsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showColsPercentageRowsActionPerformed
+        try { 
+            setbuildRowsNulsBlankTable();
+        } catch (SQLException ex) {
+            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_showColsPercentageRowsActionPerformed
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -995,6 +1015,44 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         summaryPanel.setVisible(true);
 
     }
+    
+        public void setbuildRowsNulsBlankTable() throws SQLException {
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        centerRenderer.setVerticalAlignment(SwingConstants.CENTER);
+
+
+        Object[][]   rowsNulsBlankArray =  buildRowsNulsBlankArray();
+        
+        
+
+       
+                    
+        Object[] columns = {"<html><center>Number of Columns Affected<center><br></html>",
+            "<html>Number of Rows Null for Affected Columns<center><br></html>",
+            "<html>% of Rows Null for Affected Columns<center><br></html>",
+            "<html>Number of Rows Blank for Affected Columns<center><br></html>",
+       "<html>% of Rows Blank for Affected Columns<center><br></html>"        
+        };
+        ArrayTableModel rowsNulsBlankArrayTableModel = new ArrayTableModel();
+        //DefaultTableModel summaryNullsBlankTableModel = new DefaultTableModel(tableNullsBlankSummaryArray, columns);
+        rowsNulsBlankArrayTableModel.setDataVector(rowsNulsBlankArray, columns);
+        dataTable.setModel(rowsNulsBlankArrayTableModel);
+        dataTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+        dataTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
+        dataTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
+        dataTable.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
+        dataTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
+
+        setTableRowSorter(dataTable);
+        
+        
+
+
+    }
+    
+    
 
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1579,6 +1637,115 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         dataExplorerSplitPane.setVisible(true);
 
     }
+    /**
+     * buildRowsNulsBlankArray(String table_name) creates an Array list from which
+     * to display a table which analyse how many rows exist in a table for every
+     * column count that is null or blank.
+     * 
+     * @param table_name
+     * @return ArrayList<Object[]
+     * @throws SQLException 
+     */
+    public Object[][] buildRowsNulsBlankArray() throws SQLException {
+        
+        String tableName = getRowColOneSelected(tableNameTable);
+        int tableRowCount = db.getRowCount(tableName);
+        // Array list to hold 0 and 1 for each field
+        // in a row for nulls and for blanks
+        ArrayList<int[]> rowColNulBlankCount = new ArrayList<>();
+        // Array List to hold the count of rows for each number of columns
+        // with nulls or blanks
+        int arrayRows=db.getColCount(tableName)+1;
+        int ArraycolCount = 5;
+        
+        Object[][] rowsNullsBlankArray = new Object[arrayRows][ArraycolCount];
+        DecimalFormat to2DP = new DecimalFormat("0.00");
+
+        ResultSet rowsNullsBlankRs = db.analyseTableRowsNullsBlanks(tableName);
+        ResultSetMetaData col_meta = rowsNullsBlankRs.getMetaData();
+        rowsNullsBlankRs.first();
+
+        int col_numColumns = col_meta.getColumnCount();
+
+        int rowNum = 1;
+
+        // loop through every result set row
+        for (int resultsetloop = 1; resultsetloop <= tableRowCount; resultsetloop++) {
+            //while (rowsNullsBlankRs.next()) {
+            int rowNulls = 0;
+            int rowBlanks = 0;
+
+            // loop through each column of the result set to determine if it has
+            // nulls or blanks. because nulls and blanks are held in the same line 
+            // of each result set the loop is progressed by 2 to jump nulls and 
+            // and blanks. thus ci = nulls ci+1 = blanks
+            for (int ci = 1; ci <= col_numColumns; ci += 2) {
+
+                if (rowsNullsBlankRs.getString(ci) != null) {
+                    rowNulls = rowNulls + Integer.parseInt(rowsNullsBlankRs.getString(ci));
+                } else {
+                    rowNulls = 0;
+                }
+                if (rowsNullsBlankRs.getString(ci + 1) != null) {
+                    rowBlanks = rowBlanks + Integer.parseInt(rowsNullsBlankRs.getString(ci + 1));
+                } else {
+                    rowBlanks = 0;
+                }
+            }
+
+            int[] row = new int[]{rowNum, rowNulls, rowBlanks};
+            rowColNulBlankCount.add(row);
+            System.out.println(rowNum);
+
+            rowNum = rowNum + 1;
+            rowsNullsBlankRs.next();
+        }
+        // loop through column count to determine how many rows has
+        // nulls and blanks columns equal to the column count
+
+        for (int colno = 0; colno < (col_numColumns / 2)+1; colno++) {
+            int colNulls = 0;
+            int colBlanks = 0;
+
+            for (int rowarrayNo = 0; rowarrayNo < rowColNulBlankCount.size(); rowarrayNo++) {
+
+                int[] rowFromArray = rowColNulBlankCount.get(rowarrayNo);
+
+                if (colno == rowFromArray[1]) {
+                    colNulls++;
+                }
+                if (colno == rowFromArray[2]) {
+                    colBlanks++;
+                }
+            }
+
+            String percentageRowsNull = "0.00";
+            String percentageRowsBlank = "0.00";
+
+            if (rowColNulBlankCount.size() != 0) {
+                percentageRowsNull = to2DP.format((double) colNulls / (double) tableRowCount * 100);
+                percentageRowsBlank = to2DP.format((double) colBlanks / (double) tableRowCount * 100);
+            }
+
+            System.out.print("Sum of " + colno + " " + colNulls + " " + Double.parseDouble(percentageRowsNull) + " " + colBlanks + " " + Double.parseDouble(percentageRowsBlank) + " \n");
+            // Array to hold the hold the number of table records with that has 
+            // columns and blank column count for each count of the number of 
+            // columns the table has.
+           
+            //Object[] colNumberNullBlankRowCount = {colNulls, Double.parseDouble(percentageRowsNull), colBlanks, Double.parseDouble(percentageRowsBlank)};
+            
+            rowsNullsBlankArray[colno] = new Object[]{colno,colNulls, Double.parseDouble(percentageRowsNull), colBlanks, Double.parseDouble(percentageRowsBlank)};
+
+         //   rowsNullsBlankArray.add(colNumberNullBlankRowCount);
+
+        }
+
+        rowsNullsBlankRs.first();
+
+        return rowsNullsBlankArray;
+    }        
+        
+        
 
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1606,11 +1773,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JPanel mainJPanel;
     private javax.swing.JPanel mainRightPanel;
-    private javax.swing.JMenuItem showAllTablesDataNavigatorTbl;
-    private javax.swing.JMenuItem showAllTablesNBSummaryTbl;
-    private javax.swing.JMenuItem showDataNavigatorPanel;
+    private javax.swing.JMenuItem showColsPercentageRows;
+    private javax.swing.JMenuItem showDataNavigator;
+    private javax.swing.JMenuItem showDataNavigatorAllTables;
     private javax.swing.JMenuItem showInitialSummaryTbl;
     private javax.swing.JMenuItem showNBSummaryTbl;
+    private javax.swing.JMenuItem showNBSummaryTblAllTables;
     private javax.swing.JMenuItem showSelectedColumnData;
     private javax.swing.JPanel summaryPanel;
     private javax.swing.JScrollPane summaryScrollPanel;
@@ -1624,3 +1792,5 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JPanel topInitialSummaryView;
     // End of variables declaration//GEN-END:variables
 }
+
+

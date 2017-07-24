@@ -89,7 +89,7 @@ public class MySQLDBConnect {
 //                db.getBlankTableCount("uploads");
 //                db.transPoseNb("requests");
             //db.analyseTablesNullsBlanks("requests");
-            db.buildRowsNulsBlankArray("requests");
+     //       db.buildRowsNulsBlankArray("requests");
 
 //            db.getColumnNames("uploads");
 //
@@ -724,114 +724,5 @@ public class MySQLDBConnect {
         }
     }
 
-    /*
-    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    formatDouble(double d)
-    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-     */
-    /**
-     * formatDouble(double d) formats a to display as cleanly as possible.
-     *
-     * @param d
-     * @return
-     */
-    public static String formatDouble(double d) {
-        if (d == (long) d) {
-            return String.format("%d", (long) d);
-        } else {
-            return String.format("%s", d);
-        }
-    }
 
-    public ArrayList<Object[]> buildRowsNulsBlankArray(String table_name) throws SQLException {
-        // Array list to hold 0 and 1 for each field
-        // in a row for nulls and for blanks
-        ArrayList<int[]> rowColNulBlankCount = new ArrayList<>();
-        // Array List to hold the count of rows for each number of columns
-        // with nulls or blanks
-        ArrayList<Object[]> rowsNullsBlankArray = new ArrayList<>();
-        DecimalFormat to2DP = new DecimalFormat("0.00");
-
-        ResultSet rowsNullsBlankRs = analyseTableRowsNullsBlanks(table_name);
-        ResultSetMetaData col_meta = rowsNullsBlankRs.getMetaData();
-        rowsNullsBlankRs.first();
-
-        int col_numColumns = col_meta.getColumnCount();
-
-        int rowNum = 1;
-
-        // loop through every result set row
-        for (int resultsetloop = 1; resultsetloop <= getRowCount(table_name); resultsetloop++) {
-            //while (rowsNullsBlankRs.next()) {
-            int rowNulls = 0;
-            int rowBlanks = 0;
-
-            // loop through each column of the result set to determine if it has
-            // nulls or blanks. because nulls and blanks are held in the same line 
-            // of each result set the loop is progressed by 2 to jump nulls and 
-            // and blanks. thus ci = nulls ci+1 = blanks
-            for (int ci = 1; ci <= col_numColumns; ci += 2) {
-
-                if (rowsNullsBlankRs.getString(ci) != null) {
-                    rowNulls = rowNulls + Integer.parseInt(rowsNullsBlankRs.getString(ci));
-                } else {
-                    rowNulls = 0;
-                }
-                if (rowsNullsBlankRs.getString(ci + 1) != null) {
-                    rowBlanks = rowBlanks + Integer.parseInt(rowsNullsBlankRs.getString(ci + 1));
-                } else {
-                    rowBlanks = 0;
-                }
-            }
-
-            int[] row = new int[]{rowNum, rowNulls, rowBlanks};
-            rowColNulBlankCount.add(row);
-            System.out.println(rowNum);
-
-            rowNum = rowNum + 1;
-            rowsNullsBlankRs.next();
-        }
-        // loop through column count to determine how many rows has
-        // nulls and blanks columns equal to the column count
-
-        for (int colno = 0; colno < (col_numColumns / 2); colno++) {
-            int colNulls = 0;
-            int colBlanks = 0;
-
-            for (int rowarrayNo = 0; rowarrayNo < rowColNulBlankCount.size(); rowarrayNo++) {
-
-                int[] rowFromArray = rowColNulBlankCount.get(rowarrayNo);
-
-                if (colno == rowFromArray[1]) {
-                    colNulls++;
-                }
-                if (colno == rowFromArray[2]) {
-                    colBlanks++;
-                }
-            }
-
-            String percentageRowsNull = "0.00";
-            String percentageRowsBlank = "0.00";
-
-            if (rowColNulBlankCount.size() != 0) {
-                percentageRowsNull = to2DP.format((double) colNulls / (double) getRowCount(table_name) * 100);
-                percentageRowsBlank = to2DP.format((double) colBlanks / (double) getRowCount(table_name) * 100);
-            }
-
-            System.out.print("Sum of " + colno + " " + colNulls + " " + Double.parseDouble(percentageRowsNull) + " " + colBlanks + " " + Double.parseDouble(percentageRowsBlank) + " \n");
-            // Array to hold the hold the number of table records with that has 
-            // columns and blank column count for each count of the number of 
-            // columns the table has.
-            Object[] colNumberNullBlankRowCount = {colno, colNulls, Double.parseDouble(percentageRowsNull), colBlanks, Double.parseDouble(percentageRowsBlank)};
-
-            rowsNullsBlankArray.add(colNumberNullBlankRowCount);
-
-        }
-
-        rowsNullsBlankRs.first();
-
-        return rowsNullsBlankArray;
-    }
 }

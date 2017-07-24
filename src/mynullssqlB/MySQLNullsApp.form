@@ -29,6 +29,14 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
     </Container>
+    <Component class="javax.swing.JMenuItem" name="showInitialSummaryTbl">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Show Initial Table Summary"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showInitialSummaryTblActionPerformed"/>
+      </Events>
+    </Component>
     <Component class="javax.swing.JMenuItem" name="showNBSummaryTbl">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
@@ -39,28 +47,30 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showNBSummaryTblActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JMenuItem" name="showInitialSummaryTbl">
+    <Component class="javax.swing.JMenuItem" name="showNBSummaryTblAllTables">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Show Initial Table Summary"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="&quot;Show Nulls &amp; Blank Summary for All Tables&quot;" type="code"/>
+        </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showInitialSummaryTblActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showNBSummaryTblAllTablesActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JMenuItem" name="showDataNavigatorPanel">
+    <Component class="javax.swing.JMenuItem" name="showDataNavigator">
       <Properties>
         <Property name="text" type="java.lang.String" value="Show Table Explorer"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showDataNavigatorPanelActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showDataNavigatorActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JMenuItem" name="showAllTablesDataNavigatorTbl">
+    <Component class="javax.swing.JMenuItem" name="showDataNavigatorAllTables">
       <Properties>
         <Property name="text" type="java.lang.String" value="Show All Tables"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showAllTablesDataNavigatorTblActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showDataNavigatorAllTablesActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JMenuItem" name="showSelectedColumnData">
@@ -68,14 +78,12 @@
         <Property name="text" type="java.lang.String" value="jMenuItem1"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JMenuItem" name="showAllTablesNBSummaryTbl">
+    <Component class="javax.swing.JMenuItem" name="showColsPercentageRows">
       <Properties>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="&quot;Show Nulls &amp; Blank Summary for All Tables&quot;" type="code"/>
-        </Property>
+        <Property name="text" type="java.lang.String" value="show Analysis or Rows per Column Null or Blank"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showAllTablesNBSummaryTblActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showColsPercentageRowsActionPerformed"/>
       </Events>
     </Component>
     <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
