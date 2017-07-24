@@ -93,6 +93,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         showInitialSummaryTbl = new javax.swing.JMenuItem();
         showNBSummaryTbl = new javax.swing.JMenuItem();
         showNBSummaryTblAllTables = new javax.swing.JMenuItem();
+        showNBSummaryTblForSelected = new javax.swing.JMenuItem();
         showDataNavigator = new javax.swing.JMenuItem();
         showDataNavigatorAllTables = new javax.swing.JMenuItem();
         showColsPercentageRows = new javax.swing.JMenuItem();
@@ -167,6 +168,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         showNBSummaryTblAllTables.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 showNBSummaryTblAllTablesActionPerformed(evt);
+            }
+        });
+
+        showNBSummaryTblForSelected.setText("Show Nulls & Blank Summary Table for Selected Records");
+        showNBSummaryTblForSelected.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showNBSummaryTblForSelectedActionPerformed(evt);
             }
         });
 
@@ -544,16 +552,18 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             tablePopupMenu.remove(showDataNavigatorAllTables);
             tablePopupMenu.remove(showNBSummaryTblAllTables);
             tablePopupMenu.remove(showSummaryChart);
+            tablePopupMenu.remove(showNBSummaryTblForSelected);
 
             if (summaryTable.getModel().getColumnCount() == 3) {
                 tablePopupMenu.add(showNBSummaryTbl);
                 tablePopupMenu.add(showDataNavigator);
             }
-            if (summaryTable.getModel().getColumnCount() == 5) {
+            if (summaryTable.getModel().getColumnCount() == 7) {
 
                 tablePopupMenu.add(showInitialSummaryTbl);
                 tablePopupMenu.add(showDataNavigator);
                 tablePopupMenu.add(showSummaryChart);
+                tablePopupMenu.add(showNBSummaryTblForSelected);
 
             }
 
@@ -634,6 +644,16 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         frame.pack();
         frame.setVisible(true);
     }//GEN-LAST:event_showSummaryChartActionPerformed
+
+    private void showNBSummaryTblForSelectedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showNBSummaryTblForSelectedActionPerformed
+        
+        try {
+           // setInitialSummaryTable();
+            setNullsBlankSummaryTable();
+        } catch (SQLException ex) {
+            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_showNBSummaryTblForSelectedActionPerformed
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1074,7 +1094,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         Object[][] tableNullsBlankSummaryArray = buildArrayNullsBlankSummary();
 
-        Object[] columns = {"Table Name", "Column Count", "Row Count", "% Nulls", "% Blanks"};
+        Object[] columns = {"Table Name", "Column Count", "Row Count","Table Nulls", "% Nulls","Table Blanks", "% Blanks"};
         ArrayTableModel summaryNullsBlankTableModel = new ArrayTableModel();
         //DefaultTableModel summaryNullsBlankTableModel = new DefaultTableModel(tableNullsBlankSummaryArray, columns);
         summaryNullsBlankTableModel.setDataVector(tableNullsBlankSummaryArray, columns);
@@ -1084,6 +1104,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         summaryTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
         summaryTable.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
         summaryTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
+        summaryTable.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
+        summaryTable.getColumnModel().getColumn(6).setCellRenderer(centerRenderer);
 
         setTableRowSorter(summaryTable);
 
@@ -1360,7 +1382,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         // if it is the Nulls Blank Summary Table get the selected tables
         // else only the tables in the Nulls Blank table model
-        if (tableModel.getColumnCount() == 5) {
+        if (tableModel.getColumnCount() == 7) {
 
             if (selectedTables.isEmpty()) {
                 sqlWhere = "and table_name in (";
@@ -1524,11 +1546,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      * @throws SQLException
      */
     public Object[][] buildArrayNullsBlankSummary() throws SQLException {
+        
         SummaryChartDataset.clear();
 
         int ArrayrowCount = getTableSQLWhereRecordCount();
 
-        int ArraycolCount = 5;
+        int ArraycolCount = 7;
 
         Object[][] tableNullBlankSummaryArray = new Object[ArrayrowCount][ArraycolCount];
         ResultSet tableNames = db.getTableNames(buildTableSQLWhere());
@@ -1569,7 +1592,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 percentageTableBlanks = (tableBlanks / totalfields) * hundredValue;
             }
             // Building the array from which to create the table model    
-            tableNullBlankSummaryArray[count] = new Object[]{tableName, (int) columnCount, (int) rowCount, to2DP.format(percentageTableNulls), to2DP.format(percentageTableBlanks)};
+            tableNullBlankSummaryArray[count] = new Object[]{tableName, (int) columnCount, (int) rowCount,(int) tableNulls, to2DP.format(percentageTableNulls),(int) tableBlanks , to2DP.format(percentageTableBlanks)};
 
             // Adding data to the Chart Data Object
             if (percentageTableNulls > 0) {
@@ -1853,6 +1876,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JMenuItem showInitialSummaryTbl;
     private javax.swing.JMenuItem showNBSummaryTbl;
     private javax.swing.JMenuItem showNBSummaryTblAllTables;
+    private javax.swing.JMenuItem showNBSummaryTblForSelected;
     private javax.swing.JMenuItem showSummaryChart;
     private javax.swing.JPanel summaryPanel;
     private javax.swing.JScrollPane summaryScrollPanel;

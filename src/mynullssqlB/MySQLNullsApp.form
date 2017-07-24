@@ -57,6 +57,16 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showNBSummaryTblAllTablesActionPerformed"/>
       </Events>
     </Component>
+    <Component class="javax.swing.JMenuItem" name="showNBSummaryTblForSelected">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="&quot;Show Nulls &amp; Blank Summary Table for Selected Records&quot;" type="code"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showNBSummaryTblForSelectedActionPerformed"/>
+      </Events>
+    </Component>
     <Component class="javax.swing.JMenuItem" name="showDataNavigator">
       <Properties>
         <Property name="text" type="java.lang.String" value="Show Table Explorer"/>
