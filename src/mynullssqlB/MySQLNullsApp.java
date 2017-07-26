@@ -352,11 +352,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         topInitialSummaryView.setLayout(new java.awt.BorderLayout());
 
-        initialSummaryTableFilter.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                initialSummaryTableFilterActionPerformed(evt);
-            }
-        });
         initialSummaryTableFilter.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 initialSummaryTableFilterKeyReleased(evt);
@@ -471,11 +466,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         colNmParentPanel.add(colNmFilterPanel, java.awt.BorderLayout.NORTH);
 
         colNmScrollPanel.setPreferredSize(new java.awt.Dimension(150, 500));
-        colNmScrollPanel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                colNmScrollPanelMouseReleased(evt);
-            }
-        });
 
         columnNameTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -504,14 +494,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         columnNameTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 columnNameTableMouseReleased(evt);
-            }
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                columnNameTableMouseClicked(evt);
-            }
-        });
-        columnNameTable.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                columnNameTablePropertyChange(evt);
             }
         });
         columnNameTable.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -626,10 +608,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }//GEN-LAST:event_tableNameTableKeyReleased
 
-    private void columnNameTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_columnNameTableMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_columnNameTableMouseClicked
-
     private void columnNameTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_columnNameTableKeyReleased
         try {
             columnNameTableSelctionColumn = columnNameTable.getSelectedColumn();
@@ -649,14 +627,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         setJTableColOneFilter(columnNameTable, columnNameFilter);
     }//GEN-LAST:event_columnNameFilterKeyReleased
 
-    private void columnNameTablePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_columnNameTablePropertyChange
-
-    }//GEN-LAST:event_columnNameTablePropertyChange
-
-    private void colNmScrollPanelMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_colNmScrollPanelMouseReleased
-
-    }//GEN-LAST:event_colNmScrollPanelMouseReleased
-
     private void columnNameTableMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_columnNameTableMouseReleased
         columnNameTableSelctionColumn = columnNameTable.columnAtPoint(evt.getPoint());
         try {
@@ -665,10 +635,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_columnNameTableMouseReleased
-
-    private void initialSummaryTableFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initialSummaryTableFilterActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_initialSummaryTableFilterActionPerformed
 
     private void initialSummaryTableFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_initialSummaryTableFilterKeyReleased
         setJTableColOneFilter(summaryTable, initialSummaryTableFilter);
@@ -927,14 +893,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      */
     public DefaultCategoryDataset getTableColumnBarChartDataset() {
         return tableColumnBarChartDataset;
-    }
-
-    public DefaultPieDataset getRowsColsNullsPieChartData() {
-        return rowsColsNullsPieChartData;
-    }
-
-    public DefaultPieDataset getRowsColsBlanksPieChartData() {
-        return rowsColsBlanksPieChartData;
     }
 
     /*
@@ -1719,6 +1677,20 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    buildColumnDataSelectOnFilterSelect()
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * buildColumnDataSelectOnFilterSelect() build a dynamic select list in case
+     * the user did not make column selection before starting to apply data
+     * filters.
+     *
+     * @throws SQLException
+     */
     public void buildColumnDataSelectOnFilterSelect() throws SQLException {
 
         ResultSet columns = null;
@@ -2315,6 +2287,17 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         columnDetailsSpiltPanel.setVisible(true);
     }
 
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    removeTableMenuPopupItems()
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+
+    /**
+     * removeTableMenuPopupItems() Removes Menu items from tableMenu Pop-up.
+     */
     public void removeTableMenuPopupItems() {
         tablePopupMenu.remove(showDataNavigator);
         tablePopupMenu.remove(showDataNavigatorAllTables);
