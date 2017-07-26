@@ -83,12 +83,12 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showDataNavigatorAllTablesActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JMenuItem" name="showColsPercentageRows">
+    <Component class="javax.swing.JMenuItem" name="showRowsNullsBlanksPerColumnTable">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Show Analysis or Rows per Column Null or Blank"/>
+        <Property name="text" type="java.lang.String" value="Show Analysis of Rows per Column Null or Blank"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showColsPercentageRowsActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showRowsNullsBlanksPerColumnTableActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JMenuItem" name="showSummaryChart">
@@ -108,6 +108,25 @@
       </AccessibilityProperties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showTableColumnChartActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JMenuItem" name="showRowsColumnNullsPieChart">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Show Rows Percentage per Null Column Count Pie Chart"/>
+      </Properties>
+      <AccessibilityProperties>
+        <Property name="AccessibleContext.accessibleName" type="java.lang.String" value=""/>
+      </AccessibilityProperties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showRowsColumnNullsPieChartActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JMenuItem" name="showRowsColumnBlanksPieChart">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Show Rows Percentage per Blank Column Count Pie Chart"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showRowsColumnBlanksPieChartActionPerformed"/>
       </Events>
     </Component>
     <Container class="javax.swing.JPanel" name="noDataMainPanel">
@@ -226,6 +245,14 @@
         </Container>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JMenuItem" name="showTableColumnSummary">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Show Table Nulls &amp; Blanks Column Summary"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showTableColumnSummaryActionPerformed"/>
+      </Events>
+    </Component>
     <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="jMenu1">
@@ -490,6 +517,9 @@
                               </Table>
                             </Property>
                           </Properties>
+                          <Events>
+                            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="dataTableMouseClicked"/>
+                          </Events>
                         </Component>
                       </SubComponents>
                     </Container>
