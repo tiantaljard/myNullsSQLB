@@ -657,20 +657,17 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         if (tableNameTableLastSelectedRow != tableNameTable.getSelectedRow()) {
             try {
                 setTableColumnSummaryTable();
+                tableInUse=COLUMNNBSUMMARY;
             } catch (SQLException ex) {
                 Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
             }
             setExplorerTableCard();
-            // rowsNulsBlankArrayTableModel = null;
-
         }
 
         if (tableNameTableLastSelectedRow == tableNameTable.getSelectedRow()
                 && cardViewInUse.equals(CHARTPANEL)) {
 
             setExplorerTableCard();
-            // rowsNulsBlankArrayTableModel = null;
-
         }
 
         tableNameTableLastSelectedRow = tableNameTable.getSelectedRow();
@@ -682,10 +679,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         setJTableColOneFilter(columnNameTable, columnNameFilter);
         try {
             setTableColumnSummaryTable();
+            tableInUse=COLUMNNBSUMMARY;
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
-        tableNameTableLastSelectedRow = -1;
+        tableNameTableLastSelectedRow = tableNameTable.getSelectedRow();
         setExplorerTableCard();
         
 
