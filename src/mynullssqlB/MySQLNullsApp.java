@@ -70,10 +70,18 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }
 
     private String cardViewInUse = "";
-    private String tableInUse = "";
     private static final String CHARTPANEL = "chartPanel";
     private static final String COLUMNDETAILSPLITPANEL = "columnDetailsSpiltPanel";
     private static final String DATAEXPLORERCARD = "dataExplorerCard";
+    
+    private String tableInUse = "";
+    private static final String INITIALSUMMARY = "initialsummary";
+    private static final String NBSUMMARY = "nbSummary";
+    private static final String COLUMNNBSUMMARY = "columnnbsummary";
+    private static final String ROWNBSUMMARY = "rownbsummary";
+    private static final String SQLDATA = "sqldata";
+
+    private static String lastSQLQueryDataTable ="";
     private int tableNameTableLastSelectedRow = -1;
 
     /**
@@ -125,6 +133,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         showTableColumnChart = new javax.swing.JMenuItem();
         showRowsColumnNullsPieChart = new javax.swing.JMenuItem();
         showRowsColumnBlanksPieChart = new javax.swing.JMenuItem();
+        showTableColumnSummary = new javax.swing.JMenuItem();
         noDataMainPanel = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -132,7 +141,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         chartErrorMessageTextPanel = new javax.swing.JScrollPane();
         chartErrorMessageTextArea = new javax.swing.JTextArea();
-        showTableColumnSummary = new javax.swing.JMenuItem();
+        saveToCSV = new javax.swing.JDialog();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        fileChoserPanel = new javax.swing.JPanel();
+        jFileChooser1 = new javax.swing.JFileChooser();
+        jPanel7 = new javax.swing.JPanel();
         mainJPanel = new javax.swing.JPanel();
         summaryPanel = new javax.swing.JPanel();
         summaryScrollPanel = new javax.swing.JScrollPane();
@@ -264,6 +279,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
         });
 
+        showTableColumnSummary.setText("Show Table Nulls & Blanks Column Summary");
+        showTableColumnSummary.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showTableColumnSummaryActionPerformed(evt);
+            }
+        });
+
         noDataMainPanel.setMaximumSize(new java.awt.Dimension(200, 200));
         noDataMainPanel.setLayout(new java.awt.BorderLayout());
 
@@ -328,12 +350,72 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         noDataMainPanel.add(chartErrorMessageTextPanel, java.awt.BorderLayout.CENTER);
 
-        showTableColumnSummary.setText("Show Table Nulls & Blanks Column Summary");
-        showTableColumnSummary.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                showTableColumnSummaryActionPerformed(evt);
-            }
-        });
+        jLabel1.setText("jLabel1");
+
+        jTextField1.setText("jTextField1");
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(116, 116, 116)
+                .addComponent(jLabel1)
+                .addContainerGap(389, Short.MAX_VALUE))
+            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel5Layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addComponent(jLabel1)
+                .addGap(0, 10, Short.MAX_VALUE))
+            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel5Layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
+
+        saveToCSV.getContentPane().add(jPanel5, java.awt.BorderLayout.NORTH);
+
+        javax.swing.GroupLayout fileChoserPanelLayout = new javax.swing.GroupLayout(fileChoserPanel);
+        fileChoserPanel.setLayout(fileChoserPanelLayout);
+        fileChoserPanelLayout.setHorizontalGroup(
+            fileChoserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 550, Short.MAX_VALUE)
+            .addGroup(fileChoserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(fileChoserPanelLayout.createSequentialGroup()
+                    .addComponent(jFileChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
+        fileChoserPanelLayout.setVerticalGroup(
+            fileChoserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 406, Short.MAX_VALUE)
+            .addGroup(fileChoserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, fileChoserPanelLayout.createSequentialGroup()
+                    .addContainerGap(22, Short.MAX_VALUE)
+                    .addComponent(jFileChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+        );
+
+        saveToCSV.getContentPane().add(fileChoserPanel, java.awt.BorderLayout.SOUTH);
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 550, Short.MAX_VALUE)
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        saveToCSV.getContentPane().add(jPanel7, java.awt.BorderLayout.CENTER);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -603,8 +685,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
-        setExplorerTableCard();;
-
+        tableNameTableLastSelectedRow = -1;
+        setExplorerTableCard();
+        
 
     }//GEN-LAST:event_tableNameTableKeyReleased
 
@@ -619,6 +702,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     private void tableNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameFilterKeyReleased
         setJTableColOneFilter(tableNameTable, tableNameFilter);
+        tableNameTableLastSelectedRow = -1;
         setColumnNameTable();
         setJTableColOneFilter(columnNameTable, columnNameFilter);
     }//GEN-LAST:event_tableNameFilterKeyReleased
@@ -701,6 +785,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
         setExplorerMain();
         setExplorerChartCard();
+        tableNameTableLastSelectedRow = -1;
 
     }//GEN-LAST:event_showDataNavigatorActionPerformed
 
@@ -717,6 +802,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         setExplorerMain();
         setExplorerChartCard();
+        tableNameTableLastSelectedRow = -1;
 
     }//GEN-LAST:event_showDataNavigatorAllTablesActionPerformed
 
@@ -1839,8 +1925,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         tableColumnBarChartDataset.clear();
 
         String tableName = getRowColOneSelected(tableNameTable);
-        System.out.println("buildTableColumnSummary() tableName " + tableName);
-
+        
         int ArrayrowCount = db.getColCount(tableName);
         int ArraycolCount = 6;
 
@@ -2005,7 +2090,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
             int[] row = new int[]{rowNum, rowNulls, rowBlanks};
             rowColNulBlankCount.add(row);
-            System.out.println(rowNum);
 
             rowNum = rowNum + 1;
             rowsNullsBlankRs.next();
@@ -2037,7 +2121,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 percentageRowsBlank = to2DP.format((double) colBlanks / (double) tableRowCount * 100);
             }
 
-            System.out.print("Sum of " + colno + " " + colNulls + " " + Double.parseDouble(percentageRowsNull) + " " + colBlanks + " " + Double.parseDouble(percentageRowsBlank) + " \n");
             // Array to hold the hold the number of table records with that has 
             // columns and blank column count for each count of the number of 
             // columns the table has.
@@ -2294,7 +2377,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
      */
-
     /**
      * removeTableMenuPopupItems() Removes Menu items from tableMenu Pop-up.
      */
@@ -2340,8 +2422,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JSplitPane dataExplorerSplitPane;
     private javax.swing.JTable dataTable;
     private javax.swing.JScrollPane dataTableScrollPane;
+    private javax.swing.JPanel fileChoserPanel;
     private javax.swing.JTextField initialSummaryTableFilter;
     private javax.swing.JPanel intialSummaryfilterPanel;
+    private javax.swing.JFileChooser jFileChooser1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -2352,9 +2437,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JPanel mainJPanel;
     private javax.swing.JPanel mainRightPanel;
     private javax.swing.JPanel noDataMainPanel;
+    private javax.swing.JDialog saveToCSV;
     private javax.swing.JMenuItem showDataNavigator;
     private javax.swing.JMenuItem showDataNavigatorAllTables;
     private javax.swing.JMenuItem showInitialSummaryTbl;
