@@ -51,6 +51,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private String dynamicSQLWhere;
     private String dynamicFilterSelectFrom;
     int columnNameTableSelctionColumn;
+    @SuppressWarnings("UseOfObsoleteCollectionType")
     private Vector columnNamesSelectedInColumnNameTable = new Vector();
     // Create DataSet Data Object for Table Summary Chart
     private DefaultCategoryDataset summaryChartDataset = new DefaultCategoryDataset();
@@ -636,7 +637,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private void tableNameTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableNameTableMouseClicked
 
         if (tableNameTable.getSelectedRow() > -1) {
-
+            // only do the following if a new table is selected from the 
+            // table navigator table window
             if (tableNameTableLastSelectedRow != tableNameTable.getSelectedRow()) {
                 try {
                     setTableColumnSummaryTable();
@@ -646,11 +648,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 }
                 setExplorerTableCard();
                 columnNameTableLastSelectedRow = -1;
-            }
 
-            resetDynamicVariables();
-            setColumnNameTable();
-            setJTableColOneFilter(columnNameTable, columnNameFilter);
+                resetDynamicVariables();
+                setColumnNameTable();
+                setJTableColOneFilter(columnNameTable, columnNameFilter);
+            }
+            
 
             if (evt.getButton() == MouseEvent.BUTTON3) {
                 removeTableMenuPopupItems();
@@ -720,7 +723,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         setJTableColOneFilter(columnNameTable, columnNameFilter);
         buildSummaryTableDataBarChartExplorerPanel();
         setExplorerChartCard();
-        tableInUse=NBSUMMARY;
+        tableInUse = NBSUMMARY;
     }//GEN-LAST:event_tableNameFilterKeyReleased
 
     private void columnNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_columnNameFilterKeyReleased
@@ -734,6 +737,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             columnNameTableSelctionColumn = columnNameTable.columnAtPoint(evt.getPoint());
             try {
                 setDataTable(getColumnData());
+                tableInUse = SQLDATA;
             } catch (SQLException ex) {
                 Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -774,6 +778,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private void showNBSummaryTblActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showNBSummaryTblActionPerformed
         try {
             setNullsBlankSummaryTable();
+            tableInUse = NBSUMMARY;
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -786,6 +791,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private void showInitialSummaryTblActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showInitialSummaryTblActionPerformed
         try {
             setInitialSummaryTable();
+            tableInUse = INITIALSUMMARY;
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -806,6 +812,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
         setExplorerMain();
         setExplorerChartCard();
+        tableInUse = NBSUMMARY;
+
         tableNameTableLastSelectedRow = -1;
         columnNameTableLastSelectedRow = -1;
 
@@ -824,6 +832,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         setExplorerMain();
         setExplorerChartCard();
+        tableInUse = NBSUMMARY;
         tableNameTableLastSelectedRow = -1;
         columnNameTableLastSelectedRow = -1;
 
@@ -838,6 +847,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
         setInitialSummaryCard();
+        tableInUse = NBSUMMARY;
         initialSummaryTableFilter.setText(null);
 
     }//GEN-LAST:event_showNBSummaryTblAllTablesActionPerformed
@@ -851,6 +861,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
 
         setExplorerTableCard();
+        tableInUse = ROWNBSUMMARY;
         buildRowsColumnNullsPieChartExplorerPanel("null");
         buildRowsColumnNullsPieChartExplorerPanel("blank");
     }//GEN-LAST:event_showRowsNullsBlanksPerColumnTableActionPerformed
@@ -1251,7 +1262,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         String query = "";
         // keeps track of the number of rows the dynamic query has
         dynamic_query_rowcount = "select count(*) from " + getRowColOneSelected(tableNameTable) + " where 1=1";
-       
+
         if (columnNameTableSelctionColumn == 0) {
             buildColumnDataSelectOnColumnNameSelect();
             query = dynamicSelectFrom;
