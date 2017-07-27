@@ -706,7 +706,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         try {
             columnNameTableSelctionColumn = columnNameTable.getSelectedColumn();
             setDataTable(getColumnData());
-            tableInUse = COLUMNNBSUMMARY;
+            tableInUse = SQLDATA;
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -718,6 +718,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         tableNameTableLastSelectedRow = -1;
         setColumnNameTable();
         setJTableColOneFilter(columnNameTable, columnNameFilter);
+        buildSummaryTableDataBarChartExplorerPanel();
+        setExplorerChartCard();
+        tableInUse=NBSUMMARY;
     }//GEN-LAST:event_tableNameFilterKeyReleased
 
     private void columnNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_columnNameFilterKeyReleased
