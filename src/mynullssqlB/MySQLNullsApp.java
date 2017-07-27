@@ -8,12 +8,15 @@ package mynullssqlB;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.event.MouseEvent;
+//import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,6 +53,17 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private String dynamicSelectFrom;
     private String dynamicSQLWhere;
     private String dynamicFilterSelectFrom;
+
+    //private String dynamicCSVSelectFrom;
+    private String dynamicCSVSelect;
+    private String dynamicCSVFrom;
+
+    private String dynamicFilterCSVSelect;
+    private String dynamicFilterCSVFrom;
+
+    private String lastSQLQueryCSVSelect;
+    private String lastSQLQueryCSVFrom;
+
     int columnNameTableSelctionColumn;
     @SuppressWarnings("UseOfObsoleteCollectionType")
     private Vector columnNamesSelectedInColumnNameTable = new Vector();
@@ -65,6 +79,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private ArrayTableModel summaryTableColumnTableModel = new ArrayTableModel();
     // create data model for rows percentage per column null or blank
     private ArrayTableModel rowsNulsBlankArrayTableModel = new ArrayTableModel();
+    // Create a Date format for a unique file identifyer.
+    SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy_HH-mm-ss.SSS");
+    // CSV Delimeter
+    private String csvDelimiter = "','";
 
     public ArrayTableModel getSummaryTableColumnTableModel() {
         return summaryTableColumnTableModel;
@@ -82,7 +100,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private static final String ROWNBSUMMARY = "rownbsummary";
     private static final String SQLDATA = "sqldata";
 
-    private static String lastSQLQueryDataTable = "";
     private int tableNameTableLastSelectedRow = -1;
     private int columnNameTableLastSelectedRow = -1;
 
@@ -653,7 +670,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 setColumnNameTable();
                 setJTableColOneFilter(columnNameTable, columnNameFilter);
             }
-            
 
             if (evt.getButton() == MouseEvent.BUTTON3) {
                 removeTableMenuPopupItems();
@@ -906,6 +922,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         try {
             //dataTable.setModel(getSummaryTableColumnTableModel());
             setTableColumnSummaryTable();
+            tableInUse = ROWNBSUMMARY;
+
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1260,12 +1278,19 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     public ResultSet getColumnData() throws SQLException {
 
         String query = "";
+        String queryCSVSelect = "";
+        String queryCSVFrom = "";
+        String queryFilterCSVSelect = "";
+        String queryFilterCSVFrom = "";
         // keeps track of the number of rows the dynamic query has
         dynamic_query_rowcount = "select count(*) from " + getRowColOneSelected(tableNameTable) + " where 1=1";
 
         if (columnNameTableSelctionColumn == 0) {
             buildColumnDataSelectOnColumnNameSelect();
             query = dynamicSelectFrom;
+
+            queryCSVSelect = dynamicCSVSelect;
+            queryCSVFrom = dynamicCSVFrom;
 
         }
         // check which part of the columnNameTable the user is interacting with
@@ -1277,12 +1302,21 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             buildColumnDataSelectOnFilterSelect();
             query = dynamicFilterSelectFrom;
 
+            queryCSVSelect = dynamicFilterCSVSelect;
+            queryCSVFrom = dynamicFilterCSVFrom;
+
         } else {
             query = dynamicSelectFrom;
+
+            queryCSVSelect = dynamicCSVSelect;
+            queryCSVFrom = dynamicCSVFrom;
         }
+
         buildColumnDataSQLWhere();
 
         query = query + dynamicSQLWhere;
+        queryCSVFrom = queryCSVFrom + dynamicSQLWhere;
+
         dynamic_query_rowcount = dynamic_query_rowcount + dynamicSQLWhere;
 
         Statement statement = db.conn.createStatement();
@@ -1293,7 +1327,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         getColDataRowCount.first();
         dynamic_rowcount = Integer.parseInt(getColDataRowCount.getObject(1).toString());
         ResultSet getColData = statement.executeQuery(query);
-        lastSQLQueryDataTable = query;
+        
+        lastSQLQueryCSVSelect=queryCSVSelect;
+        lastSQLQueryCSVFrom=queryCSVFrom;
+        getSQLcsv();
+
         getColData.first();
         return getColData;
     }
@@ -1801,6 +1839,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
         dynamicSelectFrom = query + " from " + table_name + " where 1=1 ";
 
+        dynamicCSVSelect = query + " into OUTFILE '" + table_name + "_";
+        dynamicCSVFrom = ".csv' FIELDS TERMINATED BY " + csvDelimiter + " from " + table_name + " where 1=1 ";
     }
 
     /*
@@ -1839,6 +1879,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
 
         dynamicFilterSelectFrom = query + " from " + table_name + " where 1=1 ";
+
+        dynamicFilterCSVSelect = query + " into OUTFILE '" + table_name + "_";
+        dynamicFilterCSVFrom = ".csv' FIELDS TERMINATED BY " + csvDelimiter + " from " + table_name + " where 1=1 ";
 
     }
 
@@ -2034,7 +2077,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
      */
     /**
-     * setTableColumnSummaryTable() sets the table model to a dataTable to
+     * setTableColumnSummaryTable() sets the table model for dataTable to
      * display a summary of NULLS and BLANKS by columns for a selected table.
      *
      * @throws SQLException
@@ -2437,6 +2480,22 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         tablePopupMenu.remove(showTableColumnChart);
         tablePopupMenu.remove(showTableColumnSummary);
+
+    }
+
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    removeTableMenuPopupItems()
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    public void getSQLcsv() {
+        String uniqueFile = sdf.format(new Date());
+        
+        String lastSQLQueryCSV= lastSQLQueryCSVSelect+uniqueFile+lastSQLQueryCSVFrom;
+        
+        System.out.println(lastSQLQueryCSV);
 
     }
 
