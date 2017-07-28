@@ -1858,7 +1858,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         
         dynamicCSVColumnNames=csvColumnNames;
         dynamicCSVSelect = query + " into OUTFILE '" + table_name + "_";
-        dynamicCSVFrom = ".csv' FIELDS TERMINATED BY " + csvDelimiter + " from " + table_name + " where 1=1 ";
+        dynamicCSVFrom = ".csv' FIELDS TERMINATED BY " + csvDelimiter + " OPTIONALLY ENCLOSED BY '\"' ESCAPED BY '\\\\'   from " + table_name + " where 1=1 ";
     }
 
     /*
@@ -1904,7 +1904,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         
         dynamicFilterCSVColumnNames =csvColumnNames;
         dynamicFilterCSVSelect = query + " into OUTFILE '" + table_name + "_";
-        dynamicFilterCSVFrom = ".csv' FIELDS TERMINATED BY " + csvDelimiter + " from " + table_name + " where 1=1 ";
+        dynamicFilterCSVFrom = ".csv' FIELDS TERMINATED BY " + csvDelimiter + " OPTIONALLY ENCLOSED BY '\"' ESCAPED BY '\\\\'   from "+ table_name + " where 1=1 ";
 
     }
 
