@@ -83,14 +83,6 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showDataNavigatorAllTablesActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JMenuItem" name="showRowsNullsBlanksPerColumnTable">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Show Analysis of Rows per Column Null or Blank"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showRowsNullsBlanksPerColumnTableActionPerformed"/>
-      </Events>
-    </Component>
     <Component class="javax.swing.JMenuItem" name="showSummaryChart">
       <Properties>
         <Property name="text" type="java.lang.String" value="Show Summary Chart"/>
@@ -99,15 +91,12 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showSummaryChartActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JMenuItem" name="showTableColumnChart">
+    <Component class="javax.swing.JMenuItem" name="showRowsNullsBlanksPerColumnTable">
       <Properties>
-        <Property name="label" type="java.lang.String" value="Show Nulls &amp; Blanks Column Chart"/>
+        <Property name="text" type="java.lang.String" value="Show Analysis of Rows per Column Null or Blank"/>
       </Properties>
-      <AccessibilityProperties>
-        <Property name="AccessibleContext.accessibleName" type="java.lang.String" value=""/>
-      </AccessibilityProperties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showTableColumnChartActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showRowsNullsBlanksPerColumnTableActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JMenuItem" name="showRowsColumnNullsPieChart">
@@ -129,12 +118,40 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showRowsColumnBlanksPieChartActionPerformed"/>
       </Events>
     </Component>
+    <Component class="javax.swing.JMenuItem" name="exportRowsColumnsNullsBlanks">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Export Analysis of Rows per Column Null or Blank "/>
+        <Property name="toolTipText" type="java.lang.String" value=""/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportRowsColumnsNullsBlanksActionPerformed"/>
+      </Events>
+    </Component>
     <Component class="javax.swing.JMenuItem" name="showTableColumnSummary">
       <Properties>
         <Property name="text" type="java.lang.String" value="Show Table Nulls &amp; Blanks Column Summary"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showTableColumnSummaryActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JMenuItem" name="showTableColumnChart">
+      <Properties>
+        <Property name="label" type="java.lang.String" value="Show Nulls &amp; Blanks Column Chart"/>
+      </Properties>
+      <AccessibilityProperties>
+        <Property name="AccessibleContext.accessibleName" type="java.lang.String" value=""/>
+      </AccessibilityProperties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showTableColumnChartActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JMenuItem" name="exportTableColumnsSummary">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Export Table Nulls &amp; Blanks Column Summary"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportTableColumnsSummaryActionPerformed"/>
       </Events>
     </Component>
     <Container class="javax.swing.JPanel" name="noDataMainPanel">

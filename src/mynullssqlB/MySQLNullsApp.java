@@ -8,6 +8,12 @@ package mynullssqlB;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.event.MouseEvent;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.file.Paths;
 //import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -39,6 +45,37 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
 
 /**
  * @Date July 2017
@@ -66,7 +103,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private String lastSQLQueryCSVSelect;
     private String lastSQLQueryCSVFrom;
     private String lastSQLCSVColumnNames;
-    
+
     int columnNameTableSelctionColumn;
     @SuppressWarnings("UseOfObsoleteCollectionType")
     private Vector columnNamesSelectedInColumnNameTable = new Vector();
@@ -97,11 +134,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private static final String DATAEXPLORERCARD = "dataExplorerCard";
 
     private String tableInUse = "";
-    private static final String INITIALSUMMARY = "initialsummary";
-    private static final String NBSUMMARY = "nbSummary";
-    private static final String COLUMNNBSUMMARY = "columnnbsummary";
-    private static final String ROWNBSUMMARY = "rownbsummary";
-    private static final String SQLDATA = "sqldata";
+    private static final String INITIALSUMMARYDATATABLE = "initialsummary";
+    private static final String NBSUMMARYDATATABLE = "nbSummary";
+    private static final String COLUMNNBSUMMARYDATATABLE = "columnnbsummary";
+    private static final String ROWNBSUMMARYDATATABLE = "rownbsummary";
+    private static final String SQLDATATABLE = "sqldata";
+    private static final String TABLECOLUMNSUMMARY = "Table_Column_Summary_";
+    private static final String ROWSCOLUMNSUMMARY = "Rows_Column_Summary_";
 
     private int tableNameTableLastSelectedRow = -1;
     private int columnNameTableLastSelectedRow = -1;
@@ -150,12 +189,14 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         showNBSummaryTblForSelected = new javax.swing.JMenuItem();
         showDataNavigator = new javax.swing.JMenuItem();
         showDataNavigatorAllTables = new javax.swing.JMenuItem();
-        showRowsNullsBlanksPerColumnTable = new javax.swing.JMenuItem();
         showSummaryChart = new javax.swing.JMenuItem();
-        showTableColumnChart = new javax.swing.JMenuItem();
+        showRowsNullsBlanksPerColumnTable = new javax.swing.JMenuItem();
         showRowsColumnNullsPieChart = new javax.swing.JMenuItem();
         showRowsColumnBlanksPieChart = new javax.swing.JMenuItem();
+        exportRowsColumnsNullsBlanks = new javax.swing.JMenuItem();
         showTableColumnSummary = new javax.swing.JMenuItem();
+        showTableColumnChart = new javax.swing.JMenuItem();
+        exportTableColumnsSummary = new javax.swing.JMenuItem();
         noDataMainPanel = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -258,13 +299,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
         });
 
-        showRowsNullsBlanksPerColumnTable.setText("Show Analysis of Rows per Column Null or Blank");
-        showRowsNullsBlanksPerColumnTable.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                showRowsNullsBlanksPerColumnTableActionPerformed(evt);
-            }
-        });
-
         showSummaryChart.setText("Show Summary Chart");
         showSummaryChart.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -272,13 +306,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
         });
 
-        showTableColumnChart.setLabel("Show Nulls & Blanks Column Chart");
-        showTableColumnChart.addActionListener(new java.awt.event.ActionListener() {
+        showRowsNullsBlanksPerColumnTable.setText("Show Analysis of Rows per Column Null or Blank");
+        showRowsNullsBlanksPerColumnTable.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                showTableColumnChartActionPerformed(evt);
+                showRowsNullsBlanksPerColumnTableActionPerformed(evt);
             }
         });
-        showTableColumnChart.getAccessibleContext().setAccessibleName("");
 
         showRowsColumnNullsPieChart.setText("Show Rows Percentage per Null Column Count Pie Chart");
         showRowsColumnNullsPieChart.addActionListener(new java.awt.event.ActionListener() {
@@ -295,10 +328,33 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
         });
 
+        exportRowsColumnsNullsBlanks.setText("Export Analysis of Rows per Column Null or Blank ");
+        exportRowsColumnsNullsBlanks.setToolTipText("");
+        exportRowsColumnsNullsBlanks.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportRowsColumnsNullsBlanksActionPerformed(evt);
+            }
+        });
+
         showTableColumnSummary.setText("Show Table Nulls & Blanks Column Summary");
         showTableColumnSummary.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 showTableColumnSummaryActionPerformed(evt);
+            }
+        });
+
+        showTableColumnChart.setLabel("Show Nulls & Blanks Column Chart");
+        showTableColumnChart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showTableColumnChartActionPerformed(evt);
+            }
+        });
+        showTableColumnChart.getAccessibleContext().setAccessibleName("");
+
+        exportTableColumnsSummary.setText("Export Table Nulls & Blanks Column Summary");
+        exportTableColumnsSummary.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportTableColumnsSummaryActionPerformed(evt);
             }
         });
 
@@ -596,7 +652,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             if (tableNameTableLastSelectedRow != tableNameTable.getSelectedRow()) {
                 try {
                     setTableColumnSummaryTable();
-                    tableInUse = COLUMNNBSUMMARY;
+                    tableInUse = COLUMNNBSUMMARYDATATABLE;
                 } catch (SQLException ex) {
                     Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -647,7 +703,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         setJTableColOneFilter(columnNameTable, columnNameFilter);
         try {
             setTableColumnSummaryTable();
-            tableInUse = COLUMNNBSUMMARY;
+            tableInUse = COLUMNNBSUMMARYDATATABLE;
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -662,7 +718,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         try {
             columnNameTableSelctionColumn = columnNameTable.getSelectedColumn();
             setDataTable(getColumnData());
-            tableInUse = SQLDATA;
+            tableInUse = SQLDATATABLE;
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -676,7 +732,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         setJTableColOneFilter(columnNameTable, columnNameFilter);
         buildSummaryTableDataBarChartExplorerPanel();
         setExplorerChartCard();
-        tableInUse = NBSUMMARY;
+        tableInUse = NBSUMMARYDATATABLE;
     }//GEN-LAST:event_tableNameFilterKeyReleased
 
     private void columnNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_columnNameFilterKeyReleased
@@ -690,7 +746,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             columnNameTableSelctionColumn = columnNameTable.columnAtPoint(evt.getPoint());
             try {
                 setDataTable(getColumnData());
-                tableInUse = SQLDATA;
+                tableInUse = SQLDATATABLE;
             } catch (SQLException ex) {
                 Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -731,7 +787,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private void showNBSummaryTblActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showNBSummaryTblActionPerformed
         try {
             setNullsBlankSummaryTable();
-            tableInUse = NBSUMMARY;
+            tableInUse = NBSUMMARYDATATABLE;
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -744,7 +800,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private void showInitialSummaryTblActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showInitialSummaryTblActionPerformed
         try {
             setInitialSummaryTable();
-            tableInUse = INITIALSUMMARY;
+            tableInUse = INITIALSUMMARYDATATABLE;
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -765,7 +821,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
         setExplorerMain();
         setExplorerChartCard();
-        tableInUse = NBSUMMARY;
+        tableInUse = NBSUMMARYDATATABLE;
 
         tableNameTableLastSelectedRow = -1;
         columnNameTableLastSelectedRow = -1;
@@ -785,7 +841,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         setExplorerMain();
         setExplorerChartCard();
-        tableInUse = NBSUMMARY;
+        tableInUse = NBSUMMARYDATATABLE;
         tableNameTableLastSelectedRow = -1;
         columnNameTableLastSelectedRow = -1;
 
@@ -800,7 +856,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
         setInitialSummaryCard();
-        tableInUse = NBSUMMARY;
+        tableInUse = NBSUMMARYDATATABLE;
         initialSummaryTableFilter.setText(null);
 
     }//GEN-LAST:event_showNBSummaryTblAllTablesActionPerformed
@@ -814,9 +870,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
 
         setExplorerTableCard();
-        tableInUse = ROWNBSUMMARY;
         buildRowsColumnNullsPieChartExplorerPanel("null");
         buildRowsColumnNullsPieChartExplorerPanel("blank");
+        tableInUse = ROWNBSUMMARYDATATABLE;
     }//GEN-LAST:event_showRowsNullsBlanksPerColumnTableActionPerformed
 
     private void showSummaryChartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showSummaryChartActionPerformed
@@ -859,33 +915,42 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         try {
             //dataTable.setModel(getSummaryTableColumnTableModel());
             setTableColumnSummaryTable();
-            tableInUse = ROWNBSUMMARY;
-
+            tableInUse = COLUMNNBSUMMARYDATATABLE;
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
         setExplorerTableCard();
-
     }//GEN-LAST:event_showTableColumnSummaryActionPerformed
 
     private void dataTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dataTableMouseClicked
         if (evt.getButton() == MouseEvent.BUTTON3) {
             removeTableMenuPopupItems();
 
-            tablePopupMenu.add(showTableColumnChart);
+//            if (dataTable.getModel().getColumnName(0).equals("<html><center>Number of Columns Affected<center><br></html>")) {
+//                tablePopupMenu.add(showRowsColumnNullsPieChart);
+//                tablePopupMenu.add(showRowsColumnBlanksPieChart);
+//                tablePopupMenu.remove(showTableColumnChart);
+//            }
 
-            if (dataTable.getModel().getColumnName(0).equals("<html><center>Number of Columns Affected<center><br></html>")) {
+           // tablePopupMenu.add(showSummaryChart);
+
+            if (tableInUse.equals(SQLDATATABLE)) {
+                tablePopupMenu.add(exportDataTableSQL);
+                tablePopupMenu.add(showSummaryChart);
+                
+            }
+
+            if (tableInUse.equals(COLUMNNBSUMMARYDATATABLE)) {
+                tablePopupMenu.add(showTableColumnChart);
+                tablePopupMenu.add(exportTableColumnsSummary);
+            }
+
+            if (tableInUse.equals(ROWNBSUMMARYDATATABLE)) {
                 tablePopupMenu.add(showRowsColumnNullsPieChart);
                 tablePopupMenu.add(showRowsColumnBlanksPieChart);
-                tablePopupMenu.remove(showTableColumnChart);
-            }
 
-            tablePopupMenu.add(showSummaryChart);
-            
-            if (tableInUse.equals(SQLDATA)) {
-                tablePopupMenu.add(exportDataTableSQL);
+                tablePopupMenu.add(exportRowsColumnsNullsBlanks);
             }
-            
 
             tablePopupMenu.show(dataTable, evt.getX(), evt.getY());
 
@@ -903,17 +968,42 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }//GEN-LAST:event_colNmScrollPanelMouseClicked
 
     private void exportDataTableSQLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportDataTableSQLActionPerformed
-        if (tableInUse.equals(SQLDATA)) {
+        if (tableInUse.equals(SQLDATATABLE)) {
             try {
-                JOptionPane.showMessageDialog(null,getSQLcsv());
-                
+                JOptionPane.showMessageDialog(null, getSQLcsv());
             } catch (SQLException ex) {
                 Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
         }
-        
     }//GEN-LAST:event_exportDataTableSQLActionPerformed
+
+    private void exportTableColumnsSummaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportTableColumnsSummaryActionPerformed
+        if (tableInUse.equals(COLUMNNBSUMMARYDATATABLE)) {
+            try {
+                JOptionPane.showMessageDialog(null, writeCSVfile(dataTable, TABLECOLUMNSUMMARY));
+            } catch (IOException ex) {
+                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_exportTableColumnsSummaryActionPerformed
+
+    private void exportRowsColumnsNullsBlanksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportRowsColumnsNullsBlanksActionPerformed
+        if (tableInUse.equals(ROWNBSUMMARYDATATABLE)) {
+            try {
+                JOptionPane.showMessageDialog(null, writeCSVfile(dataTable, ROWSCOLUMNSUMMARY));
+            } catch (IOException ex) {
+                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_exportRowsColumnsNullsBlanksActionPerformed
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1237,8 +1327,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         String queryCSVFrom = "";
         String queryFilterCSVSelect = "";
         String queryFilterCSVFrom = "";
-        String csvColumnNames="";
-        String filterCSVColumnNames="";
+        String csvColumnNames = "";
+        String filterCSVColumnNames = "";
         // keeps track of the number of rows the dynamic query has
         dynamic_query_rowcount = "select count(*) from " + getRowColOneSelected(tableNameTable) + " where 1=1";
 
@@ -1262,16 +1352,15 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
             queryCSVSelect = dynamicFilterCSVSelect;
             queryCSVFrom = dynamicFilterCSVFrom;
-            csvColumnNames= dynamicFilterCSVColumnNames;
-            
+            csvColumnNames = dynamicFilterCSVColumnNames;
 
         } else {
             query = dynamicSelectFrom;
 
             queryCSVSelect = dynamicCSVSelect;
             queryCSVFrom = dynamicCSVFrom;
-            csvColumnNames=dynamicCSVColumnNames;
-            
+            csvColumnNames = dynamicCSVColumnNames;
+
         }
 
         buildColumnDataSQLWhere();
@@ -1285,17 +1374,14 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         // Gets and sets the row count of the selected Query. this is to allow the table 
         // model to show the correct number or rows. 
-
         ResultSet getColDataRowCount = statement.executeQuery(dynamic_query_rowcount);
         getColDataRowCount.first();
         dynamic_rowcount = Integer.parseInt(getColDataRowCount.getObject(1).toString());
         ResultSet getColData = statement.executeQuery(query);
-        
-        
-        lastSQLCSVColumnNames=csvColumnNames;
-        lastSQLQueryCSVSelect=queryCSVSelect;
-        lastSQLQueryCSVFrom=queryCSVFrom;
-        
+
+        lastSQLCSVColumnNames = csvColumnNames;
+        lastSQLQueryCSVSelect = queryCSVSelect;
+        lastSQLQueryCSVFrom = queryCSVFrom;
 
         getColData.first();
         return getColData;
@@ -1793,7 +1879,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         columns_selected = getRowsColOneSelectedArray(columnNameTable);
 
         String query = "select ";
-        String csvColumnNames ="select '";
+        String csvColumnNames = "select '";
 
         for (int i = 0; i < columns_selected.size(); i++) {
             query += columns_selected.get(i).toString();
@@ -1801,15 +1887,15 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             if (i == columns_selected.size() - 1) {
                 query += "";
                 csvColumnNames += "'";
-                
+
             } else {
                 query += ",";
                 csvColumnNames += "','";
             }
         }
         dynamicSelectFrom = query + " from " + table_name + " where 1=1 ";
-        
-        dynamicCSVColumnNames=csvColumnNames;
+
+        dynamicCSVColumnNames = csvColumnNames;
         dynamicCSVSelect = query + " into OUTFILE '" + table_name + "_";
         dynamicCSVFrom = ".csv' FIELDS TERMINATED BY " + csvDelimiter + " OPTIONALLY ENCLOSED BY '\"' ESCAPED BY '\\\\'   from " + table_name + " where 1=1 ";
     }
@@ -1854,10 +1940,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
 
         dynamicFilterSelectFrom = query + " from " + table_name + " where 1=1 ";
-        
-        dynamicFilterCSVColumnNames =csvColumnNames;
+
+        dynamicFilterCSVColumnNames = csvColumnNames;
         dynamicFilterCSVSelect = query + " into OUTFILE '" + table_name + "_";
-        dynamicFilterCSVFrom = ".csv' FIELDS TERMINATED BY " + csvDelimiter + " OPTIONALLY ENCLOSED BY '\"' ESCAPED BY '\\\\'   from "+ table_name + " where 1=1 ";
+        dynamicFilterCSVFrom = ".csv' FIELDS TERMINATED BY " + csvDelimiter + " OPTIONALLY ENCLOSED BY '\"' ESCAPED BY '\\\\'   from " + table_name + " where 1=1 ";
 
     }
 
@@ -2456,7 +2542,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         tablePopupMenu.remove(showTableColumnChart);
         tablePopupMenu.remove(showTableColumnSummary);
+
         tablePopupMenu.remove(exportDataTableSQL);
+        tablePopupMenu.remove(exportTableColumnsSummary);
+        tablePopupMenu.remove(exportRowsColumnsNullsBlanks);
 
     }
 
@@ -2468,36 +2557,104 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
      */
     /**
-     * getSQLcsv() create a CSV file from the query that created the last 
-     * dataTable SQL result set. The method returns a message containing information
-     * regarding the name and location of the file created.
-     * 
+     * getSQLcsv() create a CSV file from the query that created the last
+     * dataTable SQL result set. The method returns a message containing
+     * information regarding the name and location of the file created.
+     *
      * @return String
-     * @throws SQLException 
+     * @throws SQLException
      */
     public String getSQLcsv() throws SQLException {
         String uniqueFile = sdf.format(new Date());
-        
-        String lastSQLQueryCSV= lastSQLCSVColumnNames+" union all "+lastSQLQueryCSVSelect+uniqueFile+lastSQLQueryCSVFrom;
-        String sqlDataDirQuery="SHOW VARIABLES LIKE 'datadir'; ";
-        
+
+        String lastSQLQueryCSV = lastSQLCSVColumnNames + " union all " + lastSQLQueryCSVSelect + uniqueFile + lastSQLQueryCSVFrom;
+        String sqlDataDirQuery = "SHOW VARIABLES LIKE 'datadir'; ";
+
         Statement statement = db.conn.createStatement();
         Statement statementSQLDir = db.conn.createStatement();
-        
+
         statement.executeQuery(lastSQLQueryCSV);
-        
+
         ResultSet sqlExportDirRs = statementSQLDir.executeQuery(sqlDataDirQuery);
         sqlExportDirRs.first();
-         
+
         //System.out.println(lastSQLQueryCSV);
-        String dataDir=sqlExportDirRs.getObject(2).toString()+db.databaseName;
-        String fileName=getRowColOneSelected(tableNameTable)+uniqueFile+".csv";
-        String message= "Data for the selected table was exported to:\n"
-                + fileName+"\n"
+        //  String dataDir = sqlExportDirRs.getObject(2).toString() + db.databaseName;
+        String fileName = getRowColOneSelected(tableNameTable) + uniqueFile + ".csv";
+        String message = "Data for the selected table was exported to:\n"
+                + fileName + "\n"
                 + "which is located at: \n"
-                + sqlExportDirRs.getObject(2).toString()+db.databaseName;
-        
+                + sqlExportDirRs.getObject(2).toString() + db.databaseName;
+
         return message;
+    }
+
+    /*
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    getSQLcsv()
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     */
+    /**
+     * https://stackoverflow.com/questions/16436928/how-to-export-a-jtable-to-a-csv-file
+     *
+     * @param table
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    public String writeCSVfile(JTable table, String summarytitle) throws IOException, ClassNotFoundException, SQLException {
+        Writer writer = null;
+        DefaultTableModel dtm = (DefaultTableModel) table.getModel();
+        int nRow = dtm.getRowCount();
+        int nCol = dtm.getColumnCount();
+        String message = "";
+        String uniqueFile = sdf.format(new Date());
+        System.out.println(Paths.get("").toAbsolutePath().toString());
+        String fileTitle = summarytitle + uniqueFile + ".csv";
+        try {
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileTitle), "utf-8"));
+
+            //write the header information
+            StringBuffer bufferHeader = new StringBuffer();
+            for (int j = 0; j < nCol; j++) {
+                bufferHeader.append(dtm.getColumnName(j));
+                if (j != nCol) {
+                    bufferHeader.append(", ");
+                }
+            }
+            writer.write(bufferHeader.toString() + "\r\n");
+
+            //write row information
+            for (int i = 0; i < nRow; i++) {
+                StringBuffer buffer = new StringBuffer();
+                for (int j = 0; j < nCol; j++) {
+                    buffer.append(dtm.getValueAt(i, j));
+                    if (j != nCol) {
+                        buffer.append(", ");
+                    }
+                }
+                writer.write(buffer.toString() + "\r\n");
+            }
+        } finally {
+            writer.close();
+        }
+        if (summarytitle.equals(TABLECOLUMNSUMMARY)) {
+            message = "The  Nulls & Blanks Column Summary ";
+        }
+
+        if (summarytitle.equals(ROWSCOLUMNSUMMARY)) {
+            message = "The Analysis of Rows per Column Null or Blank ";
+        }
+
+        message = message + "was  exported to:\n"
+                + fileTitle + "\n"
+                + "which is located at: \n"
+                + Paths.get("").toAbsolutePath().toString();
+
+        return message;
+
     }
 
     /*
@@ -2521,6 +2678,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JTable dataTable;
     private javax.swing.JScrollPane dataTableScrollPane;
     private javax.swing.JMenuItem exportDataTableSQL;
+    private javax.swing.JMenuItem exportRowsColumnsNullsBlanks;
+    private javax.swing.JMenuItem exportTableColumnsSummary;
     private javax.swing.JTextField initialSummaryTableFilter;
     private javax.swing.JPanel intialSummaryfilterPanel;
     private javax.swing.JMenu jMenu1;

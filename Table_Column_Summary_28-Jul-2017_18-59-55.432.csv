@@ -1,0 +1,4 @@
+Column Name, Row Count, Nulls Count, Blanks Count, % Nulls , % Blanks, 
+film_id, 1000, 0, 0, 0.00, 0.00, 
+category_id, 1000, 0, 0, 0.00, 0.00, 
+last_update, 1000, 0, 0, 0.00, 0.00, 
