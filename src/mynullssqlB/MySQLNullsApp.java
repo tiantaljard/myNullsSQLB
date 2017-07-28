@@ -66,7 +66,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private String lastSQLQueryCSVSelect;
     private String lastSQLQueryCSVFrom;
     private String lastSQLCSVColumnNames;
-
+    
     int columnNameTableSelctionColumn;
     @SuppressWarnings("UseOfObsoleteCollectionType")
     private Vector columnNamesSelectedInColumnNameTable = new Vector();
@@ -163,13 +163,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         chartErrorMessageTextPanel = new javax.swing.JScrollPane();
         chartErrorMessageTextArea = new javax.swing.JTextArea();
-        saveToCSV = new javax.swing.JDialog();
-        jPanel5 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        fileChoserPanel = new javax.swing.JPanel();
-        jFileChooser1 = new javax.swing.JFileChooser();
-        jPanel7 = new javax.swing.JPanel();
+        exportDataTableSQL = new javax.swing.JMenuItem();
         mainJPanel = new javax.swing.JPanel();
         summaryPanel = new javax.swing.JPanel();
         summaryScrollPanel = new javax.swing.JScrollPane();
@@ -372,72 +366,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         noDataMainPanel.add(chartErrorMessageTextPanel, java.awt.BorderLayout.CENTER);
 
-        jLabel1.setText("jLabel1");
-
-        jTextField1.setText("jTextField1");
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(116, 116, 116)
-                .addComponent(jLabel1)
-                .addContainerGap(389, Short.MAX_VALUE))
-            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel5Layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jLabel1)
-                .addGap(0, 10, Short.MAX_VALUE))
-            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel5Layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-        );
-
-        saveToCSV.getContentPane().add(jPanel5, java.awt.BorderLayout.NORTH);
-
-        javax.swing.GroupLayout fileChoserPanelLayout = new javax.swing.GroupLayout(fileChoserPanel);
-        fileChoserPanel.setLayout(fileChoserPanelLayout);
-        fileChoserPanelLayout.setHorizontalGroup(
-            fileChoserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 550, Short.MAX_VALUE)
-            .addGroup(fileChoserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(fileChoserPanelLayout.createSequentialGroup()
-                    .addComponent(jFileChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-        );
-        fileChoserPanelLayout.setVerticalGroup(
-            fileChoserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 406, Short.MAX_VALUE)
-            .addGroup(fileChoserPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, fileChoserPanelLayout.createSequentialGroup()
-                    .addContainerGap(22, Short.MAX_VALUE)
-                    .addComponent(jFileChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-        );
-
-        saveToCSV.getContentPane().add(fileChoserPanel, java.awt.BorderLayout.SOUTH);
-
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 550, Short.MAX_VALUE)
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        saveToCSV.getContentPane().add(jPanel7, java.awt.BorderLayout.CENTER);
+        exportDataTableSQL.setText("Export Selected Table Data");
+        exportDataTableSQL.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportDataTableSQLActionPerformed(evt);
+            }
+        });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -947,6 +881,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
 
             tablePopupMenu.add(showSummaryChart);
+            
+            if (tableInUse.equals(SQLDATA)) {
+                tablePopupMenu.add(exportDataTableSQL);
+            }
+            
 
             tablePopupMenu.show(dataTable, evt.getX(), evt.getY());
 
@@ -962,6 +901,19 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private void colNmScrollPanelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_colNmScrollPanelMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_colNmScrollPanelMouseClicked
+
+    private void exportDataTableSQLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportDataTableSQLActionPerformed
+        if (tableInUse.equals(SQLDATA)) {
+            try {
+                JOptionPane.showMessageDialog(null,getSQLcsv());
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }
+        
+    }//GEN-LAST:event_exportDataTableSQLActionPerformed
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1330,6 +1282,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         dynamic_query_rowcount = dynamic_query_rowcount + dynamicSQLWhere;
 
         Statement statement = db.conn.createStatement();
+
         // Gets and sets the row count of the selected Query. this is to allow the table 
         // model to show the correct number or rows. 
 
@@ -1342,7 +1295,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         lastSQLCSVColumnNames=csvColumnNames;
         lastSQLQueryCSVSelect=queryCSVSelect;
         lastSQLQueryCSVFrom=queryCSVFrom;
-        getSQLcsv();
+        
 
         getColData.first();
         return getColData;
@@ -2503,24 +2456,48 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         tablePopupMenu.remove(showTableColumnChart);
         tablePopupMenu.remove(showTableColumnSummary);
+        tablePopupMenu.remove(exportDataTableSQL);
 
     }
 
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    removeTableMenuPopupItems()
+    getSQLcsv()
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
      */
-    public void getSQLcsv() {
+    /**
+     * getSQLcsv() create a CSV file from the query that created the last 
+     * dataTable SQL result set. The method returns a message containing information
+     * regarding the name and location of the file created.
+     * 
+     * @return String
+     * @throws SQLException 
+     */
+    public String getSQLcsv() throws SQLException {
         String uniqueFile = sdf.format(new Date());
         
-        
         String lastSQLQueryCSV= lastSQLCSVColumnNames+" union all "+lastSQLQueryCSVSelect+uniqueFile+lastSQLQueryCSVFrom;
+        String sqlDataDirQuery="SHOW VARIABLES LIKE 'datadir'; ";
         
-        System.out.println(lastSQLQueryCSV);
-
+        Statement statement = db.conn.createStatement();
+        Statement statementSQLDir = db.conn.createStatement();
+        
+        statement.executeQuery(lastSQLQueryCSV);
+        
+        ResultSet sqlExportDirRs = statementSQLDir.executeQuery(sqlDataDirQuery);
+        sqlExportDirRs.first();
+         
+        //System.out.println(lastSQLQueryCSV);
+        String dataDir=sqlExportDirRs.getObject(2).toString()+db.databaseName;
+        String fileName=getRowColOneSelected(tableNameTable)+uniqueFile+".csv";
+        String message= "Data for the selected table was exported to:\n"
+                + fileName+"\n"
+                + "which is located at: \n"
+                + sqlExportDirRs.getObject(2).toString()+db.databaseName;
+        
+        return message;
     }
 
     /*
@@ -2543,11 +2520,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JSplitPane dataExplorerSplitPane;
     private javax.swing.JTable dataTable;
     private javax.swing.JScrollPane dataTableScrollPane;
-    private javax.swing.JPanel fileChoserPanel;
+    private javax.swing.JMenuItem exportDataTableSQL;
     private javax.swing.JTextField initialSummaryTableFilter;
     private javax.swing.JPanel intialSummaryfilterPanel;
-    private javax.swing.JFileChooser jFileChooser1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -2558,13 +2533,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JPanel mainJPanel;
     private javax.swing.JPanel mainRightPanel;
     private javax.swing.JPanel noDataMainPanel;
-    private javax.swing.JDialog saveToCSV;
     private javax.swing.JMenuItem showDataNavigator;
     private javax.swing.JMenuItem showDataNavigatorAllTables;
     private javax.swing.JMenuItem showInitialSummaryTbl;
