@@ -57,12 +57,15 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     //private String dynamicCSVSelectFrom;
     private String dynamicCSVSelect;
     private String dynamicCSVFrom;
+    private String dynamicCSVColumnNames;
 
     private String dynamicFilterCSVSelect;
     private String dynamicFilterCSVFrom;
+    private String dynamicFilterCSVColumnNames;
 
     private String lastSQLQueryCSVSelect;
     private String lastSQLQueryCSVFrom;
+    private String lastSQLCSVColumnNames;
 
     int columnNameTableSelctionColumn;
     @SuppressWarnings("UseOfObsoleteCollectionType")
@@ -1282,6 +1285,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         String queryCSVFrom = "";
         String queryFilterCSVSelect = "";
         String queryFilterCSVFrom = "";
+        String csvColumnNames="";
+        String filterCSVColumnNames="";
         // keeps track of the number of rows the dynamic query has
         dynamic_query_rowcount = "select count(*) from " + getRowColOneSelected(tableNameTable) + " where 1=1";
 
@@ -1291,6 +1296,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
             queryCSVSelect = dynamicCSVSelect;
             queryCSVFrom = dynamicCSVFrom;
+            csvColumnNames = dynamicCSVColumnNames;
 
         }
         // check which part of the columnNameTable the user is interacting with
@@ -1304,12 +1310,16 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
             queryCSVSelect = dynamicFilterCSVSelect;
             queryCSVFrom = dynamicFilterCSVFrom;
+            csvColumnNames= dynamicFilterCSVColumnNames;
+            
 
         } else {
             query = dynamicSelectFrom;
 
             queryCSVSelect = dynamicCSVSelect;
             queryCSVFrom = dynamicCSVFrom;
+            csvColumnNames=dynamicCSVColumnNames;
+            
         }
 
         buildColumnDataSQLWhere();
@@ -1328,6 +1338,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         dynamic_rowcount = Integer.parseInt(getColDataRowCount.getObject(1).toString());
         ResultSet getColData = statement.executeQuery(query);
         
+        
+        lastSQLCSVColumnNames=csvColumnNames;
         lastSQLQueryCSVSelect=queryCSVSelect;
         lastSQLQueryCSVFrom=queryCSVFrom;
         getSQLcsv();
@@ -1828,17 +1840,23 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         columns_selected = getRowsColOneSelectedArray(columnNameTable);
 
         String query = "select ";
+        String csvColumnNames ="select '";
 
         for (int i = 0; i < columns_selected.size(); i++) {
             query += columns_selected.get(i).toString();
+            csvColumnNames += columns_selected.get(i).toString();
             if (i == columns_selected.size() - 1) {
                 query += "";
+                csvColumnNames += "'";
+                
             } else {
                 query += ",";
+                csvColumnNames += "','";
             }
         }
         dynamicSelectFrom = query + " from " + table_name + " where 1=1 ";
-
+        
+        dynamicCSVColumnNames=csvColumnNames;
         dynamicCSVSelect = query + " into OUTFILE '" + table_name + "_";
         dynamicCSVFrom = ".csv' FIELDS TERMINATED BY " + csvDelimiter + " from " + table_name + " where 1=1 ";
     }
@@ -1867,19 +1885,24 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         columns.first();
 
         String query = "select ";
+        String csvColumnNames = "select '";
 
         for (int i = 0; i < colCount; i++) {
             query += columns.getObject(1).toString();
+            csvColumnNames += columns.getObject(1).toString();
             if (i == colCount - 1) {
                 query += "";
+                csvColumnNames += "'";
             } else {
                 query += ",";
+                csvColumnNames += "','";
             }
             columns.next();
         }
 
         dynamicFilterSelectFrom = query + " from " + table_name + " where 1=1 ";
-
+        
+        dynamicFilterCSVColumnNames =csvColumnNames;
         dynamicFilterCSVSelect = query + " into OUTFILE '" + table_name + "_";
         dynamicFilterCSVFrom = ".csv' FIELDS TERMINATED BY " + csvDelimiter + " from " + table_name + " where 1=1 ";
 
@@ -2493,7 +2516,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     public void getSQLcsv() {
         String uniqueFile = sdf.format(new Date());
         
-        String lastSQLQueryCSV= lastSQLQueryCSVSelect+uniqueFile+lastSQLQueryCSVFrom;
+        
+        String lastSQLQueryCSV= lastSQLCSVColumnNames+" union all "+lastSQLQueryCSVSelect+uniqueFile+lastSQLQueryCSVFrom;
         
         System.out.println(lastSQLQueryCSV);
 
