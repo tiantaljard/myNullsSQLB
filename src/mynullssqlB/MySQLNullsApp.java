@@ -76,6 +76,38 @@ import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
 import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
 import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
 import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
 
 /**
  * @Date July 2017
@@ -139,8 +171,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private static final String COLUMNNBSUMMARYDATATABLE = "columnnbsummary";
     private static final String ROWNBSUMMARYDATATABLE = "rownbsummary";
     private static final String SQLDATATABLE = "sqldata";
+    
+    private static final String INITIALTABLESUMMARY = "Table_Column_Row_Count_Summary_";        
+    private static final String NBCOLUMNSUMMARY = "Nulls_Blanks_Table_Summary_";
     private static final String TABLECOLUMNSUMMARY = "Table_Column_Summary_";
-    private static final String ROWSCOLUMNSUMMARY = "Rows_Column_Summary_";
+    private static final String ROWSCOLUMNSUMMARY = "Rows_Column_Analysis_";
 
     private int tableNameTableLastSelectedRow = -1;
     private int columnNameTableLastSelectedRow = -1;
@@ -163,6 +198,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             showConnectionDialog();
             //initializeModel();
             setInitialSummaryTable();
+            tableInUse=INITIALSUMMARYDATATABLE;
 
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
@@ -205,6 +241,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         chartErrorMessageTextPanel = new javax.swing.JScrollPane();
         chartErrorMessageTextArea = new javax.swing.JTextArea();
         exportDataTableSQL = new javax.swing.JMenuItem();
+        exportNBSummary = new javax.swing.JMenuItem();
+        exportInitialTableSummary = new javax.swing.JMenuItem();
         mainJPanel = new javax.swing.JPanel();
         summaryPanel = new javax.swing.JPanel();
         summaryScrollPanel = new javax.swing.JScrollPane();
@@ -426,6 +464,20 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         exportDataTableSQL.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 exportDataTableSQLActionPerformed(evt);
+            }
+        });
+
+        exportNBSummary.setText("Export Nulls & Blank Summary Table");
+        exportNBSummary.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportNBSummaryActionPerformed(evt);
+            }
+        });
+
+        exportInitialTableSummary.setText("Export Table Column & Row Count Summary");
+        exportInitialTableSummary.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportInitialTableSummaryActionPerformed(evt);
             }
         });
 
@@ -766,6 +818,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             if (summaryTable.getModel().getColumnCount() == 3) {
                 tablePopupMenu.add(showNBSummaryTbl);
                 tablePopupMenu.add(showDataNavigator);
+                tablePopupMenu.add(exportInitialTableSummary);
             }
             if (summaryTable.getModel().getColumnCount() == 7) {
                 tablePopupMenu.add(showInitialSummaryTbl);
@@ -778,6 +831,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 if (summaryTable.getSelectedRowCount() > 0 && summaryTable.getModel().getRowCount() != summaryTable.getSelectedRowCount()) {
                     tablePopupMenu.add(showNBSummaryTblForSelected);
                 }
+                tablePopupMenu.add(exportNBSummary);
             }
 
             tablePopupMenu.show(summaryTable, evt.getX(), evt.getY());
@@ -931,13 +985,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 //                tablePopupMenu.add(showRowsColumnBlanksPieChart);
 //                tablePopupMenu.remove(showTableColumnChart);
 //            }
-
-           // tablePopupMenu.add(showSummaryChart);
-
+            // tablePopupMenu.add(showSummaryChart);
             if (tableInUse.equals(SQLDATATABLE)) {
                 tablePopupMenu.add(exportDataTableSQL);
                 tablePopupMenu.add(showSummaryChart);
-                
+
             }
 
             if (tableInUse.equals(COLUMNNBSUMMARYDATATABLE)) {
@@ -1004,6 +1056,34 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_exportRowsColumnsNullsBlanksActionPerformed
+
+    private void exportNBSummaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportNBSummaryActionPerformed
+        if (tableInUse.equals(NBSUMMARYDATATABLE)) {
+            try {
+                JOptionPane.showMessageDialog(null, writeCSVfile(summaryTable, NBCOLUMNSUMMARY));
+            } catch (IOException ex) {
+                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_exportNBSummaryActionPerformed
+
+    private void exportInitialTableSummaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportInitialTableSummaryActionPerformed
+        if (tableInUse.equals(INITIALSUMMARYDATATABLE)) {
+            try {
+                JOptionPane.showMessageDialog(null, writeCSVfile(summaryTable, INITIALTABLESUMMARY));
+            } catch (IOException ex) {
+                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_exportInitialTableSummaryActionPerformed
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2547,6 +2627,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         tablePopupMenu.remove(exportTableColumnsSummary);
         tablePopupMenu.remove(exportRowsColumnsNullsBlanks);
 
+        tablePopupMenu.remove(exportNBSummary);
+        tablePopupMenu.remove(exportInitialTableSummary);
+        
+
     }
 
     /*
@@ -2611,7 +2695,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         int nCol = dtm.getColumnCount();
         String message = "";
         String uniqueFile = sdf.format(new Date());
-        System.out.println(Paths.get("").toAbsolutePath().toString());
         String fileTitle = summarytitle + uniqueFile + ".csv";
         try {
             writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileTitle), "utf-8"));
@@ -2648,7 +2731,15 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             message = "The Analysis of Rows per Column Null or Blank ";
         }
 
-        message = message + "was  exported to:\n"
+        if (summarytitle.equals(NBCOLUMNSUMMARY)) {
+            message = "The Nulls & Blank by Table Summary ";
+        }
+
+        if (summarytitle.equals(INITIALTABLESUMMARY)) {
+            message = "The Table Column and Row Count Summary ";
+        }
+
+        message = message + "was exported to:\n"
                 + fileTitle + "\n"
                 + "which is located at: \n"
                 + Paths.get("").toAbsolutePath().toString();
@@ -2678,6 +2769,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JTable dataTable;
     private javax.swing.JScrollPane dataTableScrollPane;
     private javax.swing.JMenuItem exportDataTableSQL;
+    private javax.swing.JMenuItem exportInitialTableSummary;
+    private javax.swing.JMenuItem exportNBSummary;
     private javax.swing.JMenuItem exportRowsColumnsNullsBlanks;
     private javax.swing.JMenuItem exportTableColumnsSummary;
     private javax.swing.JTextField initialSummaryTableFilter;

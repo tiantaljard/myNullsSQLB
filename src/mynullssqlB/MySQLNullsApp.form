@@ -278,6 +278,22 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportDataTableSQLActionPerformed"/>
       </Events>
     </Component>
+    <Component class="javax.swing.JMenuItem" name="exportNBSummary">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Export Nulls &amp; Blank Summary Table"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportNBSummaryActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JMenuItem" name="exportInitialTableSummary">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Export Table Column &amp; Row Count Summary"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportInitialTableSummaryActionPerformed"/>
+      </Events>
+    </Component>
     <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="jMenu1">
