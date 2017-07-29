@@ -45,69 +45,6 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
-import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
 
 /**
  * @Date July 2017
@@ -137,6 +74,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private String lastSQLCSVColumnNames;
 
     int columnNameTableSelctionColumn;
+
+    int limitRowsFilterInt=0;
+    String limitRows = "";
+
     @SuppressWarnings("UseOfObsoleteCollectionType")
     private Vector columnNamesSelectedInColumnNameTable = new Vector();
     // Create DataSet Data Object for Table Summary Chart
@@ -171,8 +112,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private static final String COLUMNNBSUMMARYDATATABLE = "columnnbsummary";
     private static final String ROWNBSUMMARYDATATABLE = "rownbsummary";
     private static final String SQLDATATABLE = "sqldata";
-    
-    private static final String INITIALTABLESUMMARY = "Table_Column_Row_Count_Summary_";        
+
+    private static final String INITIALTABLESUMMARY = "Table_Column_Row_Count_Summary_";
     private static final String NBCOLUMNSUMMARY = "Nulls_Blanks_Table_Summary_";
     private static final String TABLECOLUMNSUMMARY = "Table_Column_Summary_";
     private static final String ROWSCOLUMNSUMMARY = "Rows_Column_Analysis_";
@@ -198,7 +139,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             showConnectionDialog();
             //initializeModel();
             setInitialSummaryTable();
-            tableInUse=INITIALSUMMARYDATATABLE;
+            tableInUse = INITIALSUMMARYDATATABLE;
 
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
@@ -215,9 +156,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jMenuBar2 = new javax.swing.JMenuBar();
-        jMenu3 = new javax.swing.JMenu();
-        jMenu4 = new javax.swing.JMenu();
         tablePopupMenu = new javax.swing.JPopupMenu();
         showInitialSummaryTbl = new javax.swing.JMenuItem();
         showNBSummaryTbl = new javax.swing.JMenuItem();
@@ -263,6 +201,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         colNmParentPanel = new javax.swing.JPanel();
         colNmFilterPanel = new javax.swing.JPanel();
         columnNameFilter = new javax.swing.JTextField();
+        limitRowsFilter = new javax.swing.JTextField();
         colNmScrollPanel = new javax.swing.JScrollPane();
         columnNameTable = new javax.swing.JTable(){
             @Override
@@ -284,14 +223,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         cardChartPanel = new javax.swing.JPanel();
         chartPanel = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
-
-        jMenu3.setText("File");
-        jMenuBar2.add(jMenu3);
-
-        jMenu4.setText("Edit");
-        jMenuBar2.add(jMenu4);
+        filejMenu = new javax.swing.JMenu();
+        editjMenu = new javax.swing.JMenu();
 
         tablePopupMenu =new JPopupMenu();
 
@@ -533,6 +466,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         tblNmFilterPanel.setLayout(new java.awt.BorderLayout());
 
         tableNameFilter.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        tableNameFilter.setToolTipText("Table name filter");
         tableNameFilter.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 tableNameFilterKeyReleased(evt);
@@ -602,15 +536,33 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         colNmFilterPanel.setLayout(new java.awt.BorderLayout());
 
         columnNameFilter.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        columnNameFilter.setToolTipText("Column name filter");
+        columnNameFilter.setPreferredSize(new java.awt.Dimension(100, 26));
         columnNameFilter.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 columnNameFilterKeyReleased(evt);
             }
         });
-        colNmFilterPanel.add(columnNameFilter, java.awt.BorderLayout.CENTER);
+        colNmFilterPanel.add(columnNameFilter, java.awt.BorderLayout.WEST);
+
+        limitRowsFilter.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        limitRowsFilter.setToolTipText("Return top n rows");
+        limitRowsFilter.setPreferredSize(new java.awt.Dimension(55, 26));
+        limitRowsFilter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                limitRowsFilterActionPerformed(evt);
+            }
+        });
+        limitRowsFilter.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                limitRowsFilterKeyReleased(evt);
+            }
+        });
+        colNmFilterPanel.add(limitRowsFilter, java.awt.BorderLayout.EAST);
 
         colNmParentPanel.add(colNmFilterPanel, java.awt.BorderLayout.NORTH);
 
+        colNmScrollPanel.setToolTipText("\n\n");
         colNmScrollPanel.setPreferredSize(new java.awt.Dimension(150, 500));
         colNmScrollPanel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -641,6 +593,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        columnNameTable.setToolTipText("<html>\n<br>Specify columns and conditons for data display<br><br>\n\n<html>Columns: select the table to display<br><br>\n<html>Null: Select to limit result set to only rows where column is null<br> <br>\n<html>Blank: Select to limit result set to only rows where column is blank<br><br>\n<html>Text: Enter text to limit result to only rows that contain entered text<br><br></html>");
         columnNameTable.setSelectionMode(1);
         columnNameTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
@@ -684,11 +637,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         getContentPane().add(mainJPanel, java.awt.BorderLayout.CENTER);
 
-        jMenu1.setText("File");
-        jMenuBar1.add(jMenu1);
+        filejMenu.setText("File");
+        jMenuBar1.add(filejMenu);
 
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
+        editjMenu.setText("Edit");
+        jMenuBar1.add(editjMenu);
 
         setJMenuBar(jMenuBar1);
 
@@ -1084,6 +1037,39 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_exportInitialTableSummaryActionPerformed
+
+    private void limitRowsFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_limitRowsFilterActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_limitRowsFilterActionPerformed
+
+    private void limitRowsFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_limitRowsFilterKeyReleased
+        try {
+            if (Integer.parseInt(limitRowsFilter.getText()) == (int) Integer.parseInt(limitRowsFilter.getText())) {
+                limitRowsFilterInt = Integer.parseInt(limitRowsFilter.getText());
+                if (limitRowsFilterInt>0) {
+                limitRows=" limit "+limitRowsFilterInt;
+                } else {
+                    limitRows="";
+                }
+            }
+        } catch (Exception e) {
+
+            if (!limitRowsFilter.getText().isEmpty())
+            JOptionPane.showMessageDialog(null, "You did not enter a number. \n Data records will not be limited.");
+            limitRowsFilter.setText(null);
+            limitRowsFilterInt=0;
+            limitRows="";
+            
+        }
+        
+        if (tableInUse.equals(SQLDATATABLE)) {
+            try {    
+                setDataTable(getColumnData());
+            } catch (SQLException ex) {
+                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_limitRowsFilterKeyReleased
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1408,10 +1394,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         String queryFilterCSVSelect = "";
         String queryFilterCSVFrom = "";
         String csvColumnNames = "";
-        String filterCSVColumnNames = "";
+        String filterCSVColumnNames = "";      
         // keeps track of the number of rows the dynamic query has
         dynamic_query_rowcount = "select count(*) from " + getRowColOneSelected(tableNameTable) + " where 1=1";
-
+        
         if (columnNameTableSelctionColumn == 0) {
             buildColumnDataSelectOnColumnNameSelect();
             query = dynamicSelectFrom;
@@ -1445,8 +1431,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         buildColumnDataSQLWhere();
 
-        query = query + dynamicSQLWhere;
-        queryCSVFrom = queryCSVFrom + dynamicSQLWhere;
+        query = query + dynamicSQLWhere + limitRows;
+        queryCSVFrom = queryCSVFrom + dynamicSQLWhere + limitRows;
 
         dynamic_query_rowcount = dynamic_query_rowcount + dynamicSQLWhere;
 
@@ -1457,6 +1443,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         ResultSet getColDataRowCount = statement.executeQuery(dynamic_query_rowcount);
         getColDataRowCount.first();
         dynamic_rowcount = Integer.parseInt(getColDataRowCount.getObject(1).toString());
+        
+        if (dynamic_rowcount > limitRowsFilterInt && limitRowsFilterInt!=0 ) {
+            dynamic_rowcount = limitRowsFilterInt;
+        }
         ResultSet getColData = statement.executeQuery(query);
 
         lastSQLCSVColumnNames = csvColumnNames;
@@ -2629,7 +2619,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         tablePopupMenu.remove(exportNBSummary);
         tablePopupMenu.remove(exportInitialTableSummary);
-        
 
     }
 
@@ -2747,7 +2736,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         return message;
 
     }
-
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2768,23 +2756,21 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JSplitPane dataExplorerSplitPane;
     private javax.swing.JTable dataTable;
     private javax.swing.JScrollPane dataTableScrollPane;
+    private javax.swing.JMenu editjMenu;
     private javax.swing.JMenuItem exportDataTableSQL;
     private javax.swing.JMenuItem exportInitialTableSummary;
     private javax.swing.JMenuItem exportNBSummary;
     private javax.swing.JMenuItem exportRowsColumnsNullsBlanks;
     private javax.swing.JMenuItem exportTableColumnsSummary;
+    private javax.swing.JMenu filejMenu;
     private javax.swing.JTextField initialSummaryTableFilter;
     private javax.swing.JPanel intialSummaryfilterPanel;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuBar jMenuBar2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JTextField limitRowsFilter;
     private javax.swing.JPanel mainJPanel;
     private javax.swing.JPanel mainRightPanel;
     private javax.swing.JPanel noDataMainPanel;
