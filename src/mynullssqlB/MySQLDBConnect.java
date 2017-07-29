@@ -176,7 +176,7 @@ public class MySQLDBConnect {
      */
     public void getConnection() throws SQLException {
         conn = DriverManager.getConnection("jdbc:mysql://" + serverIP + ":"
-                + port + "/" + databaseName, username, password);
+                + port + "/" + databaseName+"?verifyServerCertificate=false&useSSL=false", username, password);
     }
 
     /*
