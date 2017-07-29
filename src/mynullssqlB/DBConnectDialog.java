@@ -51,9 +51,9 @@ public class DBConnectDialog extends javax.swing.JDialog {
         usernameJLabel = new javax.swing.JLabel();
         usernameJTextField = new javax.swing.JTextField();
         passwordJLabel = new javax.swing.JLabel();
-        passwordJTextField = new javax.swing.JTextField();
         testDBConnectJButton = new javax.swing.JButton();
         AnalyseJButton = new javax.swing.JButton();
+        jPasswordField1 = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setName("JFrame4"); // NOI18N
@@ -106,13 +106,6 @@ public class DBConnectDialog extends javax.swing.JDialog {
         passwordJLabel.setText("Password:");
         passwordJLabel.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
 
-        passwordJTextField.setText("Zppsit0!");
-        passwordJTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                passwordJTextFieldActionPerformed(evt);
-            }
-        });
-
         testDBConnectJButton.setText("Test");
         testDBConnectJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -126,6 +119,9 @@ public class DBConnectDialog extends javax.swing.JDialog {
                 AnalyseJButtonActionPerformed(evt);
             }
         });
+
+        jPasswordField1.setText("Zppsit0!");
+        jPasswordField1.setPreferredSize(new java.awt.Dimension(36, 26));
 
         javax.swing.GroupLayout dbConnectJPanelLayout = new javax.swing.GroupLayout(dbConnectJPanel);
         dbConnectJPanel.setLayout(dbConnectJPanelLayout);
@@ -146,12 +142,14 @@ public class DBConnectDialog extends javax.swing.JDialog {
                         .addComponent(testDBConnectJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(dbConnectJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(AnalyseJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(serverIPJTextField)
                     .addComponent(databaseNameJTextField)
                     .addComponent(portJTextField)
                     .addComponent(usernameJTextField)
-                    .addComponent(passwordJTextField))
+                    .addGroup(dbConnectJPanelLayout.createSequentialGroup()
+                        .addComponent(AnalyseJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jPasswordField1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(883, 883, 883))
         );
 
@@ -181,7 +179,7 @@ public class DBConnectDialog extends javax.swing.JDialog {
                         .addGap(6, 6, 6)
                         .addComponent(usernameJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(6, 6, 6)
-                        .addComponent(passwordJTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(dbConnectJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(AnalyseJButton)
@@ -217,7 +215,7 @@ public class DBConnectDialog extends javax.swing.JDialog {
         String databaseName = databaseNameJTextField.getText();
         String port = portJTextField.getText();
         String username = usernameJTextField.getText();
-        String password = passwordJTextField.getText();
+        String password = String.valueOf(jPasswordField1.getPassword());
 
         //======================================================================
         // Validate text for null and blank values
@@ -265,10 +263,6 @@ public class DBConnectDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_testDBConnectJButtonActionPerformed
 
-    private void passwordJTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordJTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_passwordJTextFieldActionPerformed
-
     private void portJTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_portJTextFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_portJTextFieldActionPerformed
@@ -289,7 +283,7 @@ public class DBConnectDialog extends javax.swing.JDialog {
         String databaseName = databaseNameJTextField.getText();
         String port = portJTextField.getText();
         String username = usernameJTextField.getText();
-        String password = passwordJTextField.getText();
+        String password = String.valueOf(jPasswordField1.getPassword());
 
         //======================================================================
         // Validate text for null and blank values
@@ -376,8 +370,8 @@ public class DBConnectDialog extends javax.swing.JDialog {
     private javax.swing.JLabel databaseNameJLabel;
     private javax.swing.JTextField databaseNameJTextField;
     private javax.swing.JPanel dbConnectJPanel;
+    private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JLabel passwordJLabel;
-    private javax.swing.JTextField passwordJTextField;
     private javax.swing.JLabel portJLabel;
     private javax.swing.JTextField portJTextField;
     private javax.swing.JLabel serverIPJLabel;
