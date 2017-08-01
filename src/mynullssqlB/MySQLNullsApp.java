@@ -1010,8 +1010,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private void showTableColumnChartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showTableColumnChartActionPerformed
 
         //buildTableColumnSummary();
-        buildTableColumnBarChartExplorerPanel();
-        setExplorerChartCard();
+      //  buildTableColumnBarChartExplorerPanel();
+      //  setExplorerChartCard();
+      System.out.println("GOT HERE build now chart dataset");
+      createTableColumnBarChartDatSetFromSelected();
 
 
     }//GEN-LAST:event_showTableColumnChartActionPerformed
@@ -1160,6 +1162,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             if (tableInUse.equals(COLUMNNBSUMMARYDATATABLE)) {
                 tablePopupMenu.add(showTableColumnChart);
                 tablePopupMenu.add(exportTableColumnsSummary);
+                
+                
 
                 if (columnNameTable.getRowCount() != detailAnalysisTable.getModel().getRowCount()) {
                     tablePopupMenu.add(showTableAllColumnSummary);
@@ -2376,8 +2380,19 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         model.setColumnCount(original.getColumnCount());
         return model;
         
-
     }
+    
+    public void createTableColumnBarChartDatSetFromSelected() {
+        DefaultTableModel tableModel = (DefaultTableModel) detailAnalysisTable.getModel();
+        tableColumnBarChartDataset.clear();
+        
+        int rowCount =tableModel.getRowCount();
+        for (int i=0; i<rowCount; i++){
+         
+         tableColumnBarChartDataset.addValue(Double.parseDouble(tableModel.getValueAt(i, 4).toString()),"Nulls %",tableModel.getValueAt(i, 0).toString());
+         tableColumnBarChartDataset.addValue(Double.parseDouble(tableModel.getValueAt(i, 5).toString()),"Blanks %",tableModel.getValueAt(i, 0).toString());
+        }
+}
 
     /*    
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
