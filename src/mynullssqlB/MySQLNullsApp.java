@@ -2286,17 +2286,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         int ArrayrowCount = db.getColCount(tableName);
         int ArraycolCount = 6;
                 Object[][] tableColumnSummaryArray = new Object[ArrayrowCount][ArraycolCount];        
-        JProgressBar progressBar = new JProgressBar();
-        progressBar.setIndeterminate(true);
-        JDialog progressBarDialog = new JDialog(this, "Analysing tables", false);
-        progressBarDialog.add(BorderLayout.CENTER,progressBar);
-        progressBarDialog.setSize(200,75);
-        progressBarDialog.setLocationRelativeTo(this);
-        progressBarDialog.setVisible(true);
         
-        SwingWorker worker = new SwingWorker<Void,Void>() {
-            @Override
-            protected Void doInBackground() throws Exception {
+        
+      
                 
         ResultSet columnNames = db.getColumnNames(tableName);
         columnNames.first();
@@ -2351,17 +2343,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             columnNames.next();
             count++;
 
-        }   
-                return null;    
-            }
-            @Override
-            protected void done(){
-                progressBarDialog.setVisible(false); 
-            }
-        };
-        
-          worker.execute();
-          
+        }
+           
         return tableColumnSummaryArray;
 
     }
@@ -2413,6 +2396,23 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        
+        JDialog progressBarDialog  = buildProgressBar("Analysing Table");
+        
+                SwingWorker worker = new SwingWorker<Void,Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+
+ return null;    
+            }
+            @Override
+            protected void done(){
+                progressBarDialog.setVisible(false); 
+            }
+        };
+        
+          worker.execute();
+        
 
         Object[][] tableColumnSummaryArray = buildTableColumnSummary();
 
@@ -2991,6 +2991,20 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         return message;
 
     }
+    public JDialog buildProgressBar (String title){
+        JProgressBar progressBar = new JProgressBar();
+        progressBar.setIndeterminate(true);
+        JDialog progressBarDialog = new JDialog(this, "Analysing tables", false);
+        progressBarDialog.add(BorderLayout.CENTER,progressBar);
+        progressBarDialog.setSize(200,75);
+        progressBarDialog.setLocationRelativeTo(this);
+        progressBarDialog.setVisible(true);
+        
+        return progressBarDialog;
+        
+    }
+     
+    
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
