@@ -2402,6 +2402,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 SwingWorker worker = new SwingWorker<Void,Void>() {
             @Override
             protected Void doInBackground() throws Exception {
+                Object[][] tableColumnSummaryArray = buildTableColumnSummary();
 
  return null;    
             }
@@ -2414,7 +2415,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
           worker.execute();
         
 
-        Object[][] tableColumnSummaryArray = buildTableColumnSummary();
+        
 
         summaryTableColumnTableModel.setDataVector(tableColumnSummaryArray, columnsTableColumnSummary);
         detailAnalysisTable.setModel(summaryTableColumnTableModel);
