@@ -62,6 +62,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private String dynamicSelectFrom;
     private String dynamicSQLWhere;
     private String dynamicFilterSelectFrom;
+    Object[][] tableColumnSummaryArray = null;
 
     //private String dynamicCSVSelectFrom;
     private String dynamicCSVSelect;
@@ -2285,11 +2286,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         int ArrayrowCount = db.getColCount(tableName);
         int ArraycolCount = 6;
-                Object[][] tableColumnSummaryArray = new Object[ArrayrowCount][ArraycolCount];        
-        
-        
-      
-                
+        Object[][] tableColumnSummaryArray = new Object[ArrayrowCount][ArraycolCount];
+
         ResultSet columnNames = db.getColumnNames(tableName);
         columnNames.first();
         String columnName;
@@ -2303,8 +2301,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         double totalfields;
         DecimalFormat to2DP = new DecimalFormat("0.00");
         //  to2DP.format(balance) 
-        
-                int count = 0;
+
+        int count = 0;
         for (int i = 0; i < ArrayrowCount; i++) {
             columnName = columnNames.getString(1);
             rowCount = db.getRowCount(tableName);
@@ -2344,7 +2342,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             count++;
 
         }
-           
+
         return tableColumnSummaryArray;
 
     }
@@ -2393,30 +2391,25 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      * @throws SQLException
      */
     public void setTableColumnSummaryTable() throws SQLException {
-
+        
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-        
-        JDialog progressBarDialog  = buildProgressBar("Analysing Table");
-        
-                SwingWorker worker = new SwingWorker<Void,Void>() {
+
+        JDialog progressBarDialog = buildProgressBar("Analysing Table");
+
+        SwingWorker worker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
                 Object[][] tableColumnSummaryArray = buildTableColumnSummary();
 
- return null;    
+                return null;
             }
+
             @Override
-            protected void done(){
-                progressBarDialog.setVisible(false); 
-            }
-        };
-        
-          worker.execute();
-        
-
-        
-
+            protected void done() {
+                progressBarDialog.setVisible(false);
+                
+                
         summaryTableColumnTableModel.setDataVector(tableColumnSummaryArray, columnsTableColumnSummary);
         detailAnalysisTable.setModel(summaryTableColumnTableModel);
 
@@ -2427,6 +2420,14 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         detailAnalysisTable.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
 
         setTableRowSorter(detailAnalysisTable);
+                
+                
+                
+            }
+        };
+
+        worker.execute();
+
     }
 
     /*
@@ -2992,20 +2993,20 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         return message;
 
     }
-    public JDialog buildProgressBar (String title){
+
+    public JDialog buildProgressBar(String title) {
         JProgressBar progressBar = new JProgressBar();
         progressBar.setIndeterminate(true);
         JDialog progressBarDialog = new JDialog(this, "Analysing tables", false);
-        progressBarDialog.add(BorderLayout.CENTER,progressBar);
-        progressBarDialog.setSize(200,75);
+        progressBarDialog.add(BorderLayout.CENTER, progressBar);
+        progressBarDialog.setSize(200, 75);
         progressBarDialog.setLocationRelativeTo(this);
         progressBarDialog.setVisible(true);
-        
+
         return progressBarDialog;
-        
+
     }
-     
-    
+
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
