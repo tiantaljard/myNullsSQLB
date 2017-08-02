@@ -125,12 +125,12 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showTableAllColumnSummaryActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JMenuItem" name="showTableSelectedColumnSummary">
+    <Component class="javax.swing.JMenuItem" name="showTableColumnChartSelectedRows">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Show Table Nulls &amp; Blanks Column Summary for Selected Columns"/>
+        <Property name="text" type="java.lang.String" value="Show Table Nulls &amp; Blanks Column Chart for Selected Rows"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showTableSelectedColumnSummaryActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showTableColumnChartSelectedRowsActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JMenuItem" name="showTableColumnChart">
