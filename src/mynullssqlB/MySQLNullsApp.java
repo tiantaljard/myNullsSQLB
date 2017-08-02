@@ -88,6 +88,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private DefaultCategoryDataset summaryChartDataset = new DefaultCategoryDataset();
     // Create DataSet Data Object for Table Column  Chart
     private DefaultCategoryDataset tableColumnBarChartDataset = new DefaultCategoryDataset();
+
     // Create data set for rows analysis by number of columns null
     private DefaultPieDataset rowsColsNullsPieChartData = new DefaultPieDataset();
     // Create data set for rows analysis by number of columns blank
@@ -127,6 +128,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     private int tableNameTableLastSelectedRow = -1;
     private int columnNameTableLastSelectedRow = -1;
+
+    private String dataFromDetailAnalysis = "";
 
     /**
      * Creates new form MySQLNullsApp
@@ -191,6 +194,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         exportNBSummary = new javax.swing.JMenuItem();
         exportInitialTableSummary = new javax.swing.JMenuItem();
         showColumnData = new javax.swing.JMenuItem();
+        showColumnDataFromDetailAnalysis = new javax.swing.JMenuItem();
         mainJPanel = new javax.swing.JPanel();
         summaryPanel = new javax.swing.JPanel();
         summaryScrollPanel = new javax.swing.JScrollPane();
@@ -450,6 +454,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         showColumnData.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 showColumnDataActionPerformed(evt);
+            }
+        });
+
+        showColumnDataFromDetailAnalysis.setText("Explore Column Data");
+        showColumnDataFromDetailAnalysis.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showColumnDataFromDetailAnalysisActionPerformed(evt);
             }
         });
 
@@ -1165,6 +1176,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             if (tableInUse.equals(COLUMNNBSUMMARYDATATABLE)) {
                 tablePopupMenu.add(showTableColumnChart);
                 tablePopupMenu.add(exportTableColumnsSummary);
+                tablePopupMenu.add(showColumnDataFromDetailAnalysis);
 
                 if (columnNameTable.getRowCount() != detailAnalysisTable.getModel().getRowCount()) {
                     tablePopupMenu.add(showTableAllColumnSummary);
@@ -1208,10 +1220,18 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     private void showTableColumnChartSelectedRowsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showTableColumnChartSelectedRowsActionPerformed
 
-        createTableColumnBarChartDatSetFromSelectedTableRows();
+        buildTableColumnBarChartBarChartPopup(createTableColumnBarChartDatSetFromSelectedTableRows());
 
 
     }//GEN-LAST:event_showTableColumnChartSelectedRowsActionPerformed
+
+    private void showColumnDataFromDetailAnalysisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showColumnDataFromDetailAnalysisActionPerformed
+        try {
+            buildDataExplorerViewFromDetailAnalysisTable();
+        } catch (Exception ex) {
+            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_showColumnDataFromDetailAnalysisActionPerformed
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1485,6 +1505,23 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
     }
 
+    public Vector getColumnNamesForDataTableFromDetailAnalysisTable(JTable jTable) throws SQLException {
+
+        columnNamesSelectedInColumnNameTable.removeAll(columnNamesSelectedInColumnNameTable);
+
+        try {
+            int[] rows = jTable.getSelectedRows();
+            for (int i = 0; i < rows.length; i++) {
+                columnNamesSelectedInColumnNameTable.add(jTable.getValueAt(rows[i], 0).toString());
+            }
+        } catch (Exception e) {
+            columnNamesSelectedInColumnNameTable = null;
+        }
+        return columnNamesSelectedInColumnNameTable;
+
+    }
+
+
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1589,6 +1626,54 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         if (dynamic_rowcount > limitRowsFilterInt && limitRowsFilterInt != 0) {
             dynamic_rowcount = limitRowsFilterInt;
         }
+        ResultSet getColData = statement.executeQuery(query);
+
+        lastSQLCSVColumnNames = csvColumnNames;
+        lastSQLQueryCSVSelect = queryCSVSelect;
+        lastSQLQueryCSVFrom = queryCSVFrom;
+
+        getColData.first();
+        return getColData;
+    }
+
+    /**
+     * getColumnDataDetailAnalysis() builds a SQL Query that allows the user to
+     * go to data explorer view from detail analysis view
+     *
+     * @return
+     * @throws SQLException
+     */
+    public ResultSet getColumnDataDetailAnalysis() throws SQLException {
+
+        String query = "";
+        String queryCSVSelect = "";
+        String queryCSVFrom = "";
+        String queryFilterCSVSelect = "";
+        String queryFilterCSVFrom = "";
+        String csvColumnNames = "";
+        String filterCSVColumnNames = "";
+        // keeps track of the number of rows the dynamic query has
+        dynamic_query_rowcount = "select count(*) from " + getRowColOneSelected(tableNameTable) + " where 1=1";
+
+        buildColumnDataSelectOnDetailAnalysisTableSelect();
+        query = dynamicSelectFrom;
+        queryCSVSelect = dynamicCSVSelect;
+        queryCSVFrom = dynamicCSVFrom;
+        csvColumnNames = dynamicCSVColumnNames;
+
+        buildColumnDataSQLWhere();
+
+        query = query + dynamicSQLWhere + limitRows;
+        queryCSVFrom = queryCSVFrom + dynamicSQLWhere + limitRows;
+
+        Statement statement = db.conn.createStatement();
+
+        // Gets and sets the row count of the selected Query. this is to allow the table 
+        // model to show the correct number or rows. 
+        ResultSet getColDataRowCount = statement.executeQuery(dynamic_query_rowcount);
+        getColDataRowCount.first();
+        dynamic_rowcount = Integer.parseInt(getColDataRowCount.getObject(1).toString());
+
         ResultSet getColData = statement.executeQuery(query);
 
         lastSQLCSVColumnNames = csvColumnNames;
@@ -1767,8 +1852,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     public void setDataTable(ResultSet data) throws SQLException {
 
         ResultTableModel dataTableModel = new ResultTableModel();
+        System.out.println(dataFromDetailAnalysis);
+        if (dataFromDetailAnalysis.equals("dataFromDetailAnalysis")) {
+            dataTableModel.setColumnIdentifiers(getColumnNamesForDataTableFromDetailAnalysisTable(detailAnalysisTable));
+        } else {
+            dataTableModel.setColumnIdentifiers(getColumnNamesForDataTable(columnNameTable));
+        }
 
-        dataTableModel.setColumnIdentifiers(getColumnNamesForDataTable(columnNameTable));
         dataTableModel.setsqlRowCount(dynamic_rowcount);
         dataTableModel.setResultset(data);
 
@@ -2112,6 +2202,37 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         dynamicCSVFrom = ".csv' FIELDS TERMINATED BY " + csvDelimiter + " OPTIONALLY ENCLOSED BY '\"' ESCAPED BY '\\\\'   from " + table_name + " where 1=1 ";
     }
 
+    /**
+     * To allow the user to go to data view from table column null blank summary
+     */
+    public void buildColumnDataSelectOnDetailAnalysisTableSelect() {
+        ArrayList<String> columns_selected;
+
+        String table_name = (getRowColOneSelected(tableNameTable));
+        columns_selected = getRowsColOneSelectedArray(detailAnalysisTable);
+
+        String query = "select ";
+        String csvColumnNames = "select '";
+
+        for (int i = 0; i < columns_selected.size(); i++) {
+            query += columns_selected.get(i).toString();
+            csvColumnNames += columns_selected.get(i).toString();
+            if (i == columns_selected.size() - 1) {
+                query += "";
+                csvColumnNames += "'";
+
+            } else {
+                query += ",";
+                csvColumnNames += "','";
+            }
+        }
+        dynamicSelectFrom = query + " from " + table_name + " where 1=1 ";
+
+        dynamicCSVColumnNames = csvColumnNames;
+        dynamicCSVSelect = query + " into OUTFILE '" + table_name + "_";
+        dynamicCSVFrom = ".csv' FIELDS TERMINATED BY " + csvDelimiter + " OPTIONALLY ENCLOSED BY '\"' ESCAPED BY '\\\\'   from " + table_name + " where 1=1 ";
+    }
+
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -2328,7 +2449,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 percentageColumnBlanks = (columnBlanks / totalfields) * hundredValue;
             }
 
-            tableColumnSummaryArray[count] = new Object[]{columnName, (int) rowCount, (int) columnNulls, (int) columnBlanks, to2DP.format(percentageColumnNulls), to2DP.format(percentageColumnBlanks)};
+            tableColumnSummaryArray[count] = new Object[]{columnName, (int) rowCount, (int) columnNulls, (int) columnBlanks, Double.parseDouble(to2DP.format(percentageColumnNulls)), Double.parseDouble(to2DP.format(percentageColumnBlanks))};
 
             // Adding data to the Chart Data Object
             if (percentageColumnNulls > 0) {
@@ -2347,10 +2468,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }
 
-    public void createTableColumnBarChartDatSetFromSelectedTableRows() {
+    public DefaultCategoryDataset createTableColumnBarChartDatSetFromSelectedTableRows() {
+
+        DefaultCategoryDataset tableColumnBarChartSelectedDataset = new DefaultCategoryDataset();
 
         TableModel tableModel = detailAnalysisTable.getModel();
-        tableColumnBarChartDataset.clear();
+        tableColumnBarChartSelectedDataset.clear();
 
         int[] selectedRows = detailAnalysisTable.getSelectedRows();
         for (int targetRow = 0; targetRow < selectedRows.length; targetRow++) {
@@ -2361,10 +2484,17 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             System.out.println(" row " + Double.parseDouble(tableModel.getValueAt(row, 4).toString()));
             System.out.println(" modelRow " + Double.parseDouble(tableModel.getValueAt(modelRow, 4).toString()) + "\n");
 
-            tableColumnBarChartDataset.addValue(Double.parseDouble(tableModel.getValueAt(modelRow, 4).toString()), "Nulls %", tableModel.getValueAt(modelRow, 0).toString());
-            tableColumnBarChartDataset.addValue(Double.parseDouble(tableModel.getValueAt(modelRow, 5).toString()), "Blanks %", tableModel.getValueAt(modelRow, 0).toString());
+            if (Double.parseDouble(tableModel.getValueAt(modelRow, 4).toString()) > 0) {
+                tableColumnBarChartSelectedDataset.addValue(Double.parseDouble(tableModel.getValueAt(modelRow, 4).toString()), "Nulls %", tableModel.getValueAt(modelRow, 0).toString());
+            }
+            if (Double.parseDouble(tableModel.getValueAt(modelRow, 5).toString()) > 0) {
+                tableColumnBarChartSelectedDataset.addValue(Double.parseDouble(tableModel.getValueAt(modelRow, 5).toString()), "Blanks %", tableModel.getValueAt(modelRow, 0).toString());
+            }
 
         }
+
+        return tableColumnBarChartSelectedDataset;
+
     }
 
     public void createTableColumnBarChartDatSetFromDetailAnalysisTable() {
@@ -2391,38 +2521,33 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      * @throws SQLException
      */
     public void setTableColumnSummaryTable() throws SQLException {
-        
+
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 
         JDialog progressBarDialog = buildProgressBar("Analysing Table");
 
+        detailAnalysisTable.setVisible(false);
         SwingWorker worker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
                 tableColumnSummaryArray = buildTableColumnSummary();
-
+                summaryTableColumnTableModel.setDataVector(tableColumnSummaryArray, columnsTableColumnSummary);
+                detailAnalysisTable.setModel(summaryTableColumnTableModel);
+                detailAnalysisTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
+                detailAnalysisTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
+                detailAnalysisTable.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
+                detailAnalysisTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
+                detailAnalysisTable.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
+                setTableRowSorter(detailAnalysisTable);
                 return null;
             }
 
             @Override
             protected void done() {
                 progressBarDialog.setVisible(false);
-                
-                
-        summaryTableColumnTableModel.setDataVector(tableColumnSummaryArray, columnsTableColumnSummary);
-        detailAnalysisTable.setModel(summaryTableColumnTableModel);
 
-        detailAnalysisTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
-        detailAnalysisTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
-        detailAnalysisTable.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
-        detailAnalysisTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
-        detailAnalysisTable.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
-
-        setTableRowSorter(detailAnalysisTable);
-                
-                
-                
+                detailAnalysisTable.setVisible(true);
             }
         };
 
@@ -2590,7 +2715,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      *
      */
     public void buildTableColumnBarChartBarChartPopup() {
-        if (isEmptyOrNull(getSummaryChartDataset())) {
+        if (isEmptyOrNull(getTableColumnBarChartDataset())) {
             JOptionPane.showMessageDialog(null, "No data for Chart.\n\n"
                     + "None of the columns selected for the table contain any NULLS or BLANKS.\n\n"
                     + "Hence it is not possible to dispay a chart.  ");
@@ -2598,15 +2723,38 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         } else {
 
             JFreeChart barchart = ChartFactory.createBarChart(
-                    "Columns Nulls and Blank Percentages",
+                    "Columns Nulls and Blank Percentages for Table " + getRowColOneSelected(tableNameTable).toUpperCase(),
                     "Columns",
                     "Percentage %",
                     getTableColumnBarChartDataset());
 
-            ChartFrame summaryTableChartFrame = new ChartFrame(
-                    "Columns Nulls and Blank Percentages Bar Chart", barchart);
-            summaryTableChartFrame.pack();
-            summaryTableChartFrame.setVisible(true);
+            ChartFrame tableColumnBarChartBarChartPopupFrame = new ChartFrame(
+                    "Columns Nulls and Blank Percentages for table " + getRowColOneSelected(tableNameTable).toUpperCase() + " Bar Chart", barchart);
+
+            tableColumnBarChartBarChartPopupFrame.pack();
+            tableColumnBarChartBarChartPopupFrame.setVisible(true);
+        }
+    }
+
+    public void buildTableColumnBarChartBarChartPopup(DefaultCategoryDataset tableColumnBarChartSelectedDatasetPassed) {
+        if (isEmptyOrNull(tableColumnBarChartSelectedDatasetPassed)) {
+            JOptionPane.showMessageDialog(null, "No data for Chart.\n\n"
+                    + "None of the columns selected for the table contain any NULLS or BLANKS.\n\n"
+                    + "Hence it is not possible to dispay a chart.  ");
+
+        } else {
+
+            JFreeChart barchart = ChartFactory.createBarChart(
+                    "Columns Nulls and Blank Percentages for Table " + getRowColOneSelected(tableNameTable).toUpperCase(),
+                    "Columns",
+                    "Percentage %",
+                    tableColumnBarChartSelectedDatasetPassed);
+
+            ChartFrame tableColumnBarChartBarChartPopupFrame = new ChartFrame(
+                    "Columns Nulls and Blank Percentages for table " + getRowColOneSelected(tableNameTable).toUpperCase() + " Bar Chart", barchart);
+
+            tableColumnBarChartBarChartPopupFrame.pack();
+            tableColumnBarChartBarChartPopupFrame.setVisible(true);
         }
     }
 
@@ -2877,6 +3025,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         tablePopupMenu.remove(showTableColumnChartSelectedRows);
         tablePopupMenu.remove(showTableAllColumnSummary);
 
+        tablePopupMenu.remove(showColumnDataFromDetailAnalysis);
+
     }
 
     /*
@@ -2994,16 +3144,32 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }
 
+    /**
+     * buildProgressBar(String title) generates a progress bar to display during
+     * long running transactions.
+     *
+     * @param title
+     * @return
+     */
     public JDialog buildProgressBar(String title) {
         JProgressBar progressBar = new JProgressBar();
         progressBar.setIndeterminate(true);
-        JDialog progressBarDialog = new JDialog(this, "Analysing tables", false);
+        JDialog progressBarDialog = new JDialog(this, title, false);
         progressBarDialog.add(BorderLayout.CENTER, progressBar);
         progressBarDialog.setSize(200, 75);
         progressBarDialog.setLocationRelativeTo(this);
         progressBarDialog.setVisible(true);
 
         return progressBarDialog;
+
+    }
+
+    public void buildDataExplorerViewFromDetailAnalysisTable() throws Exception {
+        dataFromDetailAnalysis = "dataFromDetailAnalysis";
+        setDataTable(getColumnDataDetailAnalysis());
+        tableInUse = SQLDATATABLE;
+        setExplorerTableCard();
+        dataFromDetailAnalysis = "";
 
     }
 
@@ -3053,6 +3219,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JPanel mainRightPanel;
     private javax.swing.JPanel noDataMainPanel;
     private javax.swing.JMenuItem showColumnData;
+    private javax.swing.JMenuItem showColumnDataFromDetailAnalysis;
     private javax.swing.JMenuItem showDataNavigator;
     private javax.swing.JMenuItem showDataNavigatorAllTables;
     private javax.swing.JMenuItem showInitialSummaryTbl;

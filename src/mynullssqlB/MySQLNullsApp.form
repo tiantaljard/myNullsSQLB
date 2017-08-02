@@ -300,6 +300,14 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showColumnDataActionPerformed"/>
       </Events>
     </Component>
+    <Component class="javax.swing.JMenuItem" name="showColumnDataFromDetailAnalysis">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Explore Column Data"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showColumnDataFromDetailAnalysisActionPerformed"/>
+      </Events>
+    </Component>
     <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="filejMenu">
