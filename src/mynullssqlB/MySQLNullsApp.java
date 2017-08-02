@@ -2400,7 +2400,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         SwingWorker worker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
-                Object[][] tableColumnSummaryArray = buildTableColumnSummary();
+                tableColumnSummaryArray = buildTableColumnSummary();
 
                 return null;
             }
