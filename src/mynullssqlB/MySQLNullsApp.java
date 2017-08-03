@@ -86,6 +86,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private Vector columnNamesSelectedInColumnNameTable = new Vector();
     // Create DataSet Data Object for Table Summary Chart
     private DefaultCategoryDataset summaryChartDataset = new DefaultCategoryDataset();
+    //Create DataSet Data Object for Table Summary Chart Selected Tables
+    private DefaultCategoryDataset summaryChartDatasetSelectedTables = new DefaultCategoryDataset();
     // Create DataSet Data Object for Table Column  Chart
     private DefaultCategoryDataset tableColumnBarChartDataset = new DefaultCategoryDataset();
 
@@ -130,6 +132,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private int columnNameTableLastSelectedRow = -1;
 
     private String dataFromDetailAnalysis = "";
+    private String summaryTableChartFromSelectedRows = "";
 
     /**
      * Creates new form MySQLNullsApp
@@ -935,9 +938,22 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         try {
             initializeModel(buildTableSQLWhere());
             if (summaryTable.getModel().getColumnCount() == 3) {
+
                 setNullsBlankSummaryTable();
+                buildSummaryTableDataBarChartExplorerPanel();
             }
-            buildSummaryTableDataBarChartExplorerPanel();
+
+            if (summaryTable.getModel().getColumnCount() == 7) {
+                if (summaryTable.getSelectedRows().length > 0) {
+                    summaryTableChartFromSelectedRows = "summaryTableChartFromSelectedRows";
+                    createTableSummaryChartDatSetFromSelectedTableRows();
+                    buildSummaryTableDataBarChartExplorerPanel();
+                    summaryTableChartFromSelectedRows = "";
+                } else {
+                    buildSummaryTableDataBarChartExplorerPanel();
+                }
+            }
+
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -2350,6 +2366,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 summaryChartDataset.addValue(percentageTableNulls, "Nulls %", tableName);
             }
             if (percentageTableBlanks > 0) {
+                System.out.println("summaryChartDataset getting built");
                 summaryChartDataset.addValue(percentageTableBlanks, "Blanks %", tableName);
             }
 
@@ -2495,6 +2512,25 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         return tableColumnBarChartSelectedDataset;
 
+    }
+
+    public void createTableSummaryChartDatSetFromSelectedTableRows() {
+
+        TableModel tableModel = summaryTable.getModel();
+        summaryChartDatasetSelectedTables.clear();
+
+        int[] selectedRows = summaryTable.getSelectedRows();
+        for (int targetRow = 0; targetRow < selectedRows.length; targetRow++) {
+            int row = selectedRows[targetRow];
+            int modelRow = summaryTable.convertRowIndexToModel(row);
+
+            if (Double.parseDouble(tableModel.getValueAt(modelRow, 4).toString()) > 0) {
+                summaryChartDatasetSelectedTables.addValue(Double.parseDouble(tableModel.getValueAt(modelRow, 4).toString()), "Nulls %", tableModel.getValueAt(modelRow, 0).toString());
+            }
+            if (Double.parseDouble(tableModel.getValueAt(modelRow, 6).toString()) > 0) {
+                summaryChartDatasetSelectedTables.addValue(Double.parseDouble(tableModel.getValueAt(modelRow, 6).toString()), "Blanks %", tableModel.getValueAt(modelRow, 0).toString());
+            }
+        }
     }
 
     public void createTableColumnBarChartDatSetFromDetailAnalysisTable() {
@@ -2690,7 +2726,15 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      * insufficient data.
      */
     public void buildSummaryTableBarChartPopup() {
-        if (isEmptyOrNull(getSummaryChartDataset())) {
+
+        DefaultCategoryDataset dataSet = summaryChartDataset;
+        if (summaryTableChartFromSelectedRows.equals("summaryTableChartFromSelectedRows")) {
+            dataSet = summaryChartDatasetSelectedTables;
+        } else {
+            dataSet = summaryChartDataset;
+        }
+
+        if (isEmptyOrNull(dataSet)) {
             JOptionPane.showMessageDialog(null, "No data for Chart.\n\n"
                     + "None of the tables in the result set contain any NULLS or BLANKS.\n\n"
                     + "Hence not possible to dispay a chart.  ");
@@ -2701,7 +2745,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                     "Tables Nulls and Blank Percentages",
                     "Tables",
                     "Percentage %",
-                    getSummaryChartDataset());
+                    dataSet);
 
 //        
             ChartFrame summaryTableChartFrame = new ChartFrame(
@@ -2773,7 +2817,14 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      * not be displayed due to insufficient data.
      */
     public void buildSummaryTableDataBarChartExplorerPanel() {
-        if (isEmptyOrNull(getSummaryChartDataset())) {
+        DefaultCategoryDataset dataSet = summaryChartDataset;
+        if (summaryTableChartFromSelectedRows.equals("summaryTableChartFromSelectedRows")) {
+            dataSet = summaryChartDatasetSelectedTables;
+        } else {
+            dataSet = summaryChartDataset;
+        }
+
+        if (isEmptyOrNull(dataSet)) {
             chartErrorMessageTextArea.setText(
                     "No Chart Produced. \n"
                     + "\n"
@@ -2787,7 +2838,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                     "Tables Nulls and Blank Percentages",
                     "Tables",
                     "Percentage %",
-                    getSummaryChartDataset());
+                    dataSet);
             ChartPanel summaryTableChartPanel = new ChartPanel(summaryBarchart);
             //      "Tables Nulls and Blank Percentages Bar Chart"
             chartPanel.removeAll();
