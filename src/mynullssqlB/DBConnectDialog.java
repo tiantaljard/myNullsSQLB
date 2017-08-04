@@ -57,6 +57,7 @@ public class DBConnectDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Database Connection Parameters");
+        setLocation(new java.awt.Point(350, 300));
         setName("JFrame4"); // NOI18N
 
         dbConnectJPanel.setName("Database Connection Parameters"); // NOI18N

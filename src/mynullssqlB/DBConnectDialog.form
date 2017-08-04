@@ -4,6 +4,9 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
     <Property name="title" type="java.lang.String" value="Database Connection Parameters"/>
+    <Property name="location" type="java.awt.Point" editor="org.netbeans.beaninfo.editors.PointEditor">
+      <Point value="[350, 300]"/>
+    </Property>
     <Property name="name" type="java.lang.String" value="JFrame4" noResource="true"/>
   </Properties>
   <SyntheticProperties>

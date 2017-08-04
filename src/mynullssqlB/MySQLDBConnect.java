@@ -33,6 +33,10 @@ public class MySQLDBConnect {
     String username;
     String password;
     String databaseName;
+
+    public String getDatabaseName() {
+        return databaseName;
+    }
     String port;
     String serverIP;
 
@@ -154,7 +158,7 @@ public class MySQLDBConnect {
     public MySQLDBConnect(String serverIP, String databaseName,
             String username, String password, String port) {
         this.serverIP = serverIP;
-        this.databaseName = databaseName;
+        this.databaseName = databaseName.toUpperCase();
         this.username = username;
         this.password = password;
         this.port = port;

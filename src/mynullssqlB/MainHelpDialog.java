@@ -77,6 +77,7 @@ public class MainHelpDialog extends javax.swing.JDialog {
         helpImageContainer = new javax.swing.JPanel();
 
         setTitle("Database Connection Information");
+        setBounds(new java.awt.Rectangle(300, 100, 0, 0));
         setName("JFrame4"); // NOI18N
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -227,6 +228,7 @@ public class MainHelpDialog extends javax.swing.JDialog {
         progressBarDialog.add(BorderLayout.CENTER, progressBar);
         progressBarDialog.setSize(300, 75);
         progressBarDialog.setLocationRelativeTo(MainHelpDialog.this.helpImageContainer);
+        progressBarDialog.setLocation(500, 300);
         progressBarDialog.setVisible(true);
 
         return progressBarDialog;
