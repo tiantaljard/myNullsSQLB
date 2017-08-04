@@ -32,11 +32,13 @@ public class MainHelpDialog extends javax.swing.JDialog {
         setLaunchHelp();
 
         JDialog progressBarDialog = buildProgressBar("Preparing to Show Welcome");
-
+        launchHelpPanel.setVisible(true);
         SwingWorker worker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
+                
                 setLaunchHelp();
+                
                 return null;
 
             }
@@ -44,6 +46,8 @@ public class MainHelpDialog extends javax.swing.JDialog {
             @Override
             protected void done() {
                 progressBarDialog.setVisible(false);
+                launchHelpPanel.setVisible(true);
+                
 
             }
         };
@@ -72,9 +76,13 @@ public class MainHelpDialog extends javax.swing.JDialog {
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(30, 0), new java.awt.Dimension(100, 0), new java.awt.Dimension(30, 32767));
         helpImageContainer = new javax.swing.JPanel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Database Connection Information");
         setName("JFrame4"); // NOI18N
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                onWindowClose(evt);
+            }
+        });
 
         launchHelpPanel.setPreferredSize(new java.awt.Dimension(720, 480));
         launchHelpPanel.setLayout(new java.awt.BorderLayout());
@@ -138,6 +146,12 @@ public class MainHelpDialog extends javax.swing.JDialog {
 
     }//GEN-LAST:event_okJButton1ActionPerformed
 
+    private void onWindowClose(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_onWindowClose
+        this.setVisible(false);
+        new MySQLNullsApp().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_onWindowClose
+
     /**
      * @param args the command line arguments
      */
@@ -191,9 +205,10 @@ public class MainHelpDialog extends javax.swing.JDialog {
     }
 
     private void setLaunchHelp() throws IOException {
-        JLabel picture = (createPicture("helpcontent" + File.separator + "dp1.png"));
+        JLabel picture = (createPicture("helpcontent" + File.separator + "dp1.gif"));
         helpImageContainer.add(picture);
         helpImageContainer.setVisible(true);
+        
         //helpImageContainer.setVisible(true);
 
     }
