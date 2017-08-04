@@ -24,6 +24,8 @@ public class MainHelpDialog extends javax.swing.JDialog {
      * Creates new form myNullsSQLJFrame
      */
     public MainHelpDialog() throws IOException {
+        
+        
         initComponents();
         setLaunchHelp();
 
@@ -40,10 +42,17 @@ public class MainHelpDialog extends javax.swing.JDialog {
 
         launchHelpPanel = new javax.swing.JPanel();
         buttonsjPanel2 = new javax.swing.JPanel();
-        nextJButton1 = new javax.swing.JButton();
+        eastjPanel3 = new javax.swing.JPanel();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(30, 0), new java.awt.Dimension(100, 0), new java.awt.Dimension(30, 32767));
+        centerjPanel4 = new javax.swing.JPanel();
+        okJButton1 = new javax.swing.JButton();
+        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
+        westjPanel5 = new javax.swing.JPanel();
+        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(30, 0), new java.awt.Dimension(100, 0), new java.awt.Dimension(30, 32767));
         helpImageContainer = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Database Connection Information");
         setName("JFrame4"); // NOI18N
 
         launchHelpPanel.setPreferredSize(new java.awt.Dimension(720, 480));
@@ -52,13 +61,28 @@ public class MainHelpDialog extends javax.swing.JDialog {
         buttonsjPanel2.setPreferredSize(new java.awt.Dimension(680, 35));
         buttonsjPanel2.setLayout(new java.awt.BorderLayout());
 
-        nextJButton1.setText("OK");
-        nextJButton1.addActionListener(new java.awt.event.ActionListener() {
+        eastjPanel3.setLayout(new java.awt.BorderLayout());
+        eastjPanel3.add(filler1, java.awt.BorderLayout.CENTER);
+
+        buttonsjPanel2.add(eastjPanel3, java.awt.BorderLayout.EAST);
+
+        centerjPanel4.setLayout(new java.awt.BorderLayout());
+
+        okJButton1.setText("OK");
+        okJButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nextJButton1ActionPerformed(evt);
+                okJButton1ActionPerformed(evt);
             }
         });
-        buttonsjPanel2.add(nextJButton1, java.awt.BorderLayout.CENTER);
+        centerjPanel4.add(okJButton1, java.awt.BorderLayout.CENTER);
+        centerjPanel4.add(filler3, java.awt.BorderLayout.SOUTH);
+
+        buttonsjPanel2.add(centerjPanel4, java.awt.BorderLayout.CENTER);
+
+        westjPanel5.setLayout(new java.awt.BorderLayout());
+        westjPanel5.add(filler2, java.awt.BorderLayout.CENTER);
+
+        buttonsjPanel2.add(westjPanel5, java.awt.BorderLayout.WEST);
 
         launchHelpPanel.add(buttonsjPanel2, java.awt.BorderLayout.PAGE_END);
 
@@ -78,14 +102,14 @@ public class MainHelpDialog extends javax.swing.JDialog {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addGap(0, 12, Short.MAX_VALUE)
                 .addComponent(launchHelpPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void nextJButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextJButton1ActionPerformed
+    private void okJButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okJButton1ActionPerformed
         this.setVisible(false);
         new MySQLNullsApp().setVisible(true);
         this.dispose();
@@ -93,12 +117,14 @@ public class MainHelpDialog extends javax.swing.JDialog {
         
        
         
-    }//GEN-LAST:event_nextJButton1ActionPerformed
+    }//GEN-LAST:event_okJButton1ActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+        
+        
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -147,7 +173,7 @@ public class MainHelpDialog extends javax.swing.JDialog {
     }
 
     private void setLaunchHelp() throws IOException {
-        JLabel picture = (createPicture("s1.jpg"));
+        JLabel picture = (createPicture("helpcontent"+File.separator+"s1.png"));
         helpImageContainer.add(picture);
         helpImageContainer.setVisible(true);
         //helpImageContainer.setVisible(true);
@@ -157,8 +183,14 @@ public class MainHelpDialog extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel buttonsjPanel2;
+    private javax.swing.JPanel centerjPanel4;
+    private javax.swing.JPanel eastjPanel3;
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.Box.Filler filler2;
+    private javax.swing.Box.Filler filler3;
     private javax.swing.JPanel helpImageContainer;
     private javax.swing.JPanel launchHelpPanel;
-    private javax.swing.JButton nextJButton1;
+    private javax.swing.JButton okJButton1;
+    private javax.swing.JPanel westjPanel5;
     // End of variables declaration//GEN-END:variables
 }

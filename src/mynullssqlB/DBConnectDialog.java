@@ -29,7 +29,7 @@ public class DBConnectDialog extends javax.swing.JDialog {
      */
     public DBConnectDialog() {
         initComponents();
-        AnalyseJButton.setEnabled(false);
+        analyseJButton.setEnabled(false);
     }
 
     /**
@@ -52,12 +52,14 @@ public class DBConnectDialog extends javax.swing.JDialog {
         usernameJTextField = new javax.swing.JTextField();
         passwordJLabel = new javax.swing.JLabel();
         testDBConnectJButton = new javax.swing.JButton();
-        AnalyseJButton = new javax.swing.JButton();
+        analyseJButton = new javax.swing.JButton();
         jPasswordField1 = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Database Connection Parameters");
         setName("JFrame4"); // NOI18N
 
+        dbConnectJPanel.setName("Database Connection Parameters"); // NOI18N
         dbConnectJPanel.setPreferredSize(new java.awt.Dimension(1214, 311));
 
         serverIPJLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -113,10 +115,10 @@ public class DBConnectDialog extends javax.swing.JDialog {
             }
         });
 
-        AnalyseJButton.setText("Analyse");
-        AnalyseJButton.addActionListener(new java.awt.event.ActionListener() {
+        analyseJButton.setText("Connect");
+        analyseJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AnalyseJButtonActionPerformed(evt);
+                analyseJButtonActionPerformed(evt);
             }
         });
 
@@ -147,7 +149,7 @@ public class DBConnectDialog extends javax.swing.JDialog {
                     .addComponent(portJTextField)
                     .addComponent(usernameJTextField)
                     .addGroup(dbConnectJPanelLayout.createSequentialGroup()
-                        .addComponent(AnalyseJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(analyseJButton, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jPasswordField1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(883, 883, 883))
@@ -182,7 +184,7 @@ public class DBConnectDialog extends javax.swing.JDialog {
                         .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(dbConnectJPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(AnalyseJButton)
+                    .addComponent(analyseJButton)
                     .addComponent(testDBConnectJButton))
                 .addContainerGap(12, Short.MAX_VALUE))
         );
@@ -254,7 +256,7 @@ public class DBConnectDialog extends javax.swing.JDialog {
 //                    options,
 //                    options[0]);
 
-            AnalyseJButton.setEnabled(true);
+            analyseJButton.setEnabled(true);
 
         } catch (SQLException e) { // if server and database connection fail run this
             JOptionPane.showMessageDialog(null,
@@ -275,7 +277,7 @@ public class DBConnectDialog extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_serverIPJTextFieldActionPerformed
 
-    private void AnalyseJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AnalyseJButtonActionPerformed
+    private void analyseJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_analyseJButtonActionPerformed
         //======================================================================
         // Obtain text from input fields
         //======================================================================
@@ -325,7 +327,7 @@ public class DBConnectDialog extends javax.swing.JDialog {
             );
 
         }
-    }//GEN-LAST:event_AnalyseJButtonActionPerformed
+    }//GEN-LAST:event_analyseJButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -366,7 +368,7 @@ public class DBConnectDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton AnalyseJButton;
+    private javax.swing.JButton analyseJButton;
     private javax.swing.JLabel databaseNameJLabel;
     private javax.swing.JTextField databaseNameJTextField;
     private javax.swing.JPanel dbConnectJPanel;

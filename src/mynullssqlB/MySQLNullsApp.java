@@ -9,6 +9,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.event.MouseEvent;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -127,6 +128,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private static final String NBCOLUMNSUMMARY = "Nulls_Blanks_Table_Summary_";
     private static final String TABLECOLUMNSUMMARY = "Table_Column_Summary_";
     private static final String ROWSCOLUMNSUMMARY = "Rows_Column_Analysis_";
+    
+    private static final String SPLASHTRACKER = "splashtracker"; 
 
     private int tableNameTableLastSelectedRow = -1;
     private int columnNameTableLastSelectedRow = -1;
@@ -249,8 +252,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         detailAnalysisFilter = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         filejMenu = new javax.swing.JMenu();
-        dbParameters = new javax.swing.JMenuItem();
-        editjMenu = new javax.swing.JMenu();
+        dbParametersMenuItem = new javax.swing.JMenuItem();
+        exitMenuItem = new javax.swing.JMenuItem();
+        helpjMenu = new javax.swing.JMenu();
+        resetSplashHelpMenuItem = new javax.swing.JMenuItem();
 
         tablePopupMenu =new JPopupMenu();
 
@@ -748,18 +753,35 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         filejMenu.setText("File");
 
-        dbParameters.setText("Connect to Database... ");
-        dbParameters.addActionListener(new java.awt.event.ActionListener() {
+        dbParametersMenuItem.setText("Connect to Database... ");
+        dbParametersMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dbParametersActionPerformed(evt);
+                dbParametersMenuItemActionPerformed(evt);
             }
         });
-        filejMenu.add(dbParameters);
+        filejMenu.add(dbParametersMenuItem);
+
+        exitMenuItem.setText("Exit");
+        exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitMenuItemActionPerformed(evt);
+            }
+        });
+        filejMenu.add(exitMenuItem);
 
         jMenuBar1.add(filejMenu);
 
-        editjMenu.setText("Edit");
-        jMenuBar1.add(editjMenu);
+        helpjMenu.setText("Help");
+
+        resetSplashHelpMenuItem.setText("Reset Help Pop-Up Windows");
+        resetSplashHelpMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetSplashHelpMenuItemActionPerformed(evt);
+            }
+        });
+        helpjMenu.add(resetSplashHelpMenuItem);
+
+        jMenuBar1.add(helpjMenu);
 
         setJMenuBar(jMenuBar1);
 
@@ -1280,7 +1302,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_showColumnDataFromDetailAnalysisActionPerformed
 
-    private void dbParametersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dbParametersActionPerformed
+    private void dbParametersMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dbParametersMenuItemActionPerformed
         try {
             showConnectionDialog();
             setInitialSummaryTable();
@@ -1288,7 +1310,25 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_dbParametersActionPerformed
+    }//GEN-LAST:event_dbParametersMenuItemActionPerformed
+
+    private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_exitMenuItemActionPerformed
+
+    private void resetSplashHelpMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetSplashHelpMenuItemActionPerformed
+// https://coderanch.com/t/378308/java/delete-existing-files-dierectry
+        File file = new File(SPLASHTRACKER);
+        String[] myFiles;
+        if (file.isDirectory()) {
+            myFiles = file.list();
+            for (int i = 0; i < myFiles.length; i++) {
+                File myFile = new File(file, myFiles[i]);
+                myFile.delete();
+            }
+        }
+
+    }//GEN-LAST:event_resetSplashHelpMenuItemActionPerformed
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1328,7 +1368,29 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MySQLNullsApp().setVisible(true);
+
+                //https://www.mkyong.com/java/how-to-create-directory-in-java/
+                File file = new File(SPLASHTRACKER);
+                if (!file.exists()) {
+                    if (file.mkdir()) {
+                        System.out.println("Directory is created!");
+                    } else {
+                        System.out.println("Failed to create directory!");
+                    }
+                }
+
+                File f = new File(SPLASHTRACKER + File.separator + "lauchHelpHasrun.txt");
+                if (f.exists()) {
+                    new MySQLNullsApp().setVisible(true);
+                } else {
+                    try {
+                        new MainHelpDialog().setVisible(true);
+                        f.createNewFile();
+
+                    } catch (IOException ex) {
+                        Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
         });
     }
@@ -3311,19 +3373,20 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JSplitPane dataExplorerSplitPane;
     private javax.swing.JTable dataTable;
     private javax.swing.JScrollPane dataTableScrollPane;
-    private javax.swing.JMenuItem dbParameters;
+    private javax.swing.JMenuItem dbParametersMenuItem;
     private javax.swing.JTextField detailAnalysisFilter;
     private javax.swing.JPanel detailAnalysisFilterPanel;
     private javax.swing.JPanel detailAnalysisPanel;
     private javax.swing.JScrollPane detailAnalysisScrollPanel;
     private javax.swing.JTable detailAnalysisTable;
-    private javax.swing.JMenu editjMenu;
+    private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenuItem exportDataTableSQL;
     private javax.swing.JMenuItem exportInitialTableSummary;
     private javax.swing.JMenuItem exportNBSummary;
     private javax.swing.JMenuItem exportRowsColumnsNullsBlanks;
     private javax.swing.JMenuItem exportTableColumnsSummary;
     private javax.swing.JMenu filejMenu;
+    private javax.swing.JMenu helpjMenu;
     private javax.swing.JTextField initialSummaryTableFilter;
     private javax.swing.JPanel intialSummaryfilterPanel;
     private javax.swing.JMenuBar jMenuBar1;
@@ -3335,6 +3398,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JPanel mainJPanel;
     private javax.swing.JPanel mainRightPanel;
     private javax.swing.JPanel noDataMainPanel;
+    private javax.swing.JMenuItem resetSplashHelpMenuItem;
     private javax.swing.JMenuItem showColumnData;
     private javax.swing.JMenuItem showColumnDataFromDetailAnalysis;
     private javax.swing.JMenuItem showDataNavigator;
