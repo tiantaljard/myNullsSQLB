@@ -5,6 +5,7 @@
  */
 package mynullssqlB;
 
+import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +13,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingWorker;
 
 /**
  *
@@ -24,10 +28,27 @@ public class MainHelpDialog extends javax.swing.JDialog {
      * Creates new form myNullsSQLJFrame
      */
     public MainHelpDialog() throws IOException {
-        
-        
         initComponents();
         setLaunchHelp();
+
+        JDialog progressBarDialog = buildProgressBar("Preparing to Show Welcome");
+
+        SwingWorker worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                setLaunchHelp();
+                return null;
+
+            }
+
+            @Override
+            protected void done() {
+                progressBarDialog.setVisible(false);
+
+            }
+        };
+
+        worker.execute();
 
     }
 
@@ -113,18 +134,15 @@ public class MainHelpDialog extends javax.swing.JDialog {
         this.setVisible(false);
         new MySQLNullsApp().setVisible(true);
         this.dispose();
-        
-        
-       
-        
+
+
     }//GEN-LAST:event_okJButton1ActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        
-        
+
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -173,10 +191,30 @@ public class MainHelpDialog extends javax.swing.JDialog {
     }
 
     private void setLaunchHelp() throws IOException {
-        JLabel picture = (createPicture("helpcontent"+File.separator+"s1.png"));
+        JLabel picture = (createPicture("helpcontent" + File.separator + "dp1.png"));
         helpImageContainer.add(picture);
         helpImageContainer.setVisible(true);
         //helpImageContainer.setVisible(true);
+
+    }
+
+    /**
+     * buildProgressBar(String title) generates a progress bar to display during
+     * long running transactions.
+     *
+     * @param title
+     * @return
+     */
+    public JDialog buildProgressBar(String title) {
+        JProgressBar progressBar = new JProgressBar();
+        progressBar.setIndeterminate(true);
+        JDialog progressBarDialog = new JDialog(this, title, false);
+        progressBarDialog.add(BorderLayout.CENTER, progressBar);
+        progressBarDialog.setSize(300, 75);
+        progressBarDialog.setLocationRelativeTo(MainHelpDialog.this.helpImageContainer);
+        progressBarDialog.setVisible(true);
+
+        return progressBarDialog;
 
     }
 
