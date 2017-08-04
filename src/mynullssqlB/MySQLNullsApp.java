@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -41,6 +42,7 @@ import javax.swing.table.TableRowSorter;
 import javax.swing.RowFilter;
 import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
@@ -78,6 +80,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private String lastSQLQueryCSVFrom;
     private String lastSQLCSVColumnNames;
 
+    private String summaryTableTitle;
+    private String dataTableTableTitle;
+    private String detailAnalysisTableTitle;
+
     int columnNameTableSelctionColumn;
 
     int limitRowsFilterInt = 0;
@@ -112,6 +118,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private static final Object[] columnsTableColumnSummary = {"Column Name", "Row Count", "Nulls Count", "Blanks Count", "% Nulls ", "% Blanks"};
 
     private String cardViewInUse = "";
+    private static final String INITIALSUMMARYCARD = "initialSummaryCard";
     private static final String CHARTPANEL = "chartPanel";
     private static final String COLUMNDETAILSPLITPANEL = "columnDetailsSpiltPanel";
     private static final String DATAEXPLORERCARD = "dataExplorerCard";
@@ -128,8 +135,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private static final String NBCOLUMNSUMMARY = "Nulls_Blanks_Table_Summary_";
     private static final String TABLECOLUMNSUMMARY = "Table_Column_Summary_";
     private static final String ROWSCOLUMNSUMMARY = "Rows_Column_Analysis_";
-    
-    private static final String SPLASHTRACKER = "splashtracker"; 
+
+    private static final String SPLASHTRACKER = "splashtracker";
 
     private int tableNameTableLastSelectedRow = -1;
     private int columnNameTableLastSelectedRow = -1;
@@ -156,6 +163,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             //initializeModel();
             setInitialSummaryTable();
             tableInUse = INITIALSUMMARYDATATABLE;
+            setInitialSummaryCard();
 
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
@@ -208,6 +216,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         topInitialSummaryView = new javax.swing.JPanel();
         intialSummaryfilterPanel = new javax.swing.JPanel();
         initialSummaryTableFilter = new javax.swing.JTextField();
+        summaryTableStatusPanel = new javax.swing.JPanel();
+        summaryTableStatusBar = new javax.swing.JLabel();
         dataExplorerSplitPane = new javax.swing.JSplitPane();
         tblNmParentPanel = new javax.swing.JPanel();
         tblNmFilterPanel = new javax.swing.JPanel();
@@ -239,9 +249,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
         };
         columnDetailPanel = new javax.swing.JPanel();
-        dataTableScrollPane = new javax.swing.JScrollPane();
+        dataTableScrollPanel = new javax.swing.JScrollPane();
         dataTable = new javax.swing.JTable();
         columnDetailChartPanel = new javax.swing.JPanel();
+        dataTableStatusPanel = new javax.swing.JPanel();
+        dataTableStatusBar = new javax.swing.JLabel();
         cardChartPanel = new javax.swing.JPanel();
         chartPanel = new javax.swing.JPanel();
         detailAnalysisPanel = new javax.swing.JPanel();
@@ -250,6 +262,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         topDetailAnalysisView = new javax.swing.JPanel();
         detailAnalysisFilterPanel = new javax.swing.JPanel();
         detailAnalysisFilter = new javax.swing.JTextField();
+        detailAnalysisStatusPanel = new javax.swing.JPanel();
+        detailAnalysisStatusBar = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         filejMenu = new javax.swing.JMenu();
         dbParametersMenuItem = new javax.swing.JMenuItem();
@@ -474,6 +488,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         });
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("myNullsSQL");
 
         mainJPanel.setLayout(new java.awt.CardLayout());
 
@@ -515,6 +530,14 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         topInitialSummaryView.add(intialSummaryfilterPanel, java.awt.BorderLayout.CENTER);
 
         summaryPanel.add(topInitialSummaryView, java.awt.BorderLayout.NORTH);
+
+        summaryTableStatusPanel.setLayout(new java.awt.BorderLayout());
+
+        summaryTableStatusBar.setText("jLabel1");
+        summaryTableStatusPanel.add(summaryTableStatusBar, java.awt.BorderLayout.EAST);
+        summaryTableStatusBar.getAccessibleContext().setAccessibleName("");
+
+        summaryPanel.add(summaryTableStatusPanel, java.awt.BorderLayout.SOUTH);
 
         mainJPanel.add(summaryPanel, "initialSummaryCard");
 
@@ -651,7 +674,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         columnDetailPanel.setPreferredSize(new java.awt.Dimension(300, 404));
         columnDetailPanel.setLayout(new java.awt.BorderLayout());
 
-        dataTableScrollPane.setPreferredSize(new java.awt.Dimension(300, 404));
+        dataTableScrollPanel.setPreferredSize(new java.awt.Dimension(300, 404));
 
         dataTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -669,12 +692,19 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 dataTableMouseClicked(evt);
             }
         });
-        dataTableScrollPane.setViewportView(dataTable);
+        dataTableScrollPanel.setViewportView(dataTable);
 
-        columnDetailPanel.add(dataTableScrollPane, java.awt.BorderLayout.CENTER);
+        columnDetailPanel.add(dataTableScrollPanel, java.awt.BorderLayout.CENTER);
 
         columnDetailChartPanel.setLayout(new java.awt.BorderLayout());
         columnDetailPanel.add(columnDetailChartPanel, java.awt.BorderLayout.PAGE_START);
+
+        dataTableStatusPanel.setLayout(new java.awt.BorderLayout());
+
+        dataTableStatusBar.setText("jLabel1");
+        dataTableStatusPanel.add(dataTableStatusBar, java.awt.BorderLayout.EAST);
+
+        columnDetailPanel.add(dataTableStatusPanel, java.awt.BorderLayout.SOUTH);
 
         columnDetailsSpiltPanel.setRightComponent(columnDetailPanel);
 
@@ -743,6 +773,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         detailAnalysisPanel.add(topDetailAnalysisView, java.awt.BorderLayout.NORTH);
 
+        detailAnalysisStatusPanel.setLayout(new java.awt.BorderLayout());
+
+        detailAnalysisStatusBar.setText("jLabel1");
+        detailAnalysisStatusPanel.add(detailAnalysisStatusBar, java.awt.BorderLayout.EAST);
+
+        detailAnalysisPanel.add(detailAnalysisStatusPanel, java.awt.BorderLayout.SOUTH);
+
         mainRightPanel.add(detailAnalysisPanel, "cardDetailAnalysisPanel");
 
         dataExplorerSplitPane.setRightComponent(mainRightPanel);
@@ -798,6 +835,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 try {
                     setTableColumnSummaryTable();
                     tableInUse = COLUMNNBSUMMARYDATATABLE;
+                    detailAnalysisTableTitle = "Nulls & Blanks Summary for Columns in " + getRowColOneSelected(tableNameTable).toUpperCase() + " Table";
+                    detailAnalysisStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Column Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getColCount(getRowColOneSelected(tableNameTable)) + ". Columns in Current Result Set: " + db.getColCount(getRowColOneSelected(tableNameTable)) + ".     ");
                 } catch (SQLException ex) {
                     Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -844,6 +883,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                     && cardViewInUse.equals(CHARTPANEL)) {
 
                 setDetailAnalysisCard();
+
             }
 
             tableNameTableLastSelectedRow = tableNameTable.getSelectedRow();
@@ -859,6 +899,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             tablePopupMenu.show(tableNameTable, evt.getX(), evt.getY());
         }
 
+        dataTableTableTitle = ("Data view for table: " + getRowColOneSelected(tableNameTable).toUpperCase());
+
     }//GEN-LAST:event_tableNameTableMouseClicked
 
     private void tableNameTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameTableKeyReleased
@@ -873,6 +915,14 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
         tableNameTableLastSelectedRow = tableNameTable.getSelectedRow();
         columnNameTableLastSelectedRow = -1;
+        dataTableTableTitle = ("Data view for table: " + getRowColOneSelected(tableNameTable).toUpperCase());
+        try {
+
+            detailAnalysisTableTitle = "Nulls & Blanks Summary for Columns in " + getRowColOneSelected(tableNameTable).toUpperCase() + " Table";
+            detailAnalysisStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Column Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getColCount(getRowColOneSelected(tableNameTable)) + ". Columns in Current Result Set: " + db.getColCount(getRowColOneSelected(tableNameTable)) + ".     ");
+        } catch (SQLException ex) {
+            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
         setDetailAnalysisCard();
 
 
@@ -883,7 +933,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             columnNameTableSelctionColumn = columnNameTable.getSelectedColumn();
             setDataTable(getColumnData());
             tableInUse = SQLDATATABLE;
-            dataTableScrollPane.setVisible(true);
+            dataTableScrollPanel.setVisible(true);
+            dataTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Record Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".     ");
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -899,6 +950,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         //buildSummaryTableDataBarChartExplorerPanel();
         setExplorerChartCard();
         tableInUse = NBSUMMARYDATATABLE;
+
     }//GEN-LAST:event_tableNameFilterKeyReleased
 
     private void columnNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_columnNameFilterKeyReleased
@@ -912,8 +964,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             columnNameTableSelctionColumn = columnNameTable.columnAtPoint(evt.getPoint());
             try {
                 setDataTable(getColumnData());
+                dataTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Record Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".     ");
                 tableInUse = SQLDATATABLE;
-                dataTableScrollPane.setVisible(true);
+                dataTableScrollPanel.setVisible(true);
             } catch (SQLException ex) {
                 Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -924,6 +977,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     private void initialSummaryTableFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_initialSummaryTableFilterKeyReleased
         setJTableColOneFilter(summaryTable, initialSummaryTableFilter);
+        summaryTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Number of Tables: " + db.getTotalNumberOfTables() + ". Tables in Current Result Set: " + summaryTable.getRowCount() + ".     ");
     }//GEN-LAST:event_initialSummaryTableFilterKeyReleased
 
     private void summaryTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_summaryTableMouseClicked
@@ -963,6 +1017,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
         setInitialSummaryCard();
         initialSummaryTableFilter.setText(null);
+        summaryTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Number of Tables: " + db.getTotalNumberOfTables() + ". Tables in Current Result Set: " + summaryTable.getRowCount() + ".     ");
 
 
     }//GEN-LAST:event_showNBSummaryTblActionPerformed
@@ -976,11 +1031,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
         setInitialSummaryCard();
         initialSummaryTableFilter.setText(null);
+        summaryTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Number of Tables: " + db.getTotalNumberOfTables() + ". Tables in Current Result Set: " + summaryTable.getRowCount() + ".     ");
 
     }//GEN-LAST:event_showInitialSummaryTblActionPerformed
 
     private void showDataNavigatorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showDataNavigatorActionPerformed
         try {
+
             initializeModel(buildTableSQLWhere());
             if (summaryTable.getModel().getColumnCount() == 3) {
 
@@ -999,15 +1056,15 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 }
             }
 
+            setExplorerMain();
+            setExplorerChartCard();
+            tableInUse = NBSUMMARYDATATABLE;
+            tableNameTableLastSelectedRow = -1;
+            columnNameTableLastSelectedRow = -1;
+
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
-        setExplorerMain();
-        setExplorerChartCard();
-        tableInUse = NBSUMMARYDATATABLE;
-
-        tableNameTableLastSelectedRow = -1;
-        columnNameTableLastSelectedRow = -1;
 
     }//GEN-LAST:event_showDataNavigatorActionPerformed
 
@@ -1041,6 +1098,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         setInitialSummaryCard();
         tableInUse = NBSUMMARYDATATABLE;
         initialSummaryTableFilter.setText(null);
+        summaryTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Number of Tables: " + db.getTotalNumberOfTables() + ". Tables in Current Result Set: " + summaryTable.getRowCount() + ".     ");
 
     }//GEN-LAST:event_showNBSummaryTblAllTablesActionPerformed
 
@@ -1048,13 +1106,15 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         try {
             setRowsNullsBlanksPerColumnTable();
+            detailAnalysisStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Column Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getColCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + detailAnalysisTable.getRowCount() + ".     ");
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        detailAnalysisFilter.setText(null);
         setDetailAnalysisCard();
         buildRowsColumnNullsPieChartExplorerPanel("null");
         buildRowsColumnNullsPieChartExplorerPanel("blank");
+        
         tableInUse = ROWNBSUMMARYDATATABLE;
 
     }//GEN-LAST:event_showRowsNullsBlanksPerColumnTableActionPerformed
@@ -1086,6 +1146,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
         initialSummaryTableFilter.setText(null);
+        summaryTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Number of Tables: " + db.getTotalNumberOfTables() + ". Tables in Current Result Set: " + summaryTable.getRowCount() + ".     ");
 
     }//GEN-LAST:event_showNBSummaryTblForSelectedActionPerformed
 
@@ -1111,6 +1172,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             //dataTable.setModel(getSummaryTableColumnTableModel());
             setTableColumnSummaryTable();
             tableInUse = COLUMNNBSUMMARYDATATABLE;
+            detailAnalysisTableTitle = "Nulls & Blanks Summary for Columns in " + getRowColOneSelected(tableNameTable).toUpperCase() + " Table";
+            detailAnalysisStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Column Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getColCount(getRowColOneSelected(tableNameTable)) + ". Columns in Current Result Set: " + db.getColCount(getRowColOneSelected(tableNameTable)) + ".     ");
+            detailAnalysisFilter.setText(null);
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1236,6 +1300,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        try {
+            dataTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Record Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".     ");
+        } catch (SQLException ex) {
+            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_limitRowsFilterKeyReleased
 
     private void detailAnalysisTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_detailAnalysisTableMouseClicked
@@ -1269,7 +1338,20 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }//GEN-LAST:event_detailAnalysisTableMouseClicked
 
     private void detailAnalysisFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_detailAnalysisFilterKeyReleased
-
+        setJTableColOneFilter(detailAnalysisTable, detailAnalysisFilter);
+        if (tableInUse.equals(COLUMNNBSUMMARYDATATABLE)) {
+            try {
+                detailAnalysisStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Column Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getColCount(getRowColOneSelected(tableNameTable)) + ". Columns in Current Result Set: " + detailAnalysisTable.getRowCount() + ".     ");
+            } catch (SQLException ex) {
+                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            try {
+                detailAnalysisStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Column Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getColCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + detailAnalysisTable.getRowCount() + ".     ");
+            } catch (SQLException ex) {
+                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         setJTableColOneFilter(detailAnalysisTable, detailAnalysisFilter);    }//GEN-LAST:event_detailAnalysisFilterKeyReleased
 
     private void detailAnalysisFilterPanelKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_detailAnalysisFilterPanelKeyReleased
@@ -1278,13 +1360,23 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     private void showColumnDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showColumnDataActionPerformed
 
-        setExplorerTableCard();
+        try {
+            setExplorerTableCard();
+        } catch (SQLException ex) {
+            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }//GEN-LAST:event_showColumnDataActionPerformed
 
     private void showTableAllColumnSummaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showTableAllColumnSummaryActionPerformed
-        detailAnalysisTable.setModel(summaryTableColumnTableModel);
-        detailAnalysisTable.validate();
+        try {
+            detailAnalysisTable.setModel(summaryTableColumnTableModel);
+            detailAnalysisTable.validate();
+            detailAnalysisTableTitle = "Nulls & Blanks Summary for Columns in " + getRowColOneSelected(tableNameTable).toUpperCase() + " Table";
+            detailAnalysisStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Column Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getColCount(getRowColOneSelected(tableNameTable)) + ". Columns in Current Result Set: " + detailAnalysisTable.getRowCount() + ".     ");
+        } catch (SQLException ex) {
+            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_showTableAllColumnSummaryActionPerformed
 
     private void showTableColumnChartSelectedRowsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showTableColumnChartSelectedRowsActionPerformed
@@ -1380,7 +1472,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 }
 
                 File f = new File(SPLASHTRACKER + File.separator + "lauchHelpHasrun.txt");
-                if (f.exists()) {
+                if (f.exists() && 1 == 2) {
                     new MySQLNullsApp().setVisible(true);
                 } else {
                     try {
@@ -1897,6 +1989,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         summaryTableModel.setsqlRowCount(rowCount);
 
         summaryTable.setModel(summaryTableModel);
+        summaryTableTitle = "Column & Row Count per Table Summary";
+
+        summaryTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Number of Tables: " + db.getTotalNumberOfTables() + ". Tables in Current Result Set: " + summaryTable.getRowCount() + ".     ");
         summaryTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         ((DefaultTableCellRenderer) summaryTable.getTableHeader().getDefaultRenderer())
@@ -1936,7 +2031,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         //DefaultTableModel summaryNullsBlankTableModel = new DefaultTableModel(tableNullsBlankSummaryArray, columns);
         summaryNullsBlankTableModel.setDataVector(tableNullsBlankSummaryArray, columns);
         summaryTable.setModel(summaryNullsBlankTableModel);
-
+        summaryTableTitle = "Nulls & Blanks per Table Summary";
         summaryTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
         summaryTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
         summaryTable.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
@@ -1965,6 +2060,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         //DefaultTableModel summaryNullsBlankTableModel = new DefaultTableModel(tableNullsBlankSummaryArray, columns);
         rowsNulsBlankArrayTableModel.setDataVector(rowsNulsBlankArray, columns);
         detailAnalysisTable.setModel(rowsNulsBlankArrayTableModel);
+        detailAnalysisTableTitle = "Percentage of Rows in Table " + getRowColOneSelected(tableNameTable).toUpperCase() + " by Null & Blank Column Count";
         detailAnalysisTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
         detailAnalysisTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
         detailAnalysisTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
@@ -2493,7 +2589,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 summaryChartDataset.addValue(percentageTableNulls, "Nulls %", tableName);
             }
             if (percentageTableBlanks > 0) {
-                System.out.println("summaryChartDataset getting built");
+                // System.out.println("summaryChartDataset getting built");
                 summaryChartDataset.addValue(percentageTableBlanks, "Blanks %", tableName);
             }
 
@@ -2527,6 +2623,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         columnNameTableSelctionColumn = -1;
         ;
         dataTable.setModel(new DefaultTableModel());
+        dataTableTableTitle = "";
 
     }
 
@@ -2624,10 +2721,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             int row = selectedRows[targetRow];
             int modelRow = detailAnalysisTable.convertRowIndexToModel(row);
 
-            System.out.println("row " + row + " modelRow \n" + modelRow);
-            System.out.println(" row " + Double.parseDouble(tableModel.getValueAt(row, 4).toString()));
-            System.out.println(" modelRow " + Double.parseDouble(tableModel.getValueAt(modelRow, 4).toString()) + "\n");
-
             if (Double.parseDouble(tableModel.getValueAt(modelRow, 4).toString()) > 0) {
                 tableColumnBarChartSelectedDataset.addValue(Double.parseDouble(tableModel.getValueAt(modelRow, 4).toString()), "Nulls %", tableModel.getValueAt(modelRow, 0).toString());
             }
@@ -2697,12 +2790,14 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 tableColumnSummaryArray = buildTableColumnSummary();
                 summaryTableColumnTableModel.setDataVector(tableColumnSummaryArray, columnsTableColumnSummary);
                 detailAnalysisTable.setModel(summaryTableColumnTableModel);
+                detailAnalysisTable.validate();
                 detailAnalysisTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
                 detailAnalysisTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
                 detailAnalysisTable.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
                 detailAnalysisTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
                 detailAnalysisTable.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
                 setTableRowSorter(detailAnalysisTable);
+
                 return null;
             }
 
@@ -3065,9 +3160,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      */
     public void setInitialSummaryCard() {
         CardLayout card = (CardLayout) mainJPanel.getLayout();
-        card.show(mainJPanel, "initialSummaryCard");
-        cardViewInUse = "initialSummaryCard";
+        card.show(mainJPanel, INITIALSUMMARYCARD);
+        cardViewInUse = INITIALSUMMARYCARD;
         summaryPanel.setVisible(true);
+        summaryScrollPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+                summaryTableTitle,
+                TitledBorder.CENTER,
+                TitledBorder.TOP));
     }
 
     /*
@@ -3122,7 +3221,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      * setExplorerTableCard() makes the main panel visible in contain the data
      * explorer view data panel.
      */
-    public void setExplorerTableCard() {
+    public void setExplorerTableCard() throws SQLException {
         CardLayout card = (CardLayout) mainRightPanel.getLayout();
         card.show(mainRightPanel, COLUMNDETAILSPLITPANEL);
         cardViewInUse = COLUMNDETAILSPLITPANEL;
@@ -3130,10 +3229,16 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         detailAnalysisPanel.setVisible(false);
         columnDetailsSpiltPanel.setVisible(true);
         if (dataTable.getModel().getRowCount() > 0) {
-            dataTableScrollPane.setVisible(true);
+            dataTableScrollPanel.setVisible(true);
         } else {
-            dataTableScrollPane.setVisible(false);
+            dataTableScrollPanel.setVisible(false);
         }
+        dataTableScrollPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+                dataTableTableTitle,
+                TitledBorder.CENTER,
+                TitledBorder.TOP));
+        dataTableScrollPanel.setVisible(true);
+        dataTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Record Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".     ");
 
     }
 
@@ -3142,7 +3247,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         card.show(mainRightPanel, COLUMNDETAILSPLITPANEL);
         cardViewInUse = COLUMNDETAILSPLITPANEL;
         cardChartPanel.setVisible(false);
-        dataTableScrollPane.setVisible(false);
+        dataTableScrollPanel.setVisible(false);
         mainRightPanel.setVisible(true);
         columnDetailPanel.setVisible(true);
         columnDetailsSpiltPanel.setVisible(true);
@@ -3158,6 +3263,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         mainRightPanel.setVisible(true);
         detailAnalysisPanel.setVisible(true);
         mainRightPanel.validate();
+        detailAnalysisScrollPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+                detailAnalysisTableTitle,
+                TitledBorder.CENTER,
+                TitledBorder.TOP));
 
     }
 
@@ -3345,6 +3454,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     public void buildDataExplorerViewFromDetailAnalysisTable() throws Exception {
         dataFromDetailAnalysis = "dataFromDetailAnalysis";
         setDataTable(getColumnDataDetailAnalysis());
+        dataTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Record Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".     ");
         tableInUse = SQLDATATABLE;
         setExplorerTableCard();
         dataFromDetailAnalysis = "";
@@ -3372,12 +3482,16 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JTable columnNameTable;
     private javax.swing.JSplitPane dataExplorerSplitPane;
     private javax.swing.JTable dataTable;
-    private javax.swing.JScrollPane dataTableScrollPane;
+    private javax.swing.JScrollPane dataTableScrollPanel;
+    private javax.swing.JLabel dataTableStatusBar;
+    private javax.swing.JPanel dataTableStatusPanel;
     private javax.swing.JMenuItem dbParametersMenuItem;
     private javax.swing.JTextField detailAnalysisFilter;
     private javax.swing.JPanel detailAnalysisFilterPanel;
     private javax.swing.JPanel detailAnalysisPanel;
     private javax.swing.JScrollPane detailAnalysisScrollPanel;
+    private javax.swing.JLabel detailAnalysisStatusBar;
+    private javax.swing.JPanel detailAnalysisStatusPanel;
     private javax.swing.JTable detailAnalysisTable;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenuItem exportDataTableSQL;
@@ -3418,6 +3532,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JPanel summaryPanel;
     private javax.swing.JScrollPane summaryScrollPanel;
     private javax.swing.JTable summaryTable;
+    private javax.swing.JLabel summaryTableStatusBar;
+    private javax.swing.JPanel summaryTableStatusPanel;
     private javax.swing.JTextField tableNameFilter;
     private javax.swing.JTable tableNameTable;
     private javax.swing.JPopupMenu tablePopupMenu;
