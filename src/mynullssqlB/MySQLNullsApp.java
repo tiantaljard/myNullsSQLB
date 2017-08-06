@@ -155,7 +155,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             showConnectionDialog();
             mainJPanel.setVisible(false);
             
-        JDialog progressBarDialog = buildProgressBar("Analysing Table");
+        JDialog progressBarDialog = buildProgressBar("Analysing Table Column & Row Count");
 
 //detailAnalysisTable.setVisible(false);
 
