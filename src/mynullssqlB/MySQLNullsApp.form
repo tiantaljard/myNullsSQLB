@@ -338,9 +338,18 @@
             <Property name="text" type="java.lang.String" value="Help"/>
           </Properties>
           <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="mainHelpMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Main Help"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mainHelpMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="resetSplashHelpMenuItem">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Reset Help Pop-Up Windows"/>
+                <Property name="toolTipText" type="java.lang.String" value=""/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="resetSplashHelpMenuItemActionPerformed"/>
@@ -449,6 +458,9 @@
                   </Layout>
                   <SubComponents>
                     <Component class="javax.swing.JTextField" name="initialSummaryTableFilter">
+                      <Properties>
+                        <Property name="toolTipText" type="java.lang.String" value="Table Filter"/>
+                      </Properties>
                       <Events>
                         <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="initialSummaryTableFilterKeyReleased"/>
                       </Events>

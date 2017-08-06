@@ -225,38 +225,25 @@ public class DBConnectDialog extends javax.swing.JDialog {
         //======================================================================
         if (serverIP == null || serverIP.trim().equals("")) {
             JOptionPane.showMessageDialog(null, "Server IP Address can not be null");
-        }
+        } else
         if (databaseName == null || databaseName.trim().equals("")) {
             JOptionPane.showMessageDialog(null, "Database Name can not be null");
-        }
+        } else
         if (port == null || port.trim().equals("")) {
             JOptionPane.showMessageDialog(null, "Port can not be null");
-        }
+        } else
         if (username == null || username.trim().equals("")) {
             JOptionPane.showMessageDialog(null, "Username can not be null");
-        }
+        } else
         if (password == null || password.trim().equals("")) {
             JOptionPane.showMessageDialog(null, "Password can not be null");
-        }
+        } else
         //======================================================================
         // Connect to Database
         //======================================================================
         try { // endeavour to create connection to server and database
             db = new MySQLDBConnect(serverIP, databaseName, username, password, port);
             db.getConnection();
-
-            Object[] options = {"OK"};
-            Component frame;
-
-//            int n = JOptionPane.showOptionDialog(null,
-//                    "Server and Database Connection Successful",
-//                    "Connection Success",
-//                    JOptionPane.PLAIN_MESSAGE,
-//                    JOptionPane.INFORMATION_MESSAGE,
-//                    null,
-//                    options,
-//                    options[0]);
-
             analyseJButton.setEnabled(true);
 
         } catch (SQLException e) { // if server and database connection fail run this
@@ -293,19 +280,19 @@ public class DBConnectDialog extends javax.swing.JDialog {
         //======================================================================
         if (serverIP == null || serverIP.trim().equals("")) {
             JOptionPane.showMessageDialog(null, "Server IP Address can not be null");
-        }
+        } else
         if (databaseName == null || databaseName.trim().equals("")) {
             JOptionPane.showMessageDialog(null, "Database Name can not be null");
-        }
+        } else
         if (port == null || port.trim().equals("")) {
             JOptionPane.showMessageDialog(null, "Port can not be null");
-        }
+        } else
         if (username == null || username.trim().equals("")) {
             JOptionPane.showMessageDialog(null, "Username can not be null");
-        }
+        } else
         if (password == null || password.trim().equals("")) {
             JOptionPane.showMessageDialog(null, "Password can not be null");
-        }
+        } else
         //======================================================================
         // Connect to Database
         //======================================================================
@@ -313,12 +300,11 @@ public class DBConnectDialog extends javax.swing.JDialog {
             db = new MySQLDBConnect(serverIP, databaseName, username, password, port);
             db.getConnection();
 
-            Object[] options = {"OK"};
-            Component frame;
+           
 
             setVisible(false);
 
-            ResultSet tbl_results = db.getTableNames();
+           // ResultSet tbl_results = db.getTableNames();
             
         } catch (SQLException e) { // if server and database connection fail run this
             JOptionPane.showMessageDialog(null,

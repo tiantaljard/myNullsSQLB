@@ -7,6 +7,7 @@ package mynullssqlB;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Desktop;
 import java.awt.event.MouseEvent;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -137,6 +138,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private static final String ROWSCOLUMNSUMMARY = "Rows_Column_Analysis_";
 
     private static final String SPLASHTRACKER = "splashtracker";
+    private static final String HELPCONTENT = "helpcontent";
 
     private int tableNameTableLastSelectedRow = -1;
     private int columnNameTableLastSelectedRow = -1;
@@ -269,6 +271,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         dbParametersMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
         helpjMenu = new javax.swing.JMenu();
+        mainHelpMenuItem = new javax.swing.JMenuItem();
         resetSplashHelpMenuItem = new javax.swing.JMenuItem();
 
         tablePopupMenu =new JPopupMenu();
@@ -505,6 +508,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         topInitialSummaryView.setLayout(new java.awt.BorderLayout());
 
+        initialSummaryTableFilter.setToolTipText("Table Filter");
         initialSummaryTableFilter.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 initialSummaryTableFilterKeyReleased(evt);
@@ -810,7 +814,16 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         helpjMenu.setText("Help");
 
+        mainHelpMenuItem.setText("Main Help");
+        mainHelpMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mainHelpMenuItemActionPerformed(evt);
+            }
+        });
+        helpjMenu.add(mainHelpMenuItem);
+
         resetSplashHelpMenuItem.setText("Reset Help Pop-Up Windows");
+        resetSplashHelpMenuItem.setToolTipText("");
         resetSplashHelpMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 resetSplashHelpMenuItemActionPerformed(evt);
@@ -1009,6 +1022,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }//GEN-LAST:event_summaryTableMouseClicked
 
     private void showNBSummaryTblActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showNBSummaryTblActionPerformed
+
         try {
             setNullsBlankSummaryTable();
             tableInUse = NBSUMMARYDATATABLE;
@@ -1018,6 +1032,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         setInitialSummaryCard();
         initialSummaryTableFilter.setText(null);
         summaryTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Number of Tables: " + db.getTotalNumberOfTables() + ". Tables in Current Result Set: " + summaryTable.getRowCount() + ".     ");
+
+        File f = new File(SPLASHTRACKER + File.separator + "mainNBSummary.txt");
+        if (!f.exists()) {
+            prepareHelpDialog("mainNBSummary.txt", "NBTS1.png");
+        }
 
 
     }//GEN-LAST:event_showNBSummaryTblActionPerformed
@@ -1114,7 +1133,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         setDetailAnalysisCard();
         buildRowsColumnNullsPieChartExplorerPanel("null");
         buildRowsColumnNullsPieChartExplorerPanel("blank");
-        
+
         tableInUse = ROWNBSUMMARYDATATABLE;
 
     }//GEN-LAST:event_showRowsNullsBlanksPerColumnTableActionPerformed
@@ -1170,7 +1189,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private void showTableColumnSummaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showTableColumnSummaryActionPerformed
         try {
             //dataTable.setModel(getSummaryTableColumnTableModel());
-            setTableColumnSummaryTable();
+            if (tableNameTableLastSelectedRow == tableNameTable.getSelectedRow()) {
+                resetTableColumnSummaryTable();
+            } else {
+                setTableColumnSummaryTable();
+            }
+
             tableInUse = COLUMNNBSUMMARYDATATABLE;
             detailAnalysisTableTitle = "Nulls & Blanks Summary for Columns in " + getRowColOneSelected(tableNameTable).toUpperCase() + " Table";
             detailAnalysisStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Column Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getColCount(getRowColOneSelected(tableNameTable)) + ". Columns in Current Result Set: " + db.getColCount(getRowColOneSelected(tableNameTable)) + ".     ");
@@ -1399,6 +1423,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             showConnectionDialog();
             setInitialSummaryTable();
             tableInUse = INITIALSUMMARYDATATABLE;
+            initialSummaryTableFilter.setText(null);
+            setInitialSummaryCard();
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1421,6 +1447,21 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_resetSplashHelpMenuItemActionPerformed
+
+    private void mainHelpMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mainHelpMenuItemActionPerformed
+        //https://stackoverflow.com/questions/2546968/open-pdf-file-on-the-fly-from-a-java-application
+        if (Desktop.isDesktopSupported()) {
+            try {
+                File myFile = new File(HELPCONTENT + File.separator + "mainHelp.pdf");
+                Desktop.getDesktop().open(myFile);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, ex);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No Application is currently registered to open PDF files on your system. \n"
+                    + "Please register a PDF viewer for your system and try again.");
+        }
+    }//GEN-LAST:event_mainHelpMenuItemActionPerformed
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1471,13 +1512,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                     }
                 }
 
-                File f = new File(SPLASHTRACKER + File.separator + "lauchHelpHasrun.txt");
-                if (f.exists() && 1 == 2) {
+                File f = new File(SPLASHTRACKER + File.separator + "lauchDPHasrun.txt");
+                if (f.exists()) {
                     new MySQLNullsApp().setVisible(true);
                 } else {
                     try {
                         new MainHelpDialog().setVisible(true);
-                        f.createNewFile();
 
                     } catch (IOException ex) {
                         Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
@@ -2813,6 +2853,44 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }
 
+    public void resetTableColumnSummaryTable() throws SQLException {
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        JDialog progressBarDialog = buildProgressBar("Analysing Table");
+
+        detailAnalysisTable.setVisible(false);
+        SwingWorker worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                //tableColumnSummaryArray = buildTableColumnSummary();
+                summaryTableColumnTableModel.setDataVector(tableColumnSummaryArray, columnsTableColumnSummary);
+                detailAnalysisTable.setModel(summaryTableColumnTableModel);
+                detailAnalysisTable.validate();
+                detailAnalysisTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
+                detailAnalysisTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
+                detailAnalysisTable.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
+                detailAnalysisTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
+                detailAnalysisTable.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
+                setTableRowSorter(detailAnalysisTable);
+
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                progressBarDialog.setVisible(false);
+
+                detailAnalysisTable.setVisible(true);
+            }
+        };
+
+        worker.execute();
+
+    }
+
+
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -3461,6 +3539,25 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     }
 
+    public void showHelpDialog(String screenName) throws IOException {
+        MainHelpDialog mainhelpdialog = new MainHelpDialog(screenName);
+        mainhelpdialog.setModal(true);
+        mainhelpdialog.setVisible(true);
+    }
+
+    public void prepareHelpDialog(String splashFileChecker, String pictureToDisplay) {
+        File f = new File(SPLASHTRACKER + File.separator + splashFileChecker);
+        if (!f.exists()) {
+            try {
+                showHelpDialog(pictureToDisplay);
+                f.createNewFile();
+            } catch (IOException ex) {
+                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }
+    }
+
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -3509,6 +3606,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JTextField limitRowsFilter;
+    private javax.swing.JMenuItem mainHelpMenuItem;
     private javax.swing.JPanel mainJPanel;
     private javax.swing.JPanel mainRightPanel;
     private javax.swing.JPanel noDataMainPanel;
