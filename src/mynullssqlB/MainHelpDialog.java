@@ -6,9 +6,11 @@
 package mynullssqlB;
 
 import java.awt.BorderLayout;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -24,35 +26,28 @@ import javax.swing.SwingWorker;
  */
 public class MainHelpDialog extends javax.swing.JDialog {
 
+    private String quitDirect = "";
+
+    private static final String SPLASHTRACKER = "splashtracker";
+
     /**
      * Creates new form myNullsSQLJFrame
      */
     public MainHelpDialog() throws IOException {
+        quitDirect = "";
         initComponents();
-        setLaunchHelp();
+        File f = new File(SPLASHTRACKER + File.separator + "lauchDPHasrun.txt");
 
-        JDialog progressBarDialog = buildProgressBar("Preparing to Show Welcome");
-        launchHelpPanel.setVisible(true);
-        SwingWorker worker = new SwingWorker<Void, Void>() {
-            @Override
-            protected Void doInBackground() throws Exception {
-                
-                setLaunchHelp();
-                
-                return null;
+        if (!f.exists()) {
+            firstTimeWelcome();
+        }
+    }
 
-            }
+    public MainHelpDialog(String screenName) throws IOException {
+        quitDirect = "quitDirect";
+        initComponents();
 
-            @Override
-            protected void done() {
-                progressBarDialog.setVisible(false);
-                launchHelpPanel.setVisible(true);
-                
-
-            }
-        };
-
-        worker.execute();
+        buildPictureImage(screenName);
 
     }
 
@@ -71,12 +66,16 @@ public class MainHelpDialog extends javax.swing.JDialog {
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(30, 0), new java.awt.Dimension(100, 0), new java.awt.Dimension(30, 32767));
         centerjPanel4 = new javax.swing.JPanel();
         okJButton1 = new javax.swing.JButton();
-        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(32767, 10));
+        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 5), new java.awt.Dimension(0, 5), new java.awt.Dimension(32767, 5));
         westjPanel5 = new javax.swing.JPanel();
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(30, 0), new java.awt.Dimension(100, 0), new java.awt.Dimension(30, 32767));
         helpImageContainer = new javax.swing.JPanel();
+        pictureLabel = new javax.swing.JLabel();
+        filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 5), new java.awt.Dimension(0, 5), new java.awt.Dimension(32767, 5));
+        filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 32767));
+        filler6 = new javax.swing.Box.Filler(new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 32767));
+        filler7 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 5), new java.awt.Dimension(0, 5), new java.awt.Dimension(32767, 5));
 
-        setTitle("Database Connection Information");
         setBounds(new java.awt.Rectangle(300, 100, 0, 0));
         setName("JFrame4"); // NOI18N
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -98,7 +97,7 @@ public class MainHelpDialog extends javax.swing.JDialog {
 
         centerjPanel4.setLayout(new java.awt.BorderLayout());
 
-        okJButton1.setText("OK");
+        okJButton1.setText("Continue...");
         okJButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okJButton1ActionPerformed(evt);
@@ -118,6 +117,12 @@ public class MainHelpDialog extends javax.swing.JDialog {
 
         helpImageContainer.setPreferredSize(new java.awt.Dimension(680, 440));
         helpImageContainer.setLayout(new java.awt.BorderLayout());
+        helpImageContainer.add(pictureLabel, java.awt.BorderLayout.CENTER);
+        helpImageContainer.add(filler4, java.awt.BorderLayout.SOUTH);
+        helpImageContainer.add(filler5, java.awt.BorderLayout.EAST);
+        helpImageContainer.add(filler6, java.awt.BorderLayout.WEST);
+        helpImageContainer.add(filler7, java.awt.BorderLayout.NORTH);
+
         launchHelpPanel.add(helpImageContainer, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -140,19 +145,54 @@ public class MainHelpDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void okJButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okJButton1ActionPerformed
-        this.setVisible(false);
-        new MySQLNullsApp().setVisible(true);
-        this.dispose();
 
+        File f = new File(SPLASHTRACKER + File.separator + "lauchDPHasrun.txt");
+        if (quitDirect.equals("quitDirect")) {
+            this.setVisible(false);
+            return;
+        } else {
+            if (f.exists()) {
+                this.setVisible(false);
+                return;
+            } else {
+                File f2 = new File(SPLASHTRACKER + File.separator + "WelcomeHasrun.txt");
 
+                if (!f2.exists()) {
+                    try {
+                        buildPictureImage("DP1.png");
+
+                        f2.createNewFile();
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainHelpDialog.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+
+                    try {
+                        this.setVisible(false);
+                        new MySQLNullsApp().setVisible(true);
+                        f.createNewFile();
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainHelpDialog.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
     }//GEN-LAST:event_okJButton1ActionPerformed
 
     private void onWindowClose(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_onWindowClose
         this.setVisible(false);
-        new MySQLNullsApp().setVisible(true);
-        this.dispose();
+        File f = new File(SPLASHTRACKER + File.separator + "lauchDPHasrun.txt");
+        if (f.exists()) {
+            return;
+        } else {
+            try {
+                new MySQLNullsApp().setVisible(true);
+                f.createNewFile();
+            } catch (IOException ex) {
+                Logger.getLogger(MainHelpDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }//GEN-LAST:event_onWindowClose
-
     /**
      * @param args the command line arguments
      */
@@ -181,9 +221,6 @@ public class MainHelpDialog extends javax.swing.JDialog {
         }
         //</editor-fold>
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -197,21 +234,22 @@ public class MainHelpDialog extends javax.swing.JDialog {
         });
     }
 
-    private JLabel createPicture(String filepath) throws IOException {
-        BufferedImage myPicture = ImageIO.read(new File(filepath));
-        JLabel picLabel = new JLabel(new ImageIcon(myPicture));
-        add(picLabel);
+    private void buildPictureImage(String imagename) {
+        BufferedImage img = null;
+        try {
+            img = ImageIO.read(new File("helpcontent" + File.separator + imagename));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        return picLabel;
-    }
+        Image dimg = img.getScaledInstance(pictureLabel.getWidth(), pictureLabel.getHeight(),
+                Image.SCALE_SMOOTH);
 
-    private void setLaunchHelp() throws IOException {
-        JLabel picture = (createPicture("helpcontent" + File.separator + "dp1.gif"));
-        helpImageContainer.add(picture);
+        ImageIcon imageIcon = new ImageIcon(dimg);
+        pictureLabel.removeAll();
+        pictureLabel.setIcon(imageIcon);
+        helpImageContainer.add(pictureLabel);
         helpImageContainer.setVisible(true);
-        
-        //helpImageContainer.setVisible(true);
-
     }
 
     /**
@@ -230,8 +268,28 @@ public class MainHelpDialog extends javax.swing.JDialog {
         progressBarDialog.setLocationRelativeTo(MainHelpDialog.this.helpImageContainer);
         progressBarDialog.setLocation(500, 300);
         progressBarDialog.setVisible(true);
-
         return progressBarDialog;
+    }
+
+    public void firstTimeWelcome() {
+
+        JDialog progressBarDialog = buildProgressBar("Preparing to Show Welcome");
+        launchHelpPanel.setVisible(true);
+        SwingWorker worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                buildPictureImage("WelcomeToMyNullsSQL.png");
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                progressBarDialog.setVisible(false);
+                launchHelpPanel.setVisible(true);
+
+            }
+        };
+        worker.execute();
 
     }
 
@@ -243,9 +301,14 @@ public class MainHelpDialog extends javax.swing.JDialog {
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;
+    private javax.swing.Box.Filler filler4;
+    private javax.swing.Box.Filler filler5;
+    private javax.swing.Box.Filler filler6;
+    private javax.swing.Box.Filler filler7;
     private javax.swing.JPanel helpImageContainer;
     private javax.swing.JPanel launchHelpPanel;
     private javax.swing.JButton okJButton1;
+    private javax.swing.JLabel pictureLabel;
     private javax.swing.JPanel westjPanel5;
     // End of variables declaration//GEN-END:variables
 }
