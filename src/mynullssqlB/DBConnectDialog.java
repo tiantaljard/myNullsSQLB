@@ -303,6 +303,8 @@ public class DBConnectDialog extends javax.swing.JDialog {
            
 
             setVisible(false);
+            
+            
 
            // ResultSet tbl_results = db.getTableNames();
             

@@ -152,20 +152,18 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     public MySQLNullsApp() {
 
         try {
-            /*
-            ResultTableModel tableModel = new ResultTableModel();
-            System.out.println(db.getNumberOfTables());
-            
-            tableModel.setResultset(tbls);
-            
-            tableModel.setsqlRowCount(db.getNumberOfTables());
-             */
+
             initComponents();
             showConnectionDialog();
             //initializeModel();
             setInitialSummaryTable();
             tableInUse = INITIALSUMMARYDATATABLE;
             setInitialSummaryCard();
+
+            File f = new File(SPLASHTRACKER + File.separator + "initialMainSummary.txt");
+            if (!f.exists()) {
+                prepareHelpDialog("initialMainSummary.txt", "IS1.png");
+            }
 
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
@@ -1052,6 +1050,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         initialSummaryTableFilter.setText(null);
         summaryTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Number of Tables: " + db.getTotalNumberOfTables() + ". Tables in Current Result Set: " + summaryTable.getRowCount() + ".     ");
 
+        File f = new File(SPLASHTRACKER + File.separator + "initialMainSummary.txt");
+        if (!f.exists()) {
+            prepareHelpDialog("initialMainSummary.txt", "IS1.png");
+        }
+
     }//GEN-LAST:event_showInitialSummaryTblActionPerformed
 
     private void showDataNavigatorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showDataNavigatorActionPerformed
@@ -1522,6 +1525,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                     } catch (IOException ex) {
                         Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
                     }
+
                 }
             }
         });
@@ -3554,7 +3558,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             } catch (IOException ex) {
                 Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
         }
     }
 
