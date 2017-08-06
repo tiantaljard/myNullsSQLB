@@ -150,11 +150,24 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      * Creates new form MySQLNullsApp
      */
     public MySQLNullsApp() {
+        
+            initComponents();
+            showConnectionDialog();
+            mainJPanel.setVisible(false);
+            
+        JDialog progressBarDialog = buildProgressBar("Analysing Table");
+
+//detailAnalysisTable.setVisible(false);
+
+SwingWorker worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+        
+        
+        
 
         try {
 
-            initComponents();
-            showConnectionDialog();
             //initializeModel();
             setInitialSummaryTable();
             tableInUse = INITIALSUMMARYDATATABLE;
@@ -164,11 +177,26 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             if (!f.exists()) {
                 prepareHelpDialog("initialMainSummary.txt", "IS1.png");
             }
-
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        
+                return null;
+            }
+            @Override
+            protected void done() {
+                progressBarDialog.setVisible(false);
+                mainJPanel.setVisible(true);
 
+//                detailAnalysisTable.setVisible(true);
+            }
+        };
+
+        worker.execute();
+        
+        
+        
     }
 
     /**
@@ -490,6 +518,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("myNullsSQL");
+        setBounds(new java.awt.Rectangle(150, 100, 0, 0));
 
         mainJPanel.setLayout(new java.awt.CardLayout());
 
@@ -1525,7 +1554,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                     } catch (IOException ex) {
                         Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
                     }
-
                 }
             }
         });
@@ -3525,8 +3553,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         progressBar.setIndeterminate(true);
         JDialog progressBarDialog = new JDialog(this, title, false);
         progressBarDialog.add(BorderLayout.CENTER, progressBar);
-        progressBarDialog.setSize(200, 75);
-        progressBarDialog.setLocationRelativeTo(this);
+        progressBarDialog.setSize(400, 75);
+        progressBarDialog.setLocation(450, 300);
         progressBarDialog.setVisible(true);
 
         return progressBarDialog;
