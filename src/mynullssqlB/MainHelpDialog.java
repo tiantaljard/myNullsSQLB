@@ -33,7 +33,7 @@ public class MainHelpDialog extends javax.swing.JDialog {
     /**
      * Creates new form myNullsSQLJFrame
      */
-    public MainHelpDialog() throws IOException {
+    public MainHelpDialog()  {
         quitDirect = "";
         initComponents();
         File f = new File(SPLASHTRACKER + File.separator + "lauchDPHasrun.txt");
@@ -225,11 +225,7 @@ public class MainHelpDialog extends javax.swing.JDialog {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                try {
                     new MainHelpDialog().setVisible(true);
-                } catch (IOException ex) {
-                    Logger.getLogger(MainHelpDialog.class.getName()).log(Level.SEVERE, null, ex);
-                }
             }
         });
     }
