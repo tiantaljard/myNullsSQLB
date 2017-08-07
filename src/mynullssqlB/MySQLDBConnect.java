@@ -44,6 +44,9 @@ public class MySQLDBConnect {
 
     private int numberOfTable;
     private int totalNumberOfTable;
+    
+
+
     /**
      * for caching table names column count and row count
      */
@@ -289,7 +292,6 @@ public class MySQLDBConnect {
         ResultSet iat_results = statement.executeQuery(masterquery);
 
         while (iat_results.next()) {
-            
             tblCache.put(iat_results.getString(1) + COLCOUNT, Integer.parseInt(iat_results.getString("column_cnt")));
             tblCache.put(iat_results.getString(1) + ROWCOUNT, Integer.parseInt(iat_results.getString("rowcount")));
         }

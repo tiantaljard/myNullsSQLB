@@ -79,7 +79,7 @@ public class DBConnectDialog extends javax.swing.JDialog {
         databaseNameJLabel.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         databaseNameJLabel.setPreferredSize(new java.awt.Dimension(72, 16));
 
-        databaseNameJTextField.setText("sakila");
+        databaseNameJTextField.setText("newtestdb");
         databaseNameJTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 databaseNameJTextFieldActionPerformed(evt);
