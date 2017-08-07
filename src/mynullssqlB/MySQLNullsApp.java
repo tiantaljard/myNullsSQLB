@@ -107,6 +107,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private ArrayTableModel summaryTableColumnTableModel = new ArrayTableModel();
     // create data model for rows percentage per column null or blank
     private ArrayTableModel rowsNulsBlankArrayTableModel = new ArrayTableModel();
+    // set summaryTableModel for initial analysis of column and row count of tables
+    ResultTableModel summaryTableModel = new ResultTableModel();
+    // set summaryTableModel for Nulls & Blank analysis of column and row count of tables
+    ArrayTableModel summaryNullsBlankTableModel = new ArrayTableModel();
+
     // Create a Date format for a unique file identifyer.
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy_HH-mm-ss.SSS");
     // CSV Delimeter
@@ -150,40 +155,36 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      * Creates new form MySQLNullsApp
      */
     public MySQLNullsApp() {
-        
-            initComponents();
-            showConnectionDialog();
-            mainJPanel.setVisible(false);
-            
+
+        initComponents();
+        showConnectionDialog();
+        mainJPanel.setVisible(false);
+
         JDialog progressBarDialog = buildProgressBar("Analysing Table Column & Row Count");
 
 //detailAnalysisTable.setVisible(false);
-
-SwingWorker worker = new SwingWorker<Void, Void>() {
+        SwingWorker worker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
-        
-        
-        
 
-        try {
+                try {
 
-            //initializeModel();
-            setInitialSummaryTable();
-            tableInUse = INITIALSUMMARYDATATABLE;
-            setInitialSummaryCard();
+                    //initializeModel();
+                    setInitialSummaryTable();
+                    tableInUse = INITIALSUMMARYDATATABLE;
+                    setInitialSummaryCard();
 
-            File f = new File(SPLASHTRACKER + File.separator + "initialMainSummary.txt");
-            if (!f.exists()) {
-                prepareHelpDialog("initialMainSummary.txt", "IS1.png");
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        
+                    File f = new File(SPLASHTRACKER + File.separator + "initialMainSummary.txt");
+                    if (!f.exists()) {
+                        prepareHelpDialog("initialMainSummary.txt", "IS1.png");
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
                 return null;
             }
+
             @Override
             protected void done() {
                 progressBarDialog.setVisible(false);
@@ -194,9 +195,7 @@ SwingWorker worker = new SwingWorker<Void, Void>() {
         };
 
         worker.execute();
-        
-        
-        
+
     }
 
     /**
@@ -1049,32 +1048,55 @@ SwingWorker worker = new SwingWorker<Void, Void>() {
     }//GEN-LAST:event_summaryTableMouseClicked
 
     private void showNBSummaryTblActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showNBSummaryTblActionPerformed
+        JDialog progressBarDialog = buildProgressBar("Analysing Table for Nulls & Blank");
 
-        try {
-            setNullsBlankSummaryTable();
-            tableInUse = NBSUMMARYDATATABLE;
-        } catch (SQLException ex) {
-            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        setInitialSummaryCard();
-        initialSummaryTableFilter.setText(null);
-        summaryTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Number of Tables: " + db.getTotalNumberOfTables() + ". Tables in Current Result Set: " + summaryTable.getRowCount() + ".     ");
+        SwingWorker worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                try {
+                    setNullsBlankSummaryTable();
+                    setInitialSummaryCard();
+                    initialSummaryTableFilter.setText(null);
+                } catch (SQLException ex) {
+                    Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                return null;
+            }
 
-        File f = new File(SPLASHTRACKER + File.separator + "mainNBSummary.txt");
-        if (!f.exists()) {
-            prepareHelpDialog("mainNBSummary.txt", "NBTS1.png");
-        }
+            @Override
+            protected void done() {
+                progressBarDialog.setVisible(false);
+                tableInUse = NBSUMMARYDATATABLE;
+                //setInitialSummaryCard();
+                //initialSummaryTableFilter.setText(null);
+                summaryTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Number of Tables: " + db.getTotalNumberOfTables() + ". Tables in Current Result Set: " + summaryTable.getRowCount() + ".     ");
+                File f = new File(SPLASHTRACKER + File.separator + "mainNBSummary.txt");
+                if (!f.exists()) {
+                    prepareHelpDialog("mainNBSummary.txt", "NBTS1.png");
+                }
+            }
+        };
+
+        worker.execute();
 
 
     }//GEN-LAST:event_showNBSummaryTblActionPerformed
 
     private void showInitialSummaryTblActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showInitialSummaryTblActionPerformed
-        try {
-            setInitialSummaryTable();
-            tableInUse = INITIALSUMMARYDATATABLE;
-        } catch (SQLException ex) {
-            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+
+        if (summaryTable.getRowCount() > 0) {
+            summaryTable.setModel(summaryTableModel);
+
+        } else {
+
+            try {
+                setInitialSummaryTable();
+                tableInUse = INITIALSUMMARYDATATABLE;
+            } catch (SQLException ex) {
+                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+
         setInitialSummaryCard();
         initialSummaryTableFilter.setText(null);
         summaryTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Number of Tables: " + db.getTotalNumberOfTables() + ". Tables in Current Result Set: " + summaryTable.getRowCount() + ".     ");
@@ -1140,16 +1162,37 @@ SwingWorker worker = new SwingWorker<Void, Void>() {
 
     private void showNBSummaryTblAllTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showNBSummaryTblAllTablesActionPerformed
 
-        try {
-            setInitialSummaryTable();
-            setNullsBlankSummaryTable();
-        } catch (SQLException ex) {
-            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        JDialog progressBarDialog = buildProgressBar("Analysing Tables for Nulls and Blanks");
+        summaryScrollPanel.setVisible(false);
+        SwingWorker worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+
+                try {
+                    setInitialSummaryTable();
+                    //summaryTable.setModel(summaryTableModel);
+                    setNullsBlankSummaryTable();
+                } catch (SQLException ex) {
+                    Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                progressBarDialog.setVisible(false);
+                
         setInitialSummaryCard();
         tableInUse = NBSUMMARYDATATABLE;
         initialSummaryTableFilter.setText(null);
         summaryTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Number of Tables: " + db.getTotalNumberOfTables() + ". Tables in Current Result Set: " + summaryTable.getRowCount() + ".     ");
+        summaryScrollPanel.setVisible(true);
+            }
+        };
+
+        worker.execute();
+
 
     }//GEN-LAST:event_showNBSummaryTblAllTablesActionPerformed
 
@@ -2054,7 +2097,7 @@ SwingWorker worker = new SwingWorker<Void, Void>() {
         int rowCount = db.getNumberOfTables();
 
         Object[] columns = {"Table Name", "Column Count", "Row Count"};
-        ResultTableModel summaryTableModel = new ResultTableModel();
+
         summaryTableModel.setResultset(rs);
 
         summaryTableModel.setColumnIdentifiers(columns);
@@ -2097,12 +2140,12 @@ SwingWorker worker = new SwingWorker<Void, Void>() {
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 
         Object[][] tableNullsBlankSummaryArray = buildArrayNullsBlankSummary();
-
         Object[] columns = {"Table Name", "Column Count", "Row Count", "Table Nulls", "% Nulls", "Table Blanks", "% Blanks"};
-        ArrayTableModel summaryNullsBlankTableModel = new ArrayTableModel();
+        summaryNullsBlankTableModel = new ArrayTableModel();
         //DefaultTableModel summaryNullsBlankTableModel = new DefaultTableModel(tableNullsBlankSummaryArray, columns);
         summaryNullsBlankTableModel.setDataVector(tableNullsBlankSummaryArray, columns);
         summaryTable.setModel(summaryNullsBlankTableModel);
+
         summaryTableTitle = "Nulls & Blanks per Table Summary";
         summaryTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
         summaryTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
@@ -2429,6 +2472,7 @@ SwingWorker worker = new SwingWorker<Void, Void>() {
      */
     public int getTableSQLWhereRecordCount() {
         int selectedArrayCount;
+
         ArrayList<String> selectedTables = getRowsColOneSelectedArray(summaryTable);
         if (selectedTables.isEmpty()) {
             selectedArrayCount = db.getNumberOfTables();
@@ -2610,9 +2654,7 @@ SwingWorker worker = new SwingWorker<Void, Void>() {
     public Object[][] buildArrayNullsBlankSummary() throws SQLException {
 
         summaryChartDataset.clear();
-
         int ArrayrowCount = getTableSQLWhereRecordCount();
-
         int ArraycolCount = 7;
 
         Object[][] tableNullBlankSummaryArray = new Object[ArrayrowCount][ArraycolCount];
@@ -2664,13 +2706,12 @@ SwingWorker worker = new SwingWorker<Void, Void>() {
                 // System.out.println("summaryChartDataset getting built");
                 summaryChartDataset.addValue(percentageTableBlanks, "Blanks %", tableName);
             }
-
             tableNames.next();
             count++;
-
         }
 
         return tableNullBlankSummaryArray;
+
     }
 
     /*
