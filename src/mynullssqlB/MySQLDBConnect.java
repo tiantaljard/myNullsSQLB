@@ -42,7 +42,10 @@ public class MySQLDBConnect {
 
     private MySQLNullsApp mySQLNullsApp;
 
+    
     private int numberOfTable;
+
+
     private int totalNumberOfTable;
     
 
@@ -650,6 +653,12 @@ public class MySQLDBConnect {
      */
     public int getNumberOfTables() {
         return numberOfTable;
+    }
+    /**
+     * To allow us to rest the the number of tables
+     */
+        public void setNumberOfTableToTotalNumberofTable() {
+        this.numberOfTable = totalNumberOfTable;
     }
 
     /*
