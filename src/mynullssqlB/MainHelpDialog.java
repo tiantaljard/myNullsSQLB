@@ -76,6 +76,7 @@ public class MainHelpDialog extends javax.swing.JDialog {
         filler6 = new javax.swing.Box.Filler(new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 32767));
         filler7 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 5), new java.awt.Dimension(0, 5), new java.awt.Dimension(32767, 5));
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setBounds(new java.awt.Rectangle(300, 100, 0, 0));
         setName("JFrame4"); // NOI18N
         addWindowListener(new java.awt.event.WindowAdapter() {

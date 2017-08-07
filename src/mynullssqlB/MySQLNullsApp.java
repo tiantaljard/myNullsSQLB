@@ -1102,6 +1102,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         if (!f.exists()) {
             prepareHelpDialog("initialMainSummary.txt", "IS1.png");
         }
+        db.setNumberOfTableToTotalNumberofTable();
 
     }//GEN-LAST:event_showInitialSummaryTblActionPerformed
 
@@ -2181,14 +2182,17 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 summaryTable.setModel(summaryNullsBlankTableModel);
 
                 summaryTableTitle = "Nulls & Blanks per Table Summary";
+                summaryTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Number of Tables: " + db.getTotalNumberOfTables() + ". Tables in Current Result Set: " + summaryTable.getRowCount() + ".     ");
                 summaryTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
                 summaryTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
                 summaryTable.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
                 summaryTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
                 summaryTable.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
                 summaryTable.getColumnModel().getColumn(6).setCellRenderer(centerRenderer);
-
                 setTableRowSorter(summaryTable);
+                
+                
+                
 
 //                detailAnalysisTable.setVisible(true);
             }
