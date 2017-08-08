@@ -1112,8 +1112,25 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             initializeModel(buildTableSQLWhere());
             if (summaryTable.getModel().getColumnCount() == 3) {
 
-                setNullsBlankSummaryTable();
-                buildSummaryTableDataBarChartExplorerPanel();
+                JDialog progressBarDialog = buildProgressBar("Analysing Table");
+
+                SwingWorker worker = new SwingWorker<Void, Void>() {
+                    @Override
+                    protected Void doInBackground() throws Exception {
+
+                        setNullsBlankSummaryTable();
+                        return null;
+                    }
+
+                    @Override
+                    protected void done() {
+                        progressBarDialog.setVisible(false);
+                        buildSummaryTableDataBarChartExplorerPanel();
+                    }
+                };
+
+                worker.execute();
+
             }
 
             if (summaryTable.getModel().getColumnCount() == 7) {
@@ -1140,17 +1157,34 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }//GEN-LAST:event_showDataNavigatorActionPerformed
 
     private void showDataNavigatorAllTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showDataNavigatorAllTablesActionPerformed
-        try {
-            initializeModel();
-            setInitialSummaryTable();
-            setNullsBlankSummaryTable();
-            buildSummaryTableDataBarChartExplorerPanel();
 
-        } catch (SQLException ex) {
-            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        JDialog progressBarDialog = buildProgressBar("Analysing Table");
+
+        SwingWorker worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+
+                initializeModel();
+                setInitialSummaryTable();
+                setNullsBlankSummaryTable();
+
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                progressBarDialog.setVisible(false);
+                buildSummaryTableDataBarChartExplorerPanel();
+
+
+//                detailAnalysisTable.setVisible(true);
+            }
+        };
+
+        worker.execute();
 
         setExplorerMain();
+
         setExplorerChartCard();
         tableInUse = NBSUMMARYDATATABLE;
         tableNameTableLastSelectedRow = -1;
@@ -1549,55 +1583,54 @@ public class MySQLNullsApp extends javax.swing.JFrame {
      */
     public static void main(String args[]) {
 
-        
-            /* Set the Nimbus look and feel */
-            //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-            /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
             * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-            */
-            try {
-                for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                    if ("Nimbus".equals(info.getName())) {
-                        javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                        break;
-                    }
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
                 }
-            } catch (ClassNotFoundException ex) {
-                java.util.logging.Logger.getLogger(MySQLNullsApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (InstantiationException ex) {
-                java.util.logging.Logger.getLogger(MySQLNullsApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
-                java.util.logging.Logger.getLogger(MySQLNullsApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-            } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-                java.util.logging.Logger.getLogger(MySQLNullsApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
-            //</editor-fold>
-            
-            /* Create and display the form */
-            MainHelpDialog help = new MainHelpDialog();
-            
-            java.awt.EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    
-                    //https://www.mkyong.com/java/how-to-create-directory-in-java/
-                    File file = new File(SPLASHTRACKER);
-                    if (!file.exists()) {
-                        if (file.mkdir()) {
-                            System.out.println("Directory is created!");
-                        } else {
-                            System.out.println("Failed to create directory!");
-                        }
-                    }
-                    
-                    File f = new File(SPLASHTRACKER + File.separator + "lauchDPHasrun.txt");
-                    if (f.exists()) {
-                        new MySQLNullsApp().setVisible(true);
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(MySQLNullsApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(MySQLNullsApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(MySQLNullsApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(MySQLNullsApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        MainHelpDialog help = new MainHelpDialog();
+
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+
+                //https://www.mkyong.com/java/how-to-create-directory-in-java/
+                File file = new File(SPLASHTRACKER);
+                if (!file.exists()) {
+                    if (file.mkdir()) {
+                        System.out.println("Directory is created!");
                     } else {
-                        help.setVisible(true);
+                        System.out.println("Failed to create directory!");
                     }
                 }
-            });
-      
+
+                File f = new File(SPLASHTRACKER + File.separator + "lauchDPHasrun.txt");
+                if (f.exists()) {
+                    new MySQLNullsApp().setVisible(true);
+                } else {
+                    help.setVisible(true);
+                }
+            }
+        });
+
         //</editor-fold>
     }
 
@@ -2190,9 +2223,6 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 summaryTable.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
                 summaryTable.getColumnModel().getColumn(6).setCellRenderer(centerRenderer);
                 setTableRowSorter(summaryTable);
-                
-                
-                
 
 //                detailAnalysisTable.setVisible(true);
             }
