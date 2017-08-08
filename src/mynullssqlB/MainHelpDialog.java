@@ -19,6 +19,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
+import static mynullssqlB.MySQLNullsApp.SPLASHTRACKER;
 
 /**
  *
@@ -33,7 +34,7 @@ public class MainHelpDialog extends javax.swing.JDialog {
     /**
      * Creates new form myNullsSQLJFrame
      */
-    public MainHelpDialog()  {
+    public MainHelpDialog() {
         quitDirect = "";
         initComponents();
         File f = new File(SPLASHTRACKER + File.separator + "lauchDPHasrun.txt");
@@ -151,30 +152,28 @@ public class MainHelpDialog extends javax.swing.JDialog {
         if (quitDirect.equals("quitDirect")) {
             this.setVisible(false);
             return;
+        } else if (f.exists()) {
+            this.setVisible(false);
+            return;
         } else {
-            if (f.exists()) {
-                this.setVisible(false);
-                return;
+            File f2 = new File(SPLASHTRACKER + File.separator + "WelcomeHasrun.txt");
+
+            if (!f2.exists()) {
+                try {
+                    buildPictureImage("DP1.png");
+
+                    f2.createNewFile();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainHelpDialog.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } else {
-                File f2 = new File(SPLASHTRACKER + File.separator + "WelcomeHasrun.txt");
 
-                if (!f2.exists()) {
-                    try {
-                        buildPictureImage("DP1.png");
-
-                        f2.createNewFile();
-                    } catch (IOException ex) {
-                        Logger.getLogger(MainHelpDialog.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                } else {
-
-                    try {
-                        this.setVisible(false);
-                        new MySQLNullsApp().setVisible(true);
-                        f.createNewFile();
-                    } catch (IOException ex) {
-                        Logger.getLogger(MainHelpDialog.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                try {
+                    this.setVisible(false);
+                    new MySQLNullsApp().setVisible(true);
+                    f.createNewFile();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainHelpDialog.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -186,11 +185,17 @@ public class MainHelpDialog extends javax.swing.JDialog {
         if (f.exists()) {
             return;
         } else {
-            try {
-                new MySQLNullsApp().setVisible(true);
-                f.createNewFile();
-            } catch (IOException ex) {
-                Logger.getLogger(MainHelpDialog.class.getName()).log(Level.SEVERE, null, ex);
+            File ff = new File(SPLASHTRACKER + File.separator + "clearedWhileRunning.txt");
+            if (ff.exists()) {
+                return;
+            } else {
+
+                try {
+                    new MySQLNullsApp().setVisible(true);
+                    f.createNewFile();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainHelpDialog.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }//GEN-LAST:event_onWindowClose
@@ -226,7 +231,7 @@ public class MainHelpDialog extends javax.swing.JDialog {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                    new MainHelpDialog().setVisible(true);
+                new MainHelpDialog().setVisible(true);
             }
         });
     }
