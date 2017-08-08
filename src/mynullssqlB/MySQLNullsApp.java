@@ -144,6 +144,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     public static final String SPLASHTRACKER = "splashtracker";
     public static final String HELPCONTENT = "helpcontent";
+    public static final String YES = "YES";
+    public static final String NO = "NO";
+    public String allowUserAction = YES;
 
     private int tableNameTableLastSelectedRow = -1;
     private int columnNameTableLastSelectedRow = -1;
@@ -188,6 +191,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             @Override
             protected void done() {
                 progressBarDialog.setVisible(false);
+                allowUserAction = YES;
                 mainJPanel.setVisible(true);
 
 //                detailAnalysisTable.setVisible(true);
@@ -866,139 +870,162 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
 
     private void tableNameTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableNameTableMouseClicked
-        // check that a talbe name has been selected. If Not, do not show menu's.
-        if (tableNameTable.getSelectedRow() > -1) {
-            // only do the following if a DIFFERENT from previous table name
-            // is selected from the table navigator table window
-            if (tableNameTableLastSelectedRow != tableNameTable.getSelectedRow()) {
-                try {
-                    setTableColumnSummaryTable();
-                    tableInUse = COLUMNNBSUMMARYDATATABLE;
-                    detailAnalysisTableTitle = "Nulls & Blanks Summary for Columns in " + getRowColOneSelected(tableNameTable).toUpperCase() + " Table";
-                    detailAnalysisStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Column Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getColCount(getRowColOneSelected(tableNameTable)) + ". Columns in Current Result Set: " + db.getColCount(getRowColOneSelected(tableNameTable)) + ".     ");
-                } catch (SQLException ex) {
-                    Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+        if (allowUserAction.equals(NO)) {
+            pleaseWait();
+        } else {
+
+// check that a talbe name has been selected. If Not, do not show menu's.
+            if (tableNameTable.getSelectedRow() > -1) {
+                // only do the following if a DIFFERENT from previous table name
+                // is selected from the table navigator table window
+                if (tableNameTableLastSelectedRow != tableNameTable.getSelectedRow()) {
+                    try {
+                        setTableColumnSummaryTable();
+                        tableInUse = COLUMNNBSUMMARYDATATABLE;
+                        detailAnalysisTableTitle = "Nulls & Blanks Summary for Columns in " + getRowColOneSelected(tableNameTable).toUpperCase() + " Table";
+                        detailAnalysisStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Column Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getColCount(getRowColOneSelected(tableNameTable)) + ". Columns in Current Result Set: " + db.getColCount(getRowColOneSelected(tableNameTable)) + ".     ");
+                    } catch (SQLException ex) {
+                        Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    setDetailAnalysisCard();
+                    columnNameTableLastSelectedRow = -1;
+                    resetDynamicVariables();
+                    setColumnNameTable();
+                    setJTableColOneFilter(columnNameTable, columnNameFilter);
                 }
-                setDetailAnalysisCard();
-                columnNameTableLastSelectedRow = -1;
-                resetDynamicVariables();
-                setColumnNameTable();
-                setJTableColOneFilter(columnNameTable, columnNameFilter);
-            }
-            // if the mouse button is pressed to launch the pop up menus
-            if (evt.getButton() == MouseEvent.BUTTON3) {
+                // if the mouse button is pressed to launch the pop up menus
+                if (evt.getButton() == MouseEvent.BUTTON3) {
+                    removeTableMenuPopupItems();
+
+                    if (tableNameTableLastSelectedRow == tableNameTable.getSelectedRow()
+                            && tableInUse != COLUMNNBSUMMARYDATATABLE) {
+                        tablePopupMenu.add(showTableColumnSummary);
+                    }
+
+                    if (tableNameTableLastSelectedRow == tableNameTable.getSelectedRow()
+                            && tableInUse != ROWNBSUMMARYDATATABLE) {
+                        tablePopupMenu.add(showRowsNullsBlanksPerColumnTable);
+                    }
+
+                    if (tableNameTableLastSelectedRow == tableNameTable.getSelectedRow()
+                            && tableInUse != SQLDATATABLE) {
+                        tablePopupMenu.add(showColumnData);
+
+                    }
+
+                    if (db.getTotalNumberOfTables() != tableNameTable.getModel().getRowCount()) {
+                        tablePopupMenu.add(showDataNavigatorAllTables);
+                    }
+
+                    tablePopupMenu.add(showSummaryChart);
+
+                    tablePopupMenu.add(showInitialSummaryTbl);
+                    tablePopupMenu.add(showNBSummaryTbl);
+
+                    tablePopupMenu.show(tableNameTable, evt.getX(), evt.getY());
+
+                }
+
+                if (tableNameTableLastSelectedRow == tableNameTable.getSelectedRow()
+                        && cardViewInUse.equals(CHARTPANEL)) {
+
+                    setDetailAnalysisCard();
+
+                }
+
+                tableNameTableLastSelectedRow = tableNameTable.getSelectedRow();
+            } else {
                 removeTableMenuPopupItems();
-
-                if (tableNameTableLastSelectedRow == tableNameTable.getSelectedRow()
-                        && tableInUse != COLUMNNBSUMMARYDATATABLE) {
-                    tablePopupMenu.add(showTableColumnSummary);
-                }
-
-                if (tableNameTableLastSelectedRow == tableNameTable.getSelectedRow()
-                        && tableInUse != ROWNBSUMMARYDATATABLE) {
-                    tablePopupMenu.add(showRowsNullsBlanksPerColumnTable);
-                }
-
-                if (tableNameTableLastSelectedRow == tableNameTable.getSelectedRow()
-                        && tableInUse != SQLDATATABLE) {
-                    tablePopupMenu.add(showColumnData);
-
-                }
-
                 if (db.getTotalNumberOfTables() != tableNameTable.getModel().getRowCount()) {
                     tablePopupMenu.add(showDataNavigatorAllTables);
                 }
 
-                tablePopupMenu.add(showSummaryChart);
-
+                //tablePopupMenu.add(showSummaryChart);
                 tablePopupMenu.add(showInitialSummaryTbl);
                 tablePopupMenu.add(showNBSummaryTbl);
-
                 tablePopupMenu.show(tableNameTable, evt.getX(), evt.getY());
-
             }
 
-            if (tableNameTableLastSelectedRow == tableNameTable.getSelectedRow()
-                    && cardViewInUse.equals(CHARTPANEL)) {
-
-                setDetailAnalysisCard();
-
-            }
-
-            tableNameTableLastSelectedRow = tableNameTable.getSelectedRow();
-        } else {
-            removeTableMenuPopupItems();
-            if (db.getTotalNumberOfTables() != tableNameTable.getModel().getRowCount()) {
-                tablePopupMenu.add(showDataNavigatorAllTables);
-            }
-
-            //tablePopupMenu.add(showSummaryChart);
-            tablePopupMenu.add(showInitialSummaryTbl);
-            tablePopupMenu.add(showNBSummaryTbl);
-            tablePopupMenu.show(tableNameTable, evt.getX(), evt.getY());
+            dataTableTableTitle = ("Data view for table: " + getRowColOneSelected(tableNameTable).toUpperCase());
         }
-
-        dataTableTableTitle = ("Data view for table: " + getRowColOneSelected(tableNameTable).toUpperCase());
 
     }//GEN-LAST:event_tableNameTableMouseClicked
 
     private void tableNameTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameTableKeyReleased
-        resetDynamicVariables();
-        setColumnNameTable();
-        setJTableColOneFilter(columnNameTable, columnNameFilter);
-        try {
-            setTableColumnSummaryTable();
-            tableInUse = COLUMNNBSUMMARYDATATABLE;
-        } catch (SQLException ex) {
-            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+        if (allowUserAction.equals(NO)) {
+            pleaseWait();
+        } else {
+            resetDynamicVariables();
+            setColumnNameTable();
+            setJTableColOneFilter(columnNameTable, columnNameFilter);
+            try {
+                setTableColumnSummaryTable();
+                tableInUse = COLUMNNBSUMMARYDATATABLE;
+            } catch (SQLException ex) {
+                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            tableNameTableLastSelectedRow = tableNameTable.getSelectedRow();
+            columnNameTableLastSelectedRow = -1;
+            dataTableTableTitle = ("Data view for table: " + getRowColOneSelected(tableNameTable).toUpperCase());
+            try {
+
+                detailAnalysisTableTitle = "Nulls & Blanks Summary for Columns in " + getRowColOneSelected(tableNameTable).toUpperCase() + " Table";
+                detailAnalysisStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Column Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getColCount(getRowColOneSelected(tableNameTable)) + ". Columns in Current Result Set: " + db.getColCount(getRowColOneSelected(tableNameTable)) + ".     ");
+            } catch (SQLException ex) {
+                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            setDetailAnalysisCard();
+
         }
-        tableNameTableLastSelectedRow = tableNameTable.getSelectedRow();
-        columnNameTableLastSelectedRow = -1;
-        dataTableTableTitle = ("Data view for table: " + getRowColOneSelected(tableNameTable).toUpperCase());
-        try {
-
-            detailAnalysisTableTitle = "Nulls & Blanks Summary for Columns in " + getRowColOneSelected(tableNameTable).toUpperCase() + " Table";
-            detailAnalysisStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Column Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getColCount(getRowColOneSelected(tableNameTable)) + ". Columns in Current Result Set: " + db.getColCount(getRowColOneSelected(tableNameTable)) + ".     ");
-        } catch (SQLException ex) {
-            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        setDetailAnalysisCard();
-
-
     }//GEN-LAST:event_tableNameTableKeyReleased
 
     private void columnNameTableKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_columnNameTableKeyReleased
-        try {
-            columnNameTableSelctionColumn = columnNameTable.getSelectedColumn();
-            setDataTable(getColumnData());
-            tableInUse = SQLDATATABLE;
-            dataTableScrollPanel.setVisible(true);
-            dataTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Record Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".     ");
-        } catch (SQLException ex) {
-            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+        if (allowUserAction.equals(NO)) {
+            pleaseWait();
+        } else {
+            try {
+                columnNameTableSelctionColumn = columnNameTable.getSelectedColumn();
+                setDataTable(getColumnData());
+                tableInUse = SQLDATATABLE;
+                dataTableScrollPanel.setVisible(true);
+                dataTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Record Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".     ");
+            } catch (SQLException ex) {
+                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            columnNameTableLastSelectedRow = columnNameTable.getSelectedRow();
         }
-        columnNameTableLastSelectedRow = columnNameTable.getSelectedRow();
 
     }//GEN-LAST:event_columnNameTableKeyReleased
 
     private void tableNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tableNameFilterKeyReleased
-        setJTableColOneFilter(tableNameTable, tableNameFilter);
-        tableNameTableLastSelectedRow = -1;
-        setColumnNameTable();
-        setJTableColOneFilter(columnNameTable, columnNameFilter);
-        //buildSummaryTableDataBarChartExplorerPanel();
-        setExplorerChartCard();
-        tableInUse = NBSUMMARYDATATABLE;
-
+        if (allowUserAction.equals(NO)) {
+            pleaseWait();
+            tableNameFilter.setText(null);
+        } else {
+            setJTableColOneFilter(tableNameTable, tableNameFilter);
+            tableNameTableLastSelectedRow = -1;
+            setColumnNameTable();
+            setJTableColOneFilter(columnNameTable, columnNameFilter);
+            //buildSummaryTableDataBarChartExplorerPanel();
+            setExplorerChartCard();
+            tableInUse = NBSUMMARYDATATABLE;
+        }
     }//GEN-LAST:event_tableNameFilterKeyReleased
 
     private void columnNameFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_columnNameFilterKeyReleased
-        setJTableColOneFilter(columnNameTable, columnNameFilter);
-        columnNameTableLastSelectedRow = -1;
+        if (allowUserAction.equals(NO)) {
+            pleaseWait();
+            columnNameFilter.setText(null);
+        } else {
+            setJTableColOneFilter(columnNameTable, columnNameFilter);
+            columnNameTableLastSelectedRow = -1;
+        }
     }//GEN-LAST:event_columnNameFilterKeyReleased
 
     private void columnNameTableMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_columnNameTableMouseReleased
-        if (columnNameTable.getSelectedRow() > -1) {
+        if (allowUserAction.equals(NO)) {
+            pleaseWait();
+        } else if (columnNameTable.getSelectedRow() > -1) {
 
             columnNameTableSelctionColumn = columnNameTable.columnAtPoint(evt.getPoint());
             try {
@@ -1010,17 +1037,24 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
             }
             columnNameTableLastSelectedRow = columnNameTable.getSelectedRow();
-
         }
     }//GEN-LAST:event_columnNameTableMouseReleased
 
     private void initialSummaryTableFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_initialSummaryTableFilterKeyReleased
-        setJTableColOneFilter(summaryTable, initialSummaryTableFilter);
-        summaryTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Number of Tables: " + db.getTotalNumberOfTables() + ". Tables in Current Result Set: " + summaryTable.getRowCount() + ".     ");
+        if (allowUserAction.equals(NO)) {
+            pleaseWait();
+            initialSummaryTableFilter.setText(null);
+
+        } else {
+            setJTableColOneFilter(summaryTable, initialSummaryTableFilter);
+            summaryTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Number of Tables: " + db.getTotalNumberOfTables() + ". Tables in Current Result Set: " + summaryTable.getRowCount() + ".     ");
+        }
     }//GEN-LAST:event_initialSummaryTableFilterKeyReleased
 
     private void summaryTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_summaryTableMouseClicked
-        if (evt.getButton() == MouseEvent.BUTTON3) {
+        if (allowUserAction.equals(NO)) {
+            pleaseWait();
+        } else if (evt.getButton() == MouseEvent.BUTTON3) {
 
             removeTableMenuPopupItems();
 
@@ -1045,6 +1079,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
             tablePopupMenu.show(summaryTable, evt.getX(), evt.getY());
         }
+
     }//GEN-LAST:event_summaryTableMouseClicked
 
     private void showNBSummaryTblActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showNBSummaryTblActionPerformed
@@ -1125,6 +1160,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                     @Override
                     protected void done() {
                         progressBarDialog.setVisible(false);
+                        allowUserAction = YES;
                         buildSummaryTableDataBarChartExplorerPanel();
                     }
                 };
@@ -1174,8 +1210,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             @Override
             protected void done() {
                 progressBarDialog.setVisible(false);
+                allowUserAction = YES;
                 buildSummaryTableDataBarChartExplorerPanel();
-
 
 //                detailAnalysisTable.setVisible(true);
             }
@@ -1214,6 +1250,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             @Override
             protected void done() {
                 progressBarDialog.setVisible(false);
+                allowUserAction = YES;
 
                 setInitialSummaryCard();
                 tableInUse = NBSUMMARYDATATABLE;
@@ -1313,7 +1350,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }//GEN-LAST:event_showTableColumnSummaryActionPerformed
 
     private void dataTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dataTableMouseClicked
-        if (evt.getButton() == MouseEvent.BUTTON3) {
+        if (allowUserAction.equals(NO)) {
+            pleaseWait();
+        } else if (evt.getButton() == MouseEvent.BUTTON3) {
             removeTableMenuPopupItems();
 
             // tablePopupMenu.add(showSummaryChart);
@@ -1404,42 +1443,50 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }//GEN-LAST:event_limitRowsFilterActionPerformed
 
     private void limitRowsFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_limitRowsFilterKeyReleased
-        try {
-            if (Integer.parseInt(limitRowsFilter.getText()) == (int) Integer.parseInt(limitRowsFilter.getText())) {
-                limitRowsFilterInt = Integer.parseInt(limitRowsFilter.getText());
-                if (limitRowsFilterInt > 0) {
-                    limitRows = " limit " + limitRowsFilterInt;
-                } else {
-                    limitRows = "";
+        if (allowUserAction.equals(NO)) {
+            pleaseWait();
+            limitRowsFilter.setText(null);
+
+        } else {
+            try {
+                if (Integer.parseInt(limitRowsFilter.getText()) == (int) Integer.parseInt(limitRowsFilter.getText())) {
+                    limitRowsFilterInt = Integer.parseInt(limitRowsFilter.getText());
+                    if (limitRowsFilterInt > 0) {
+                        limitRows = " limit " + limitRowsFilterInt;
+                    } else {
+                        limitRows = "";
+                    }
+                }
+            } catch (Exception e) {
+
+                if (!limitRowsFilter.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "You did not enter a number. \n Data records will not be limited.");
+                }
+                limitRowsFilter.setText(null);
+                limitRowsFilterInt = 0;
+                limitRows = "";
+
+            }
+
+            if (tableInUse.equals(SQLDATATABLE)) {
+                try {
+                    setDataTable(getColumnData());
+                } catch (SQLException ex) {
+                    Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        } catch (Exception e) {
-
-            if (!limitRowsFilter.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "You did not enter a number. \n Data records will not be limited.");
-            }
-            limitRowsFilter.setText(null);
-            limitRowsFilterInt = 0;
-            limitRows = "";
-
-        }
-
-        if (tableInUse.equals(SQLDATATABLE)) {
             try {
-                setDataTable(getColumnData());
+                dataTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Record Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".     ");
             } catch (SQLException ex) {
                 Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        try {
-            dataTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Record Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".     ");
-        } catch (SQLException ex) {
-            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }//GEN-LAST:event_limitRowsFilterKeyReleased
 
     private void detailAnalysisTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_detailAnalysisTableMouseClicked
-        if (evt.getButton() == MouseEvent.BUTTON3) {
+        if (allowUserAction.equals(NO)) {
+            pleaseWait();
+        } else if (evt.getButton() == MouseEvent.BUTTON3) {
             removeTableMenuPopupItems();
 
             if (tableInUse.equals(COLUMNNBSUMMARYDATATABLE)) {
@@ -1469,18 +1516,23 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }//GEN-LAST:event_detailAnalysisTableMouseClicked
 
     private void detailAnalysisFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_detailAnalysisFilterKeyReleased
-        setJTableColOneFilter(detailAnalysisTable, detailAnalysisFilter);
-        if (tableInUse.equals(COLUMNNBSUMMARYDATATABLE)) {
-            try {
-                detailAnalysisStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Column Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getColCount(getRowColOneSelected(tableNameTable)) + ". Columns in Current Result Set: " + detailAnalysisTable.getRowCount() + ".     ");
-            } catch (SQLException ex) {
-                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        if (allowUserAction.equals(NO)) {
+            pleaseWait();
+            detailAnalysisFilter.setText(null);
         } else {
-            try {
-                detailAnalysisStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Column Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getColCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + detailAnalysisTable.getRowCount() + ".     ");
-            } catch (SQLException ex) {
-                Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+            setJTableColOneFilter(detailAnalysisTable, detailAnalysisFilter);
+            if (tableInUse.equals(COLUMNNBSUMMARYDATATABLE)) {
+                try {
+                    detailAnalysisStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Column Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getColCount(getRowColOneSelected(tableNameTable)) + ". Columns in Current Result Set: " + detailAnalysisTable.getRowCount() + ".     ");
+                } catch (SQLException ex) {
+                    Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                try {
+                    detailAnalysisStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Column Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getColCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + detailAnalysisTable.getRowCount() + ".     ");
+                } catch (SQLException ex) {
+                    Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
         setJTableColOneFilter(detailAnalysisTable, detailAnalysisFilter);    }//GEN-LAST:event_detailAnalysisFilterKeyReleased
@@ -1526,15 +1578,30 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     }//GEN-LAST:event_showColumnDataFromDetailAnalysisActionPerformed
 
     private void dbParametersMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dbParametersMenuItemActionPerformed
-        try {
-            showConnectionDialog();
-            setInitialSummaryTable();
-            tableInUse = INITIALSUMMARYDATATABLE;
-            initialSummaryTableFilter.setText(null);
-            setInitialSummaryCard();
-        } catch (SQLException ex) {
-            Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+        JDialog progressBarDialog = buildProgressBar("Analysing Table");
+
+            SwingWorker worker = new SwingWorker<Void, Void>() {
+                @Override
+                protected Void doInBackground() throws Exception {
+                    showConnectionDialog();
+                    setInitialSummaryTable();
+                    return null;
+                }
+
+                @Override
+                protected void done() {
+                    progressBarDialog.setVisible(false);
+                    allowUserAction = YES;
+                    tableInUse = INITIALSUMMARYDATATABLE;
+                    initialSummaryTableFilter.setText(null);
+                    setInitialSummaryCard();
+                }
+            };
+
+            worker.execute();
+
+
     }//GEN-LAST:event_dbParametersMenuItemActionPerformed
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
@@ -2203,6 +2270,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             protected void done() {
 
                 progressBarDialog.setVisible(false);
+                allowUserAction = YES;
 
                 DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
                 centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
@@ -2992,6 +3060,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             @Override
             protected void done() {
                 progressBarDialog.setVisible(false);
+                allowUserAction = YES;
 
                 detailAnalysisTable.setVisible(true);
             }
@@ -3029,6 +3098,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             @Override
             protected void done() {
                 progressBarDialog.setVisible(false);
+                allowUserAction = YES;
 
                 detailAnalysisTable.setVisible(true);
             }
@@ -3672,6 +3742,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         progressBarDialog.setSize(400, 75);
         progressBarDialog.setLocation(450, 300);
         progressBarDialog.setVisible(true);
+        allowUserAction = NO;
 
         return progressBarDialog;
 
@@ -3704,6 +3775,13 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
 
         }
+    }
+
+    private void pleaseWait() {
+        JOptionPane.showMessageDialog(null, " Please wait untill previous command "
+                + "finnished computing. \n"
+                + "\n"
+                + "Try again once the progress bar is no longer displayed");
     }
 
     /*
