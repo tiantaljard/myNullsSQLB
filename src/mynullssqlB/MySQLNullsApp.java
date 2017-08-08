@@ -625,6 +625,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         columnDetailsSpiltPanel.setPreferredSize(new java.awt.Dimension(450, 532));
 
+        colNmParentPanel.setPreferredSize(new java.awt.Dimension(255, 526));
         colNmParentPanel.setLayout(new java.awt.BorderLayout());
 
         colNmFilterPanel.setLayout(new java.awt.BorderLayout());
@@ -988,7 +989,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 setDataTable(getColumnData());
                 tableInUse = SQLDATATABLE;
                 dataTableScrollPanel.setVisible(true);
-                dataTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Record Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".     ");
+                dataTableStatusBar.setText("DB Name:" + db.getDatabaseName() + ". Total Record Count for " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".");
             } catch (SQLException ex) {
                 Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -1030,7 +1031,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             columnNameTableSelctionColumn = columnNameTable.columnAtPoint(evt.getPoint());
             try {
                 setDataTable(getColumnData());
-                dataTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Record Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".     ");
+                dataTableStatusBar.setText("DB Name:" + db.getDatabaseName() + ". Total Record Count for " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".");
                 tableInUse = SQLDATATABLE;
                 dataTableScrollPanel.setVisible(true);
             } catch (SQLException ex) {
@@ -1476,7 +1477,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 }
             }
             try {
-                dataTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Record Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".     ");
+                dataTableStatusBar.setText("DB Name:" + db.getDatabaseName() + ". Total Record Count for " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".");
             } catch (SQLException ex) {
                 Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -2166,7 +2167,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         columnNameTable.getColumnModel().getColumn(2).setPreferredWidth(45);
         columnNameTable.getColumnModel().getColumn(2).setMaxWidth(45);
         // columnNameTable.getColumnModel().getColumn(3).setMinWidth(10);
-        columnNameTable.getColumnModel().getColumn(3).setPreferredWidth(1);
+        columnNameTable.getColumnModel().getColumn(3).setPreferredWidth(60);
         columnNameTable.getColumnModel().getColumn(3).setMaxWidth(Integer.MAX_VALUE);
 
         columnNameTable.getTableHeader().setReorderingAllowed(false);
@@ -3534,7 +3535,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 TitledBorder.CENTER,
                 TitledBorder.TOP));
         dataTableScrollPanel.setVisible(true);
-        dataTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Record Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".     ");
+        dataTableStatusBar.setText("DB Name:" + db.getDatabaseName() + ". Total Record Count for " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".");
 
     }
 
@@ -3751,7 +3752,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     public void buildDataExplorerViewFromDetailAnalysisTable() throws Exception {
         dataFromDetailAnalysis = "dataFromDetailAnalysis";
         setDataTable(getColumnDataDetailAnalysis());
-        dataTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Record Count for Table " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".     ");
+        dataTableStatusBar.setText("DB Name:" + db.getDatabaseName() + ". Total Record Count for " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".");
         tableInUse = SQLDATATABLE;
         setExplorerTableCard();
         dataFromDetailAnalysis = "";
