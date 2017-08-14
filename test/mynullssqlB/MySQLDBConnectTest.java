@@ -208,19 +208,6 @@ public class MySQLDBConnectTest {
         assertEquals(expResult, result);
     }
 
-    /**
-     * Test of resultSetToTableModel method, of class MySQLDBConnect.
-     * Check if a result set is converted into a table model
-     */
-    @Test
-    public void testResultSetToTableModel() throws SQLException {
-        System.out.println("resultSetToTableModel");
-        ResultSet rs = instance.analyseTables();
-        TableModel table_model =instance.resultSetToTableModel(rs);
-        String result =table_model.getColumnName(1);
-        String expResult ="column_cnt";
-        assertEquals(expResult, result);
-    }
 
     /**
      * Test of resultSetToColumnNameTableModel method, of class MySQLDBConnect.
@@ -314,19 +301,6 @@ public class MySQLDBConnectTest {
         assertEquals(expResult, result);
     }
 
-    /**
-     * Test of getTableNames method, of class MySQLDBConnect.
-     */
-    @Test
-    public void testGetTableNames_0args() throws Exception {
-        System.out.println("getTableNames");
-        MySQLDBConnect instance = new MySQLDBConnect();
-        ResultSet expResult = null;
-        ResultSet result = instance.getTableNames();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
 
     /**
      * Test of getTableNames method, of class MySQLDBConnect.
@@ -344,45 +318,6 @@ public class MySQLDBConnectTest {
         
     }
 
-    /**
-     * Test of buildTableNullsBlankSummary method, of class MySQLDBConnect.
-     */
-    @Test
-    public void testBuildTableNullsBlankSummary() throws Exception {
-        System.out.println("buildTableNullsBlankSummary");
-        
-        Object[][] expResult = null;
-        Object[][] result = instance.buildTableNullsBlankSummary();
-        assertArrayEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of buildTableInitialSummary method, of class MySQLDBConnect.
-     */
-    @Test
-    public void testBuildTableInitialSummary() throws Exception {
-        System.out.println("buildTableInitialSummary");
-        MySQLDBConnect instance = new MySQLDBConnect();
-        ArrayList expResult = null;
-        ArrayList result = instance.buildTableInitialSummary();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of formatDouble method, of class MySQLDBConnect.
-     */
-    @Test
-    public void testFormatDouble() {
-        System.out.println("formatDouble");
-        double d = 0.0;
-        String expResult = "0";
-        String result = MySQLDBConnect.formatDouble(d);
-        assertEquals(expResult, result);
-        
-    }
+    
 
 }
