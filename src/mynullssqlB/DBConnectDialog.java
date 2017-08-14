@@ -5,10 +5,6 @@
  */
 package mynullssqlB;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
-import java.awt.Component;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
