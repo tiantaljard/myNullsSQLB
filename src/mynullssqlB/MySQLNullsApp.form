@@ -462,9 +462,10 @@
                   <SubComponents>
                     <Component class="javax.swing.JTextField" name="initialSummaryTableFilter">
                       <Properties>
-                        <Property name="toolTipText" type="java.lang.String" value="Table Filter"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Content Filter"/>
                       </Properties>
                       <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="initialSummaryTableFilterActionPerformed"/>
                         <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="initialSummaryTableFilterKeyReleased"/>
                       </Events>
                     </Component>
@@ -513,6 +514,9 @@
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout"/>
           <SubComponents>
             <Container class="javax.swing.JPanel" name="tblNmParentPanel">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="tblNmParentPanel.setBorder (BorderFactory.createTitledBorder (BorderFactory.createEtchedBorder (),&#xa;                                                            &quot;Table Selector&quot;,&#xa;                                                            TitledBorder.CENTER,&#xa;                                                            TitledBorder.TOP));"/>
+              </AuxValues>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
                   <JSplitPaneConstraints position="left"/>
@@ -618,6 +622,9 @@
                           <Dimension value="[255, 526]"/>
                         </Property>
                       </Properties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="colNmParentPanel.setBorder (BorderFactory.createTitledBorder (BorderFactory.createEtchedBorder (),&#xa;                                                            &quot;Query Builder&quot;,&#xa;                                                            TitledBorder.CENTER,&#xa;                                                            TitledBorder.TOP));"/>
+                      </AuxValues>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
                           <JSplitPaneConstraints position="left"/>
@@ -740,6 +747,27 @@
                             </Component>
                           </SubComponents>
                         </Container>
+                        <Container class="javax.swing.JPanel" name="dataTableStatusPanel1">
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                              <BorderConstraints direction="South"/>
+                            </Constraint>
+                          </Constraints>
+
+                          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+                          <SubComponents>
+                            <Component class="javax.swing.JLabel" name="dataTableStatusBar1">
+                              <Properties>
+                                <Property name="text" type="java.lang.String" value="jLabel1"/>
+                              </Properties>
+                              <Constraints>
+                                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                                  <BorderConstraints direction="East"/>
+                                </Constraint>
+                              </Constraints>
+                            </Component>
+                          </SubComponents>
+                        </Container>
                       </SubComponents>
                     </Container>
                     <Container class="javax.swing.JPanel" name="columnDetailPanel">
@@ -784,6 +812,7 @@
                                     <Column editable="true" title="Title 4" type="java.lang.Object"/>
                                   </Table>
                                 </Property>
+                                <Property name="autoResizeMode" type="int" value="0"/>
                               </Properties>
                               <Events>
                                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="dataTableMouseClicked"/>
@@ -926,6 +955,9 @@
                           </Layout>
                           <SubComponents>
                             <Component class="javax.swing.JTextField" name="detailAnalysisFilter">
+                              <Properties>
+                                <Property name="toolTipText" type="java.lang.String" value="Content Filter"/>
+                              </Properties>
                               <Events>
                                 <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="detailAnalysisFilterKeyReleased"/>
                               </Events>

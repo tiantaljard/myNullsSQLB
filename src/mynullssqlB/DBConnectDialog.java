@@ -248,9 +248,8 @@ public class DBConnectDialog extends javax.swing.JDialog {
             analyseJButton.setEnabled(true);
 
         } catch (SQLException e) { // if server and database connection fail run this
-            JOptionPane.showMessageDialog(null,
-                    "The connection to the server and database was not Successful \n"
-                    + "Connection Error: " + e);
+            JOptionPane.showMessageDialog(null,"The connection to the server and database was not successful \n"
+                    + " Please confirm the database connection parameters are correct \n");
         }
     }//GEN-LAST:event_testDBConnectJButtonActionPerformed
 
@@ -311,7 +310,7 @@ public class DBConnectDialog extends javax.swing.JDialog {
             
         } catch (SQLException e) { // if server and database connection fail run this
             JOptionPane.showMessageDialog(null,
-                    "The connection to the server and database was not Successful \n"
+                    "The connection to the server and database was not successful \n"
                     + " Please confirm the database connection parameters are correct \n"
             //             +"Connection Error: " + e);
             );

@@ -49,6 +49,7 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
@@ -279,6 +280,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 }
             }
         };
+        dataTableStatusPanel1 = new javax.swing.JPanel();
+        dataTableStatusBar1 = new javax.swing.JLabel();
         columnDetailPanel = new javax.swing.JPanel();
         dataTableScrollPanel = new javax.swing.JScrollPane();
         dataTable = new javax.swing.JTable();
@@ -538,7 +541,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         topInitialSummaryView.setLayout(new java.awt.BorderLayout());
 
-        initialSummaryTableFilter.setToolTipText("Table Filter");
+        initialSummaryTableFilter.setToolTipText("Content Filter");
+        initialSummaryTableFilter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                initialSummaryTableFilterActionPerformed(evt);
+            }
+        });
         initialSummaryTableFilter.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 initialSummaryTableFilterKeyReleased(evt);
@@ -620,254 +628,271 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         tblNmParentPanel.add(tblNmScrollPanel, java.awt.BorderLayout.CENTER);
 
         dataExplorerSplitPane.setLeftComponent(tblNmParentPanel);
+        tblNmParentPanel.setBorder (BorderFactory.createTitledBorder (BorderFactory.createEtchedBorder (),
+            "Table Selector",
+            TitledBorder.CENTER,
+            TitledBorder.TOP));
 
-        mainRightPanel.setLayout(new java.awt.CardLayout());
+    mainRightPanel.setLayout(new java.awt.CardLayout());
 
-        columnDetailsSpiltPanel.setPreferredSize(new java.awt.Dimension(450, 532));
+    columnDetailsSpiltPanel.setPreferredSize(new java.awt.Dimension(450, 532));
 
-        colNmParentPanel.setPreferredSize(new java.awt.Dimension(255, 526));
-        colNmParentPanel.setLayout(new java.awt.BorderLayout());
+    colNmParentPanel.setPreferredSize(new java.awt.Dimension(255, 526));
+    colNmParentPanel.setLayout(new java.awt.BorderLayout());
 
-        colNmFilterPanel.setLayout(new java.awt.BorderLayout());
+    colNmFilterPanel.setLayout(new java.awt.BorderLayout());
 
-        columnNameFilter.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        columnNameFilter.setToolTipText("Column name filter");
-        columnNameFilter.setPreferredSize(new java.awt.Dimension(100, 26));
-        columnNameFilter.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                columnNameFilterKeyReleased(evt);
-            }
-        });
-        colNmFilterPanel.add(columnNameFilter, java.awt.BorderLayout.WEST);
+    columnNameFilter.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+    columnNameFilter.setToolTipText("Column name filter");
+    columnNameFilter.setPreferredSize(new java.awt.Dimension(100, 26));
+    columnNameFilter.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyReleased(java.awt.event.KeyEvent evt) {
+            columnNameFilterKeyReleased(evt);
+        }
+    });
+    colNmFilterPanel.add(columnNameFilter, java.awt.BorderLayout.WEST);
 
-        limitRowsFilter.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        limitRowsFilter.setToolTipText("Return top n rows");
-        limitRowsFilter.setPreferredSize(new java.awt.Dimension(55, 26));
-        limitRowsFilter.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                limitRowsFilterActionPerformed(evt);
-            }
-        });
-        limitRowsFilter.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                limitRowsFilterKeyReleased(evt);
-            }
-        });
-        colNmFilterPanel.add(limitRowsFilter, java.awt.BorderLayout.EAST);
+    limitRowsFilter.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+    limitRowsFilter.setToolTipText("Return top n rows");
+    limitRowsFilter.setPreferredSize(new java.awt.Dimension(55, 26));
+    limitRowsFilter.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            limitRowsFilterActionPerformed(evt);
+        }
+    });
+    limitRowsFilter.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyReleased(java.awt.event.KeyEvent evt) {
+            limitRowsFilterKeyReleased(evt);
+        }
+    });
+    colNmFilterPanel.add(limitRowsFilter, java.awt.BorderLayout.EAST);
 
-        colNmParentPanel.add(colNmFilterPanel, java.awt.BorderLayout.NORTH);
+    colNmParentPanel.add(colNmFilterPanel, java.awt.BorderLayout.NORTH);
 
-        colNmScrollPanel.setToolTipText("\n\n");
-        colNmScrollPanel.setPreferredSize(new java.awt.Dimension(150, 500));
-        colNmScrollPanel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                colNmScrollPanelMouseClicked(evt);
-            }
-        });
+    colNmScrollPanel.setToolTipText("\n\n");
+    colNmScrollPanel.setPreferredSize(new java.awt.Dimension(150, 500));
+    colNmScrollPanel.addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseClicked(java.awt.event.MouseEvent evt) {
+            colNmScrollPanelMouseClicked(evt);
+        }
+    });
 
-        columnNameTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+    columnNameTable.setModel(new javax.swing.table.DefaultTableModel(
+        new Object [][] {
 
-            },
-            new String [] {
-                "Colums", "Nulls", "Blanks", "null"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, true, true, true
-            };
+        },
+        new String [] {
+            "Colums", "Nulls", "Blanks", "null"
+        }
+    ) {
+        Class[] types = new Class [] {
+            java.lang.String.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.String.class
+        };
+        boolean[] canEdit = new boolean [] {
+            false, true, true, true
+        };
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
+        public Class getColumnClass(int columnIndex) {
+            return types [columnIndex];
+        }
 
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        columnNameTable.setToolTipText("<html>\n<br>Specify columns and conditons for data display<br><br>\n\n<html>Columns: select the table to display<br><br>\n<html>Null: Select to limit result set to only rows where column is null<br> <br>\n<html>Blank: Select to limit result set to only rows where column is blank<br><br>\n<html>Text: Enter text to limit result to only rows that contain entered text<br><br></html>");
-        columnNameTable.setSelectionMode(1);
-        columnNameTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                columnNameTableMouseReleased(evt);
-            }
-        });
-        columnNameTable.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                columnNameTableKeyReleased(evt);
-            }
-        });
-        colNmScrollPanel.setViewportView(columnNameTable);
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return canEdit [columnIndex];
+        }
+    });
+    columnNameTable.setToolTipText("<html>\n<br>Specify columns and conditons for data display<br><br>\n\n<html>Columns: select the table to display<br><br>\n<html>Null: Select to limit result set to only rows where column is null<br> <br>\n<html>Blank: Select to limit result set to only rows where column is blank<br><br>\n<html>Text: Enter text to limit result to only rows that contain entered text<br><br></html>");
+    columnNameTable.setSelectionMode(1);
+    columnNameTable.addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseReleased(java.awt.event.MouseEvent evt) {
+            columnNameTableMouseReleased(evt);
+        }
+    });
+    columnNameTable.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyReleased(java.awt.event.KeyEvent evt) {
+            columnNameTableKeyReleased(evt);
+        }
+    });
+    colNmScrollPanel.setViewportView(columnNameTable);
 
-        colNmParentPanel.add(colNmScrollPanel, java.awt.BorderLayout.CENTER);
+    colNmParentPanel.add(colNmScrollPanel, java.awt.BorderLayout.CENTER);
 
-        columnDetailsSpiltPanel.setLeftComponent(colNmParentPanel);
+    dataTableStatusPanel1.setLayout(new java.awt.BorderLayout());
 
-        columnDetailPanel.setPreferredSize(new java.awt.Dimension(300, 404));
-        columnDetailPanel.setLayout(new java.awt.BorderLayout());
+    dataTableStatusBar1.setText("jLabel1");
+    dataTableStatusPanel1.add(dataTableStatusBar1, java.awt.BorderLayout.EAST);
 
-        dataTableScrollPanel.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-        dataTableScrollPanel.setPreferredSize(new java.awt.Dimension(300, 404));
+    colNmParentPanel.add(dataTableStatusPanel1, java.awt.BorderLayout.SOUTH);
 
-        dataTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        dataTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                dataTableMouseClicked(evt);
-            }
-        });
-        dataTableScrollPanel.setViewportView(dataTable);
+    columnDetailsSpiltPanel.setLeftComponent(colNmParentPanel);
+    colNmParentPanel.setBorder (BorderFactory.createTitledBorder (BorderFactory.createEtchedBorder (),
+        "Query Builder",
+        TitledBorder.CENTER,
+        TitledBorder.TOP));
 
-        columnDetailPanel.add(dataTableScrollPanel, java.awt.BorderLayout.CENTER);
+columnDetailPanel.setPreferredSize(new java.awt.Dimension(300, 404));
+columnDetailPanel.setLayout(new java.awt.BorderLayout());
 
-        columnDetailChartPanel.setLayout(new java.awt.BorderLayout());
-        columnDetailPanel.add(columnDetailChartPanel, java.awt.BorderLayout.PAGE_START);
+dataTableScrollPanel.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+dataTableScrollPanel.setPreferredSize(new java.awt.Dimension(300, 404));
 
-        dataTableStatusPanel.setLayout(new java.awt.BorderLayout());
+dataTable.setModel(new javax.swing.table.DefaultTableModel(
+    new Object [][] {
+        {null, null, null, null},
+        {null, null, null, null},
+        {null, null, null, null},
+        {null, null, null, null}
+    },
+    new String [] {
+        "Title 1", "Title 2", "Title 3", "Title 4"
+    }
+    ));
+    dataTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+    dataTable.addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseClicked(java.awt.event.MouseEvent evt) {
+            dataTableMouseClicked(evt);
+        }
+    });
+    dataTableScrollPanel.setViewportView(dataTable);
 
-        dataTableStatusBar.setText("jLabel1");
-        dataTableStatusPanel.add(dataTableStatusBar, java.awt.BorderLayout.EAST);
+    columnDetailPanel.add(dataTableScrollPanel, java.awt.BorderLayout.CENTER);
 
-        columnDetailPanel.add(dataTableStatusPanel, java.awt.BorderLayout.SOUTH);
+    columnDetailChartPanel.setLayout(new java.awt.BorderLayout());
+    columnDetailPanel.add(columnDetailChartPanel, java.awt.BorderLayout.PAGE_START);
 
-        columnDetailsSpiltPanel.setRightComponent(columnDetailPanel);
+    dataTableStatusPanel.setLayout(new java.awt.BorderLayout());
 
-        mainRightPanel.add(columnDetailsSpiltPanel, "cardColumnDetailSplitPanel");
+    dataTableStatusBar.setText("jLabel1");
+    dataTableStatusPanel.add(dataTableStatusBar, java.awt.BorderLayout.EAST);
 
-        chartPanel.setLayout(new java.awt.BorderLayout());
+    columnDetailPanel.add(dataTableStatusPanel, java.awt.BorderLayout.SOUTH);
 
-        javax.swing.GroupLayout cardChartPanelLayout = new javax.swing.GroupLayout(cardChartPanel);
-        cardChartPanel.setLayout(cardChartPanelLayout);
-        cardChartPanelLayout.setHorizontalGroup(
-            cardChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 764, Short.MAX_VALUE)
-        );
-        cardChartPanelLayout.setVerticalGroup(
-            cardChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(cardChartPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+    columnDetailsSpiltPanel.setRightComponent(columnDetailPanel);
 
-        mainRightPanel.add(cardChartPanel, "chartPanel");
+    mainRightPanel.add(columnDetailsSpiltPanel, "cardColumnDetailSplitPanel");
 
-        detailAnalysisPanel.setLayout(new java.awt.BorderLayout());
+    chartPanel.setLayout(new java.awt.BorderLayout());
 
-        detailAnalysisTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                detailAnalysisTableMouseClicked(evt);
-            }
-        });
-        detailAnalysisScrollPanel.setViewportView(detailAnalysisTable);
+    javax.swing.GroupLayout cardChartPanelLayout = new javax.swing.GroupLayout(cardChartPanel);
+    cardChartPanel.setLayout(cardChartPanelLayout);
+    cardChartPanelLayout.setHorizontalGroup(
+        cardChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addComponent(chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 764, Short.MAX_VALUE)
+    );
+    cardChartPanelLayout.setVerticalGroup(
+        cardChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(cardChartPanelLayout.createSequentialGroup()
+            .addContainerGap()
+            .addComponent(chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE)
+            .addContainerGap())
+    );
 
-        detailAnalysisPanel.add(detailAnalysisScrollPanel, java.awt.BorderLayout.CENTER);
+    mainRightPanel.add(cardChartPanel, "chartPanel");
 
-        topDetailAnalysisView.setLayout(new java.awt.BorderLayout());
+    detailAnalysisPanel.setLayout(new java.awt.BorderLayout());
 
-        detailAnalysisFilterPanel.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                detailAnalysisFilterPanelKeyReleased(evt);
-            }
-        });
+    detailAnalysisTable.addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseClicked(java.awt.event.MouseEvent evt) {
+            detailAnalysisTableMouseClicked(evt);
+        }
+    });
+    detailAnalysisScrollPanel.setViewportView(detailAnalysisTable);
 
-        detailAnalysisFilter.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                detailAnalysisFilterKeyReleased(evt);
-            }
-        });
+    detailAnalysisPanel.add(detailAnalysisScrollPanel, java.awt.BorderLayout.CENTER);
 
-        javax.swing.GroupLayout detailAnalysisFilterPanelLayout = new javax.swing.GroupLayout(detailAnalysisFilterPanel);
-        detailAnalysisFilterPanel.setLayout(detailAnalysisFilterPanelLayout);
-        detailAnalysisFilterPanelLayout.setHorizontalGroup(
-            detailAnalysisFilterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(detailAnalysisFilterPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(detailAnalysisFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(457, Short.MAX_VALUE))
-        );
-        detailAnalysisFilterPanelLayout.setVerticalGroup(
-            detailAnalysisFilterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, detailAnalysisFilterPanelLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(detailAnalysisFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+    topDetailAnalysisView.setLayout(new java.awt.BorderLayout());
 
-        topDetailAnalysisView.add(detailAnalysisFilterPanel, java.awt.BorderLayout.CENTER);
+    detailAnalysisFilterPanel.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyReleased(java.awt.event.KeyEvent evt) {
+            detailAnalysisFilterPanelKeyReleased(evt);
+        }
+    });
 
-        detailAnalysisPanel.add(topDetailAnalysisView, java.awt.BorderLayout.NORTH);
+    detailAnalysisFilter.setToolTipText("Content Filter");
+    detailAnalysisFilter.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyReleased(java.awt.event.KeyEvent evt) {
+            detailAnalysisFilterKeyReleased(evt);
+        }
+    });
 
-        detailAnalysisStatusPanel.setLayout(new java.awt.BorderLayout());
+    javax.swing.GroupLayout detailAnalysisFilterPanelLayout = new javax.swing.GroupLayout(detailAnalysisFilterPanel);
+    detailAnalysisFilterPanel.setLayout(detailAnalysisFilterPanelLayout);
+    detailAnalysisFilterPanelLayout.setHorizontalGroup(
+        detailAnalysisFilterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(detailAnalysisFilterPanelLayout.createSequentialGroup()
+            .addContainerGap()
+            .addComponent(detailAnalysisFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addContainerGap(457, Short.MAX_VALUE))
+    );
+    detailAnalysisFilterPanelLayout.setVerticalGroup(
+        detailAnalysisFilterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, detailAnalysisFilterPanelLayout.createSequentialGroup()
+            .addGap(0, 0, Short.MAX_VALUE)
+            .addComponent(detailAnalysisFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+    );
 
-        detailAnalysisStatusBar.setText("jLabel1");
-        detailAnalysisStatusPanel.add(detailAnalysisStatusBar, java.awt.BorderLayout.EAST);
+    topDetailAnalysisView.add(detailAnalysisFilterPanel, java.awt.BorderLayout.CENTER);
 
-        detailAnalysisPanel.add(detailAnalysisStatusPanel, java.awt.BorderLayout.SOUTH);
+    detailAnalysisPanel.add(topDetailAnalysisView, java.awt.BorderLayout.NORTH);
 
-        mainRightPanel.add(detailAnalysisPanel, "cardDetailAnalysisPanel");
+    detailAnalysisStatusPanel.setLayout(new java.awt.BorderLayout());
 
-        dataExplorerSplitPane.setRightComponent(mainRightPanel);
+    detailAnalysisStatusBar.setText("jLabel1");
+    detailAnalysisStatusPanel.add(detailAnalysisStatusBar, java.awt.BorderLayout.EAST);
 
-        mainJPanel.add(dataExplorerSplitPane, "dataExplorerCard");
+    detailAnalysisPanel.add(detailAnalysisStatusPanel, java.awt.BorderLayout.SOUTH);
 
-        getContentPane().add(mainJPanel, java.awt.BorderLayout.CENTER);
+    mainRightPanel.add(detailAnalysisPanel, "cardDetailAnalysisPanel");
 
-        filejMenu.setText("File");
+    dataExplorerSplitPane.setRightComponent(mainRightPanel);
 
-        dbParametersMenuItem.setText("Connect to Database... ");
-        dbParametersMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dbParametersMenuItemActionPerformed(evt);
-            }
-        });
-        filejMenu.add(dbParametersMenuItem);
+    mainJPanel.add(dataExplorerSplitPane, "dataExplorerCard");
 
-        exitMenuItem.setText("Exit");
-        exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                exitMenuItemActionPerformed(evt);
-            }
-        });
-        filejMenu.add(exitMenuItem);
+    getContentPane().add(mainJPanel, java.awt.BorderLayout.CENTER);
 
-        jMenuBar1.add(filejMenu);
+    filejMenu.setText("File");
 
-        helpjMenu.setText("Help");
+    dbParametersMenuItem.setText("Connect to Database... ");
+    dbParametersMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            dbParametersMenuItemActionPerformed(evt);
+        }
+    });
+    filejMenu.add(dbParametersMenuItem);
 
-        mainHelpMenuItem.setText("Main Help");
-        mainHelpMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mainHelpMenuItemActionPerformed(evt);
-            }
-        });
-        helpjMenu.add(mainHelpMenuItem);
+    exitMenuItem.setText("Exit");
+    exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            exitMenuItemActionPerformed(evt);
+        }
+    });
+    filejMenu.add(exitMenuItem);
 
-        resetSplashHelpMenuItem.setText("Reset Help Pop-Up Windows");
-        resetSplashHelpMenuItem.setToolTipText("");
-        resetSplashHelpMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                resetSplashHelpMenuItemActionPerformed(evt);
-            }
-        });
-        helpjMenu.add(resetSplashHelpMenuItem);
+    jMenuBar1.add(filejMenu);
 
-        jMenuBar1.add(helpjMenu);
+    helpjMenu.setText("Help");
 
-        setJMenuBar(jMenuBar1);
+    mainHelpMenuItem.setText("Main Help");
+    mainHelpMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            mainHelpMenuItemActionPerformed(evt);
+        }
+    });
+    helpjMenu.add(mainHelpMenuItem);
 
-        pack();
+    resetSplashHelpMenuItem.setText("Reset Help Pop-Up Windows");
+    resetSplashHelpMenuItem.setToolTipText("");
+    resetSplashHelpMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            resetSplashHelpMenuItemActionPerformed(evt);
+        }
+    });
+    helpjMenu.add(resetSplashHelpMenuItem);
+
+    jMenuBar1.add(helpjMenu);
+
+    setJMenuBar(jMenuBar1);
+
+    pack();
     }// </editor-fold>//GEN-END:initComponents
 
 
@@ -949,6 +974,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             }
 
             dataTableTableTitle = ("Data view for table: " + getRowColOneSelected(tableNameTable).toUpperCase());
+
+            File f = new File(SPLASHTRACKER + File.separator + "tableExplorerMenu.txt");
+            if (!f.exists()) {
+                prepareHelpDialog("tableExplorerMenu.txt", "EXPNB.png");
+            }
+
         }
 
     }//GEN-LAST:event_tableNameTableMouseClicked
@@ -990,7 +1021,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 setDataTable(getColumnData());
                 tableInUse = SQLDATATABLE;
                 dataTableScrollPanel.setVisible(true);
-                dataTableStatusBar.setText("   DB Name:" + db.getDatabaseName() + ". Total Record Count for " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".");
+                dataTableStatusBar1.setText("Database Name:" + db.getDatabaseName() + ".");
+                dataTableStatusBar.setText("Total Record Count for " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".");
             } catch (SQLException ex) {
                 Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -1032,7 +1064,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             columnNameTableSelctionColumn = columnNameTable.columnAtPoint(evt.getPoint());
             try {
                 setDataTable(getColumnData());
-                dataTableStatusBar.setText("   DB Name:" + db.getDatabaseName() + ". Total Record Count for " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".");
+                dataTableStatusBar1.setText("DB:" + db.getDatabaseName() + ".");
+                dataTableStatusBar.setText("Total Record Count for " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".");
                 tableInUse = SQLDATATABLE;
                 dataTableScrollPanel.setVisible(true);
             } catch (SQLException ex) {
@@ -1082,6 +1115,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             tablePopupMenu.show(summaryTable, evt.getX(), evt.getY());
         }
 
+        File f = new File(SPLASHTRACKER + File.separator + "menuMainSummary.txt");
+        if (!f.exists()) {
+            prepareHelpDialog("menuMainSummary.txt", "IS1.png");
+        }
+
+
     }//GEN-LAST:event_summaryTableMouseClicked
 
     private void showNBSummaryTblActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showNBSummaryTblActionPerformed
@@ -1091,8 +1130,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 //            @Override
 //            protected Void doInBackground() throws Exception {
         try {
+            
             setNullsBlankSummaryTable();
+            summaryTableTitle = "Nulls & Blanks per Table Summary";
+            
             setInitialSummaryCard();
+            
             initialSummaryTableFilter.setText(null);
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
@@ -1106,6 +1149,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         tableInUse = NBSUMMARYDATATABLE;
         //setInitialSummaryCard();
         //initialSummaryTableFilter.setText(null);
+        
+        
         summaryTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Number of Tables: " + db.getTotalNumberOfTables() + ". Tables in Current Result Set: " + summaryTable.getRowCount() + ".     ");
         File f = new File(SPLASHTRACKER + File.separator + "mainNBSummary.txt");
         if (!f.exists()) {
@@ -1139,7 +1184,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         if (!f.exists()) {
             prepareHelpDialog("initialMainSummary.txt", "IS1.png");
         }
+
         db.setNumberOfTableToTotalNumberofTable();
+        tableNameFilter.setText(null);
 
     }//GEN-LAST:event_showInitialSummaryTblActionPerformed
 
@@ -1164,6 +1211,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                         progressBarDialog.setVisible(false);
                         allowUserAction = YES;
                         buildSummaryTableDataBarChartExplorerPanel();
+                        
+                        
                     }
                 };
 
@@ -1191,6 +1240,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        File f = new File(SPLASHTRACKER + File.separator + "tableExplorer.txt");
+        if (!f.exists()) {
+            prepareHelpDialog("tableExplorer.txt", "EXP1.png");
+        }
+
 
     }//GEN-LAST:event_showDataNavigatorActionPerformed
 
@@ -1254,8 +1309,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 progressBarDialog.setVisible(false);
                 allowUserAction = YES;
 
-                setInitialSummaryCard();
+                
                 tableInUse = NBSUMMARYDATATABLE;
+                setInitialSummaryCard();
                 initialSummaryTableFilter.setText(null);
                 summaryTableStatusBar.setText("Database Name:" + db.getDatabaseName() + ".  Total Number of Tables: " + db.getTotalNumberOfTables() + ". Tables in Current Result Set: " + summaryTable.getRowCount() + ".     ");
                 summaryScrollPanel.setVisible(true);
@@ -1281,6 +1337,14 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         buildRowsColumnNullsPieChartExplorerPanel("blank");
 
         tableInUse = ROWNBSUMMARYDATATABLE;
+
+        File f = new File(SPLASHTRACKER + File.separator + "tableExplorerRows.txt");
+        if (!f.exists()) {
+            prepareHelpDialog("tableExplorerRows.txt", "EXPROWS.png");
+        }
+
+        System.out.println("WE GOT HERE OK TAbleRows");
+
 
     }//GEN-LAST:event_showRowsNullsBlanksPerColumnTableActionPerformed
 
@@ -1478,7 +1542,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 }
             }
             try {
-                dataTableStatusBar.setText("   DB Name:" + db.getDatabaseName() + ". Total Record Count for " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".");
+                dataTableStatusBar1.setText("DB:" + db.getDatabaseName() + ".");
+                dataTableStatusBar.setText("Total Record Count for " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".");
             } catch (SQLException ex) {
                 Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -1551,6 +1616,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        File f = new File(SPLASHTRACKER + File.separator + "columnDataView.txt");
+        if (!f.exists()) {
+            prepareHelpDialog("columnDataView.txt", "columnDataView.png");
+        }
+
     }//GEN-LAST:event_showColumnDataActionPerformed
 
     private void showTableAllColumnSummaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showTableAllColumnSummaryActionPerformed
@@ -1583,25 +1653,25 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         JDialog progressBarDialog = buildProgressBar("Analysing Table");
 
-            SwingWorker worker = new SwingWorker<Void, Void>() {
-                @Override
-                protected Void doInBackground() throws Exception {
-                    showConnectionDialog();
-                    setInitialSummaryTable();
-                    return null;
-                }
+        SwingWorker worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                showConnectionDialog();
+                setInitialSummaryTable();
+                return null;
+            }
 
-                @Override
-                protected void done() {
-                    progressBarDialog.setVisible(false);
-                    allowUserAction = YES;
-                    tableInUse = INITIALSUMMARYDATATABLE;
-                    initialSummaryTableFilter.setText(null);
-                    setInitialSummaryCard();
-                }
-            };
+            @Override
+            protected void done() {
+                progressBarDialog.setVisible(false);
+                allowUserAction = YES;
+                tableInUse = INITIALSUMMARYDATATABLE;
+                initialSummaryTableFilter.setText(null);
+                setInitialSummaryCard();
+            }
+        };
 
-            worker.execute();
+        worker.execute();
 
 
     }//GEN-LAST:event_dbParametersMenuItemActionPerformed
@@ -1612,15 +1682,46 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
     private void resetSplashHelpMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetSplashHelpMenuItemActionPerformed
 // https://coderanch.com/t/378308/java/delete-existing-files-dierectry
-        File file = new File(SPLASHTRACKER);
-        String[] myFiles;
-        if (file.isDirectory()) {
-            myFiles = file.list();
-            for (int i = 0; i < myFiles.length; i++) {
-                File myFile = new File(file, myFiles[i]);
-                myFile.delete();
+
+        JDialog progressBarDialog = buildProgressBar("Analysing Table");
+
+//detailAnalysisTable.setVisible(false);
+        SwingWorker worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+
+                File file = new File(SPLASHTRACKER);
+                String[] myFiles;
+                if (file.isDirectory()) {
+                    myFiles = file.list();
+                    for (int i = 0; i < myFiles.length; i++) {
+                        File myFile = new File(file, myFiles[i]);
+                        myFile.delete();
+                    }
+                }
+
+                return null;
             }
-        }
+
+            @Override
+            protected void done() {
+                progressBarDialog.setVisible(false);
+                allowUserAction = YES;
+                File f = new File(SPLASHTRACKER + File.separator + "clearedWhileRunning.txt");
+                if (!f.exists()) {
+                    try {
+                        f.createNewFile();
+                    } catch (IOException ex) {
+                        Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                }
+
+            }
+        };
+
+        worker.execute();
+
 
     }//GEN-LAST:event_resetSplashHelpMenuItemActionPerformed
 
@@ -1638,6 +1739,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                     + "Please register a PDF viewer for your system and try again.");
         }
     }//GEN-LAST:event_mainHelpMenuItemActionPerformed
+
+    private void initialSummaryTableFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initialSummaryTableFilterActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_initialSummaryTableFilterActionPerformed
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1689,6 +1794,11 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                     } else {
                         System.out.println("Failed to create directory!");
                     }
+                }
+
+                File ff = new File(SPLASHTRACKER + File.separator + "clearedWhileRunning.txt");
+                if (ff.exists()) {
+                    ff.delete();
                 }
 
                 File f = new File(SPLASHTRACKER + File.separator + "lauchDPHasrun.txt");
@@ -2654,7 +2764,10 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 sqlWhere += " and " + columnNames.getValueAt(i, 0) + " =''";
             }
             if (columnNames.getValueAt(i, 3) != null) {
-                sqlWhere += " and " + columnNames.getValueAt(i, 0) + " like '%" + columnNames.getValueAt(i, 3) + "%'";
+                if (columnNames.getValueAt(i, 3).toString().length()>0) {
+                sqlWhere += " and " + columnNames.getValueAt(i, 0) + " like '%" + columnNames.getValueAt(i, 3) + "%'";    
+                }
+                
             }
         }
         dynamicSQLWhere = sqlWhere + "";
@@ -3261,11 +3374,24 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         } else {
 
-            JFreeChart barchart = ChartFactory.createBarChart(
-                    "Tables Nulls and Blank Percentages",
-                    "Tables",
-                    "Percentage %",
-                    dataSet);
+            JFreeChart barchart;
+            if (dataSet.getColumnCount() > 5) {
+                barchart = ChartFactory.createBarChart(
+                        "Tables Nulls and Blank Percentages",
+                        "Tables",
+                        "Percentage %",
+                        dataSet,
+                        PlotOrientation.HORIZONTAL,
+                        true, false, false);
+            } else {
+                barchart = ChartFactory.createBarChart(
+                        "Tables Nulls and Blank Percentages",
+                        "Tables",
+                        "Percentage %",
+                        dataSet,
+                        PlotOrientation.VERTICAL,
+                        true, false, false);
+            }
 
 //        
             ChartFrame summaryTableChartFrame = new ChartFrame(
@@ -3286,11 +3412,27 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         } else {
 
-            JFreeChart barchart = ChartFactory.createBarChart(
-                    "Columns Nulls and Blank Percentages for Table " + getRowColOneSelected(tableNameTable).toUpperCase(),
-                    "Columns",
-                    "Percentage %",
-                    getTableColumnBarChartDataset());
+            JFreeChart barchart;
+            if (getTableColumnBarChartDataset().getColumnCount() > 5) {
+
+                barchart = ChartFactory.createBarChart(
+                        "Columns Nulls and Blank Percentages for Table " + getRowColOneSelected(tableNameTable).toUpperCase(),
+                        "Columns",
+                        "Percentage %",
+                        getTableColumnBarChartDataset(),
+                        PlotOrientation.HORIZONTAL,
+                        true, false, false);
+
+            } else {
+                barchart = ChartFactory.createBarChart(
+                        "Columns Nulls and Blank Percentages for Table " + getRowColOneSelected(tableNameTable).toUpperCase(),
+                        "Columns",
+                        "Percentage %",
+                        getTableColumnBarChartDataset(),
+                        PlotOrientation.VERTICAL,
+                        true, false, false);
+
+            }
 
             ChartFrame tableColumnBarChartBarChartPopupFrame = new ChartFrame(
                     "Columns Nulls and Blank Percentages for table " + getRowColOneSelected(tableNameTable).toUpperCase() + " Bar Chart", barchart);
@@ -3308,11 +3450,27 @@ public class MySQLNullsApp extends javax.swing.JFrame {
 
         } else {
 
-            JFreeChart barchart = ChartFactory.createBarChart(
-                    "Columns Nulls and Blank Percentages for Table " + getRowColOneSelected(tableNameTable).toUpperCase(),
-                    "Columns",
-                    "Percentage %",
-                    tableColumnBarChartSelectedDatasetPassed);
+            JFreeChart barchart;
+            if (tableColumnBarChartSelectedDatasetPassed.getColumnCount() > 5) {
+
+                barchart = ChartFactory.createBarChart(
+                        "Columns Nulls and Blank Percentages for Table " + getRowColOneSelected(tableNameTable).toUpperCase(),
+                        "Columns",
+                        "Percentage %",
+                        tableColumnBarChartSelectedDatasetPassed,
+                        PlotOrientation.HORIZONTAL,
+                        true, false, false);
+
+            } else {
+                barchart = ChartFactory.createBarChart(
+                        "Columns Nulls and Blank Percentages for Table " + getRowColOneSelected(tableNameTable).toUpperCase(),
+                        "Columns",
+                        "Percentage %",
+                        tableColumnBarChartSelectedDatasetPassed,
+                        PlotOrientation.VERTICAL,
+                        true, false, false);
+
+            }
 
             ChartFrame tableColumnBarChartBarChartPopupFrame = new ChartFrame(
                     "Columns Nulls and Blank Percentages for table " + getRowColOneSelected(tableNameTable).toUpperCase() + " Bar Chart", barchart);
@@ -3354,11 +3512,29 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             chartPanel.add(noDataMainPanel, BorderLayout.CENTER);
             chartPanel.validate();
         } else {
-            JFreeChart summaryBarchart = ChartFactory.createBarChart(
-                    "Tables Nulls and Blank Percentages",
-                    "Tables",
-                    "Percentage %",
-                    dataSet);
+
+            JFreeChart summaryBarchart;
+            if (dataSet.getColumnCount() > 5) {
+
+                summaryBarchart = ChartFactory.createBarChart(
+                        "Tables Nulls and Blank Percentages",
+                        "Tables",
+                        "Percentage %",
+                        dataSet,
+                        PlotOrientation.HORIZONTAL,
+                        true, false, false);
+
+            } else {
+                summaryBarchart = ChartFactory.createBarChart(
+                        "Tables Nulls and Blank Percentages",
+                        "Tables",
+                        "Percentage %",
+                        dataSet,
+                        PlotOrientation.VERTICAL,
+                        true, false, false);
+
+            }
+
             ChartPanel summaryTableChartPanel = new ChartPanel(summaryBarchart);
             //      "Tables Nulls and Blank Percentages Bar Chart"
             chartPanel.removeAll();
@@ -3388,10 +3564,28 @@ public class MySQLNullsApp extends javax.swing.JFrame {
             chartPanel.add(noDataMainPanel, BorderLayout.CENTER);
             chartPanel.validate();
         } else {
-            JFreeChart columnBarchart = ChartFactory.createBarChart("Columns Nulls and Blank Percentages",
-                    "Columns",
-                    "Percentage %",
-                    getTableColumnBarChartDataset());
+            //
+            JFreeChart columnBarchart;
+            if (getTableColumnBarChartDataset().getColumnCount() > 5) {
+
+                columnBarchart = ChartFactory.createBarChart(
+                        "Columns Nulls and Blank Percentages",
+                        "Columns",
+                        "Percentage %",
+                        getTableColumnBarChartDataset(),
+                        PlotOrientation.HORIZONTAL,
+                        true, false, false);
+
+            } else {
+                columnBarchart = ChartFactory.createBarChart(
+                        "Columns Nulls and Blank Percentages",
+                        "Columns",
+                        "Percentage %",
+                        getTableColumnBarChartDataset(),
+                        PlotOrientation.VERTICAL,
+                        true, false, false);
+
+            }
 
             ChartPanel tableColumnChartPanel = new ChartPanel(columnBarchart);
             //      "Columns Nulls and Blank Percentages Bar Chart"
@@ -3404,7 +3598,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    buildTableColumnBarChartExplorerPanel()
+    buildRowsColumnNullsPieChartExplorerPanel(String NullBlank)
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
      */
@@ -3461,11 +3655,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         card.show(mainJPanel, INITIALSUMMARYCARD);
         cardViewInUse = INITIALSUMMARYCARD;
         summaryPanel.setVisible(true);
-        summaryScrollPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+        summaryPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
                 summaryTableTitle,
                 TitledBorder.CENTER,
                 TitledBorder.TOP));
     }
+    
 
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -3536,7 +3731,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
                 TitledBorder.CENTER,
                 TitledBorder.TOP));
         dataTableScrollPanel.setVisible(true);
-        dataTableStatusBar.setText("   DB Name:" + db.getDatabaseName() + ". Total Record Count for " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".");
+        dataTableStatusBar1.setText("DB:" + db.getDatabaseName() + ".");
+        dataTableStatusBar.setText("Total Record Count for " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".");
 
     }
 
@@ -3561,7 +3757,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         mainRightPanel.setVisible(true);
         detailAnalysisPanel.setVisible(true);
         mainRightPanel.validate();
-        detailAnalysisScrollPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+        detailAnalysisPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
                 detailAnalysisTableTitle,
                 TitledBorder.CENTER,
                 TitledBorder.TOP));
@@ -3753,7 +3949,8 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     public void buildDataExplorerViewFromDetailAnalysisTable() throws Exception {
         dataFromDetailAnalysis = "dataFromDetailAnalysis";
         setDataTable(getColumnDataDetailAnalysis());
-        dataTableStatusBar.setText("   DB Name:" + db.getDatabaseName() + ". Total Record Count for " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".");
+        dataTableStatusBar1.setText("DB:" + db.getDatabaseName() + ".");
+        dataTableStatusBar.setText("Total Record Count for " + getRowColOneSelected(tableNameTable).toUpperCase() + ": " + db.getRowCount(getRowColOneSelected(tableNameTable)) + ". Records in Current Result Set: " + dataTable.getRowCount() + ".");
         tableInUse = SQLDATATABLE;
         setExplorerTableCard();
         dataFromDetailAnalysis = "";
@@ -3765,7 +3962,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         mainhelpdialog.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         mainhelpdialog.setModal(true);
         mainhelpdialog.setVisible(true);
-        
+
     }
 
     public void prepareHelpDialog(String splashFileChecker, String pictureToDisplay) {
@@ -3785,7 +3982,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, " Please wait untill previous command "
                 + "finnished computing. \n"
                 + "\n"
-                + "Try again once the progress bar is no longer displayed");
+                + "Try again once the \"Computing\" bar is no longer displayed");
     }
 
     /*
@@ -3811,7 +4008,9 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     private javax.swing.JTable dataTable;
     private javax.swing.JScrollPane dataTableScrollPanel;
     private javax.swing.JLabel dataTableStatusBar;
+    private javax.swing.JLabel dataTableStatusBar1;
     private javax.swing.JPanel dataTableStatusPanel;
+    private javax.swing.JPanel dataTableStatusPanel1;
     private javax.swing.JMenuItem dbParametersMenuItem;
     private javax.swing.JTextField detailAnalysisFilter;
     private javax.swing.JPanel detailAnalysisFilterPanel;
