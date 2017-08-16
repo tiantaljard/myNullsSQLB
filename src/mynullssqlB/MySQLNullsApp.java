@@ -2368,7 +2368,7 @@ dataTable.setModel(new javax.swing.table.DefaultTableModel(
 //detailAnalysisTable.setVisible(false);
         SwingWorker worker = new SwingWorker<Void, Void>() {
             Object[][] tableNullsBlankSummaryArray;
-            Object[] columns = {"Table Name", "Column Count", "Row Count", "Table Nulls", "% Nulls", "Table Blanks", "% Blanks"};
+            Object[] columns = {"Table Name", "Column Count", "Row Count", "Nulls Count", "% Nulls", "Blanks Count", "% Blanks"};
 
             @Override
             protected Void doInBackground() throws Exception {
@@ -3235,7 +3235,7 @@ dataTable.setModel(new javax.swing.table.DefaultTableModel(
      * buildRowsNullsBlanksPerColumnArray() first builds an array that holds a
      * pair of values for each field to determine if the field contain a null or
      * a blank value. (1 being true and zero false). Then the method determine
-     * which percentage of all the rows has which number or columns containing
+     * which percentage of all the rows has which number of columns containing
      * nulls or blanks. The method returns an Object[][] from which to build a
      * data model to display the summary in a jTable.
      *
