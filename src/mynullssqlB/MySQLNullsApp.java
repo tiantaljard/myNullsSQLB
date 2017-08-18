@@ -109,12 +109,12 @@ public class MySQLNullsApp extends javax.swing.JFrame {
     // create data model for rows percentage per column null or blank
     private ArrayTableModel rowsNulsBlankArrayTableModel = new ArrayTableModel();
     // set summaryTableModel for initial analysis of column and row count of tables
-    ResultTableModel summaryTableModel = new ResultTableModel();
+    private ResultTableModel summaryTableModel = new ResultTableModel();
     // set summaryTableModel for Nulls & Blank analysis of column and row count of tables
-    ArrayTableModel summaryNullsBlankTableModel = new ArrayTableModel();
+    private ArrayTableModel summaryNullsBlankTableModel = new ArrayTableModel();
 
     // Create a Date format for a unique file identifyer.
-    SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy_HH-mm-ss.SSS");
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy_HH-mm-ss.SSS");
     // CSV Delimeter
     private String csvDelimiter = "','";
 
@@ -3982,7 +3982,7 @@ dataTable.setModel(new javax.swing.table.DefaultTableModel(
         JOptionPane.showMessageDialog(null, " Please wait untill previous command "
                 + "finnished computing. \n"
                 + "\n"
-                + "Try again once the \"Computing\" bar is no longer displayed");
+                + "Try again once the \"Analysing\" bar is no longer displayed");
     }
 
     /*
