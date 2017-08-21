@@ -34,21 +34,22 @@ public class MySQLDBConnect {
     String password;
     String databaseName;
 
-    public String getDatabaseName() {
-        return databaseName;
-    }
     String port;
     String serverIP;
 
     private MySQLNullsApp mySQLNullsApp;
 
-    
     private int numberOfTable;
-
 
     private int totalNumberOfTable;
     
-
+    /**
+     * getDatabaseName() returns the name of the connected database 
+     * @return 
+     */
+    public String getDatabaseName() {
+        return databaseName;
+    }
 
     /**
      * for caching table names column count and row count
@@ -100,8 +101,7 @@ public class MySQLDBConnect {
 //                db.getBlankTableCount("uploads");
 //                db.transPoseNb("requests");
             //db.analyseTablesNullsBlanks("requests");
-     //       db.buildRowsNulsBlankArray("requests");
-
+            //       db.buildRowsNulsBlankArray("requests");
 //            db.getColumnNames("uploads");
 //
 //            ResultSet resultRS = db.analyseTables();
@@ -186,7 +186,7 @@ public class MySQLDBConnect {
      */
     public void getConnection() throws SQLException {
         conn = DriverManager.getConnection("jdbc:mysql://" + serverIP + ":"
-                + port + "/" + databaseName+"?verifyServerCertificate=false&useSSL=false", username, password);
+                + port + "/" + databaseName + "?verifyServerCertificate=false&useSSL=false", username, password);
     }
 
     /*
@@ -197,7 +197,7 @@ public class MySQLDBConnect {
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
      */
     /**
-     * Creates a list of tables that exist in the database. Not that no where
+     * Creates a list of tables that exist in the database. Note that no where
      * clause is passed. This is always the full list of tables in the database.
      *
      * @return ResultSet
@@ -349,17 +349,23 @@ public class MySQLDBConnect {
         colCount.first();
         int j = colCount.getInt(1);
         String query = "select ";
-
         ResultSet col_results = getColumnNames(table_name);
-// had to use ` because some column names where two words
+        // had to use ` because some column names where two words
         if (col_results.next()) {
             for (int i = 0; i < j; i++) {
                 query += "SUM(CASE WHEN `" + col_results.getString(1)
                         + "` IS NULL THEN 1 ELSE 0 END) as `nulls_"
+
                         + col_results.getString(1);
-                query += "`, SUM(CASE WHEN `" + col_results.getString(1)
-                        + "` ='' THEN 1 ELSE 0 END) as `blanks_"
+                
+                if (col_results.equals("")) {     
+                query += "`, SUM( 1 ) as `blanks_"
                         + col_results.getString(1);
+                } else {
+                query += "`, SUM( 0 ) as `blanks_"
+                        + col_results.getString(1);
+                 }
+                        
                 if (i == j - 1) {
                     query += "` ";
 
@@ -399,9 +405,13 @@ public class MySQLDBConnect {
                 query += "(CASE WHEN `" + col_results.getString(1)
                         + "` IS NULL THEN 1 ELSE 0 END) as `nulls_"
                         + col_results.getString(1);
-                query += "`,(CASE WHEN `" + col_results.getString(1)
-                        + "` ='' THEN 1 ELSE 0 END) as `blanks_"
+                                if (col_results.equals("")) {     
+                query += "`, SUM( 1 ) as `blanks_"
                         + col_results.getString(1);
+                } else {
+                query += "`, SUM( 0 ) as `blanks_"
+                        + col_results.getString(1);
+                 }
                 if (i == j - 1) {
                     query += "` ";
 
@@ -654,10 +664,11 @@ public class MySQLDBConnect {
     public int getNumberOfTables() {
         return numberOfTable;
     }
+
     /**
      * To allow us to rest the the number of tables
      */
-        public void setNumberOfTableToTotalNumberofTable() {
+    public void setNumberOfTableToTotalNumberofTable() {
         this.numberOfTable = totalNumberOfTable;
     }
 
@@ -729,6 +740,7 @@ public class MySQLDBConnect {
             }
 
             DefaultTableModel model = new DefaultTableModel(rows, columnNames);
+            
 
             return model;
 
@@ -738,6 +750,5 @@ public class MySQLDBConnect {
             return null;
         }
     }
-
 
 }
