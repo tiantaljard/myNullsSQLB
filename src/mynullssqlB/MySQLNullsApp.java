@@ -53,6 +53,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
+import static org.jfree.data.general.DatasetUtilities.isEmptyOrNull;
 
 /**
  * @Date July 2017
@@ -164,7 +165,7 @@ public class MySQLNullsApp extends javax.swing.JFrame {
         showConnectionDialog();
         mainJPanel.setVisible(false);
 
-        JDialog progressBarDialog = buildProgressBar("Analysing Table Column & Row Count");
+        JDialog progressBarDialog = buildBusyBar("Analysing Table Column & Row Count");
 
 //detailAnalysisTable.setVisible(false);
         SwingWorker worker = new SwingWorker<Void, Void>() {
@@ -1124,7 +1125,7 @@ dataTable.setModel(new javax.swing.table.DefaultTableModel(
     }//GEN-LAST:event_summaryTableMouseClicked
 
     private void showNBSummaryTblActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showNBSummaryTblActionPerformed
-//        JDialog progressBarDialog = buildProgressBar("Analysing Table for Nulls & Blank");
+//        JDialog progressBarDialog = buildBusyBar("Analysing Table for Nulls & Blank");
 //
 //        SwingWorker worker = new SwingWorker<Void, Void>() {
 //            @Override
@@ -1196,7 +1197,7 @@ dataTable.setModel(new javax.swing.table.DefaultTableModel(
             initializeModel(buildTableSQLWhere());
             if (summaryTable.getModel().getColumnCount() == 3) {
 
-                JDialog progressBarDialog = buildProgressBar("Analysing Table");
+                JDialog progressBarDialog = buildBusyBar("Analysing Table");
 
                 SwingWorker worker = new SwingWorker<Void, Void>() {
                     @Override
@@ -1251,7 +1252,7 @@ dataTable.setModel(new javax.swing.table.DefaultTableModel(
 
     private void showDataNavigatorAllTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showDataNavigatorAllTablesActionPerformed
 
-        JDialog progressBarDialog = buildProgressBar("Analysing Table");
+        JDialog progressBarDialog = buildBusyBar("Analysing Table");
 
         SwingWorker worker = new SwingWorker<Void, Void>() {
             @Override
@@ -1287,7 +1288,7 @@ dataTable.setModel(new javax.swing.table.DefaultTableModel(
 
     private void showNBSummaryTblAllTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showNBSummaryTblAllTablesActionPerformed
 
-        JDialog progressBarDialog = buildProgressBar("Analysing Tables for Nulls and Blanks");
+        JDialog progressBarDialog = buildBusyBar("Analysing Tables for Nulls and Blanks");
         summaryScrollPanel.setVisible(false);
         SwingWorker worker = new SwingWorker<Void, Void>() {
             @Override
@@ -1343,7 +1344,7 @@ dataTable.setModel(new javax.swing.table.DefaultTableModel(
             prepareHelpDialog("tableExplorerRows.txt", "EXPROWS.png");
         }
 
-        System.out.println("WE GOT HERE OK TAbleRows");
+        //System.out.println("WE GOT HERE OK TAbleRows");
 
 
     }//GEN-LAST:event_showRowsNullsBlanksPerColumnTableActionPerformed
@@ -1450,8 +1451,10 @@ dataTable.setModel(new javax.swing.table.DefaultTableModel(
 
     private void exportTableColumnsSummaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportTableColumnsSummaryActionPerformed
         if (tableInUse.equals(COLUMNNBSUMMARYDATATABLE)) {
+            //System.out.println("dataTable"+dataTable);
+            //System.out.println("TABLECOLUMNSUMMARY"+TABLECOLUMNSUMMARY);
             try {
-                JOptionPane.showMessageDialog(null, writeCSVfile(dataTable, TABLECOLUMNSUMMARY));
+                JOptionPane.showMessageDialog(null, writeCSVfile(detailAnalysisTable, TABLECOLUMNSUMMARY));
             } catch (IOException ex) {
                 Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
@@ -1465,7 +1468,7 @@ dataTable.setModel(new javax.swing.table.DefaultTableModel(
     private void exportRowsColumnsNullsBlanksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportRowsColumnsNullsBlanksActionPerformed
         if (tableInUse.equals(ROWNBSUMMARYDATATABLE)) {
             try {
-                JOptionPane.showMessageDialog(null, writeCSVfile(dataTable, ROWSCOLUMNSUMMARY));
+                JOptionPane.showMessageDialog(null, writeCSVfile(detailAnalysisTable, ROWSCOLUMNSUMMARY));
             } catch (IOException ex) {
                 Logger.getLogger(MySQLNullsApp.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
@@ -1651,7 +1654,7 @@ dataTable.setModel(new javax.swing.table.DefaultTableModel(
 
     private void dbParametersMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dbParametersMenuItemActionPerformed
 
-        JDialog progressBarDialog = buildProgressBar("Analysing Table");
+        JDialog progressBarDialog = buildBusyBar("Analysing Table");
 
         SwingWorker worker = new SwingWorker<Void, Void>() {
             @Override
@@ -1683,7 +1686,7 @@ dataTable.setModel(new javax.swing.table.DefaultTableModel(
     private void resetSplashHelpMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetSplashHelpMenuItemActionPerformed
 // https://coderanch.com/t/378308/java/delete-existing-files-dierectry
 
-        JDialog progressBarDialog = buildProgressBar("Analysing Table");
+        JDialog progressBarDialog = buildBusyBar("Analysing Table");
 
 //detailAnalysisTable.setVisible(false);
         SwingWorker worker = new SwingWorker<Void, Void>() {
@@ -1944,7 +1947,7 @@ dataTable.setModel(new javax.swing.table.DefaultTableModel(
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
      */
     /**
-     * ArrayTableModel extends the DefaultTableModel to implement getColumnClass
+     * ArrayTableModel extends the DefaultTableModel to implement the getColumnClass method
      * which allows the data model to be aware of the class or data type of the
      * data in each column.
      */
@@ -2363,7 +2366,7 @@ dataTable.setModel(new javax.swing.table.DefaultTableModel(
      */
     public void setNullsBlankSummaryTable() throws SQLException {
 
-        JDialog progressBarDialog = buildProgressBar("Analysing Table");
+        JDialog progressBarDialog = buildBusyBar("Analysing Table");
 
 //detailAnalysisTable.setVisible(false);
         SwingWorker worker = new SwingWorker<Void, Void>() {
@@ -2461,7 +2464,7 @@ dataTable.setModel(new javax.swing.table.DefaultTableModel(
     public void setDataTable(ResultSet data) throws SQLException {
 
         ResultTableModel dataTableModel = new ResultTableModel();
-        System.out.println(dataFromDetailAnalysis);
+        //System.out.println(dataFromDetailAnalysis);
         if (dataFromDetailAnalysis.equals("dataFromDetailAnalysis")) {
             dataTableModel.setColumnIdentifiers(getColumnNamesForDataTableFromDetailAnalysisTable(detailAnalysisTable));
         } else {
@@ -2975,7 +2978,7 @@ dataTable.setModel(new javax.swing.table.DefaultTableModel(
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    buildArrayNullsBlankSummary()
+    resetDynamicVariables()
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
      */
@@ -3152,7 +3155,7 @@ dataTable.setModel(new javax.swing.table.DefaultTableModel(
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 
-        JDialog progressBarDialog = buildProgressBar("Analysing Table");
+        JDialog progressBarDialog = buildBusyBar("Analysing Table");
 
         detailAnalysisTable.setVisible(false);
         SwingWorker worker = new SwingWorker<Void, Void>() {
@@ -3190,7 +3193,7 @@ dataTable.setModel(new javax.swing.table.DefaultTableModel(
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 
-        JDialog progressBarDialog = buildProgressBar("Analysing Table");
+        JDialog progressBarDialog = buildBusyBar("Analysing Table");
 
         detailAnalysisTable.setVisible(false);
         SwingWorker worker = new SwingWorker<Void, Void>() {
@@ -3610,11 +3613,12 @@ dataTable.setModel(new javax.swing.table.DefaultTableModel(
         String pieChartTitle = null;
         if (NullBlank.equals("null")) {
             pieDataSet = rowsColsNullsPieChartData;
-            pieChartTitle = "Percentage of rows in table per Null column count";
+            pieChartTitle = "Percentage of rows in table "+ getRowColOneSelected(tableNameTable).toUpperCase()+" per Null column count";
+            
 
         } else {
             pieDataSet = rowsColsBlanksPieChartData;
-            pieChartTitle = "Percentage of rows in table per Blank column count";
+            pieChartTitle = "Percentage of rows in table "+ getRowColOneSelected(tableNameTable).toUpperCase()+" per Blank column count";
         }
 
         if (isEmptyOrNull(pieDataSet)) {
@@ -3853,7 +3857,7 @@ dataTable.setModel(new javax.swing.table.DefaultTableModel(
     /*
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    getSQLcsv()
+    writeCSVfile
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
      */
@@ -3926,13 +3930,13 @@ dataTable.setModel(new javax.swing.table.DefaultTableModel(
     }
 
     /**
-     * buildProgressBar(String title) generates a progress bar to display during
-     * long running transactions.
+     * buildBusyBar(String title) generates a progress bar to display during
+ long running transactions.
      *
      * @param title
      * @return
      */
-    public JDialog buildProgressBar(String title) {
+    public JDialog buildBusyBar(String title) {
         JProgressBar progressBar = new JProgressBar();
         progressBar.setIndeterminate(true);
         JDialog progressBarDialog = new JDialog(this, title, false);

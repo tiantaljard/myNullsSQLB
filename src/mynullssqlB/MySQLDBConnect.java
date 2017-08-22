@@ -355,16 +355,11 @@ public class MySQLDBConnect {
             for (int i = 0; i < j; i++) {
                 query += "SUM(CASE WHEN `" + col_results.getString(1)
                         + "` IS NULL THEN 1 ELSE 0 END) as `nulls_"
-
                         + col_results.getString(1);
-                
-                if (col_results.equals("")) {     
-                query += "`, SUM( 1 ) as `blanks_"
+                query += "`, SUM(CASE  WHEN length(`" + col_results.getString(1)
+                        + "`) =0 THEN 1  ELSE 0 END) as `blanks_"
                         + col_results.getString(1);
-                } else {
-                query += "`, SUM( 0 ) as `blanks_"
-                        + col_results.getString(1);
-                 }
+                 
                         
                 if (i == j - 1) {
                     query += "` ";
@@ -404,14 +399,10 @@ public class MySQLDBConnect {
             for (int i = 0; i < j; i++) {
                 query += "(CASE WHEN `" + col_results.getString(1)
                         + "` IS NULL THEN 1 ELSE 0 END) as `nulls_"
+                        + col_results.getString(1); 
+                query += "`, (CASE  WHEN length(`" + col_results.getString(1)
+                        + "`) =0 THEN 1  ELSE 0 END) as `blanks_"
                         + col_results.getString(1);
-                                if (col_results.equals("")) {     
-                query += "`, SUM( 1 ) as `blanks_"
-                        + col_results.getString(1);
-                } else {
-                query += "`, SUM( 0 ) as `blanks_"
-                        + col_results.getString(1);
-                 }
                 if (i == j - 1) {
                     query += "` ";
 

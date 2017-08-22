@@ -252,8 +252,8 @@ public class MainHelpDialog extends javax.swing.JDialog {
     }
 
     /**
-     * buildProgressBar(String title) generates a progress bar to display during
-     * long running transactions.
+     * buildBusyBar(String title) generates a progress bar to display during
+ long running transactions.
      *
      * @param title
      * @return
